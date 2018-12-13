@@ -123,7 +123,7 @@ def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
     I[na1:,:na2,na3:,:na4] = baba # baba
     return I
 
-def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nob, nva, nvb):
+def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     na = noa + nva
     nb = nob + nvb
     no = noa + nob
@@ -222,7 +222,7 @@ def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nob, nva, nvb):
     return two_e_blocks(vvvv=Ivvvv,vvvo=Ivvvo,vovv=Ivovv,vvoo=Ivvoo,
             vovo=Ivovo,oovv=Ioovv,vooo=Ivooo,ooov=Iooov,oooo=Ioooo)
 
-def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nob, nva, nvb):
+def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     na = noa + nva
     nb = nob + nvb
     no = noa + nob
@@ -321,7 +321,6 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nob, nva, nvb):
     return two_e_blocks(vvvv=Ivvvv,vvvo=Ivvvo,vovv=Ivovv,vvoo=Ivvoo,
             vovo=Ivovo,oovv=Ioovv,vooo=Ivooo,ooov=Iooov,oooo=Ioooo)
 
-# TODO change order of arguments
 def int_to_spatial(I, noa, nob, nva, nvb):
     vvvv = I.vvvv[:nva,:nva,:nva,:nva]
     vvvo = I.vvvo[:nva,:nva,:nva,:noa]

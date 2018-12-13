@@ -56,7 +56,7 @@ class SpinUtilsTest(unittest.TestCase):
         I_abab = test_utils.make_random_Ifull_gen(
                 noa,nva,nob,nvb,noa,nva,nob,nvb)
 
-        I = spin_utils.int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nob, nva, nvb)
+        I = spin_utils.int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb)
 
         # check a coupled selected blocks that should be zero
         z = I.oooo[noa:,:noa,:noa,:noa]
@@ -92,7 +92,7 @@ class SpinUtilsTest(unittest.TestCase):
         Iabab_ref = test_utils.make_random_Ifull_gen(
                 noa,nva,nob,nvb,noa,nva,nob,nvb)
 
-        I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nob, nva, nvb)
+        I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
         Ia,Ib,Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
         
         test = Ia.vvvv - Ia_ref.vvvv
@@ -294,7 +294,7 @@ class SpinUtilsTest(unittest.TestCase):
     #    Ibbbb = test_utils.make_two_e_blocks_full(Ibbbb,nob,nvb,nob,nvb,nob,nvb,nob,nvb)
     #    Iabab = integrals.get_phys(mol,moa,mob,moa,mob)
     #    Iabab = test_utils.make_two_e_blocks_full(Iabab,noa,nva,nob,nvb,noa,nva,nob,nvb)
-    #    I = spin_utils.int_to_spin(Iaaaa, Ibbbb, Iabab, noa, nob, nva, nvb)
+    #    I = spin_utils.int_to_spin(Iaaaa, Ibbbb, Iabab, noa, nva, nob, nvb)
     #    I_ref = integrals.eri_blocks(mf)
     #    z = I.vvvv - I_ref.vvvv
     #    s = numpy.linalg.norm(z) < self.thresh
