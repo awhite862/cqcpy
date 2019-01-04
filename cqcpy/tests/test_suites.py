@@ -1,10 +1,22 @@
 import sys
 import unittest
+from cqcpy.tests import test_cc_ampl
+from cqcpy.tests import test_lambda_equations
 from cqcpy.tests import test_spin_utils
 from cqcpy.tests import test_test
 
 def full_suite():
     suite = unittest.TestSuite()
+
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccsd_stanton"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccd"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_ucc_energy"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_uccsd"))
+
+    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
+    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt_int"))
+    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccd"))
+    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_uccsd_lambda"))
 
     suite.addTest(test_spin_utils.SpinUtilsTest("test_F_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I_sym"))
