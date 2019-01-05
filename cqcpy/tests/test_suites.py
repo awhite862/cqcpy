@@ -25,7 +25,7 @@ def full_suite():
     suite.addTest(test_spin_utils.SpinUtilsTest("test_F_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I"))
-    #suite.addTest(test_spin_utils.SpinUtilsTest("test_Be_plus"))
+    suite.addTest(test_spin_utils.SpinUtilsTest("test_Be_plus"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_T"))
 
     suite.addTest(test_test.TestTest("test_framework"))

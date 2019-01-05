@@ -1,12 +1,12 @@
 import unittest
 import numpy
 
-#from pyscf import gto, scf, cc
+from pyscf import gto, scf, cc
+from cqcpy import integrals
 from cqcpy import test_utils
 from cqcpy.ov_blocks import make_two_e_blocks_full
 import cqcpy.spin_utils as spin_utils
 
-#import ft_mbpt.integrals as integrals
 
 class SpinUtilsTest(unittest.TestCase):
     def setUp(self):
@@ -265,81 +265,81 @@ class SpinUtilsTest(unittest.TestCase):
         err = "error in Iab oooo integrals"
         self.assertTrue(s,err)
 
-    #def test_Be_plus(self):
-    #    mol = gto.M(
-    #        verbose = 0,
-    #        atom = 'Be 0 0 0',
-    #        basis = 'sto-3G',
-    #        spin = 1, charge = 1)
-    #    mf = scf.UHF(mol)
-    #    mf.conv_tol = 1e-13
-    #    Escf = mf.scf()
-    #    mo_coeff = mf.mo_coeff
-    #    mo_occ = mf.mo_occ
-    #    mo_occa = mo_occ[0]
-    #    mo_occb = mo_occ[1]
-    #    moa = mf.mo_coeff[0]
-    #    mob = mf.mo_coeff[1]
-    #    oa = (mf.mo_coeff[0])[:,mo_occa>0]
-    #    va = (mf.mo_coeff[0])[:,mo_occa==0]
-    #    ob = (mf.mo_coeff[1])[:,mo_occb>0]
-    #    vb = (mf.mo_coeff[1])[:,mo_occb==0]
-    #    noa = oa.shape[1]
-    #    nva = va.shape[1]
-    #    nob = ob.shape[1]
-    #    nvb = vb.shape[1]
-    #    Iaaaa = integrals.get_phys(mol,moa,moa,moa,moa)
-    #    Iaaaa = test_utils.make_two_e_blocks_full(Iaaaa,noa,nva,noa,nva,noa,nva,noa,nva)
-    #    Ibbbb = integrals.get_phys(mol,mob,mob,mob,mob)
-    #    Ibbbb = test_utils.make_two_e_blocks_full(Ibbbb,nob,nvb,nob,nvb,nob,nvb,nob,nvb)
-    #    Iabab = integrals.get_phys(mol,moa,mob,moa,mob)
-    #    Iabab = test_utils.make_two_e_blocks_full(Iabab,noa,nva,nob,nvb,noa,nva,nob,nvb)
-    #    I = spin_utils.int_to_spin(Iaaaa, Ibbbb, Iabab, noa, nva, nob, nvb)
-    #    I_ref = integrals.eri_blocks(mf)
-    #    z = I.vvvv - I_ref.vvvv
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vvvv block"
-    #    self.assertTrue(s,err)
+    def test_Be_plus(self):
+        mol = gto.M(
+            verbose = 0,
+            atom = 'Be 0 0 0',
+            basis = 'sto-3G',
+            spin = 1, charge = 1)
+        mf = scf.UHF(mol)
+        mf.conv_tol = 1e-13
+        Escf = mf.scf()
+        mo_coeff = mf.mo_coeff
+        mo_occ = mf.mo_occ
+        mo_occa = mo_occ[0]
+        mo_occb = mo_occ[1]
+        moa = mf.mo_coeff[0]
+        mob = mf.mo_coeff[1]
+        oa = (mf.mo_coeff[0])[:,mo_occa>0]
+        va = (mf.mo_coeff[0])[:,mo_occa==0]
+        ob = (mf.mo_coeff[1])[:,mo_occb>0]
+        vb = (mf.mo_coeff[1])[:,mo_occb==0]
+        noa = oa.shape[1]
+        nva = va.shape[1]
+        nob = ob.shape[1]
+        nvb = vb.shape[1]
+        Iaaaa = integrals.get_phys(mol,moa,moa,moa,moa)
+        Iaaaa = test_utils.make_two_e_blocks_full(Iaaaa,noa,nva,noa,nva,noa,nva,noa,nva)
+        Ibbbb = integrals.get_phys(mol,mob,mob,mob,mob)
+        Ibbbb = test_utils.make_two_e_blocks_full(Ibbbb,nob,nvb,nob,nvb,nob,nvb,nob,nvb)
+        Iabab = integrals.get_phys(mol,moa,mob,moa,mob)
+        Iabab = test_utils.make_two_e_blocks_full(Iabab,noa,nva,nob,nvb,noa,nva,nob,nvb)
+        I = spin_utils.int_to_spin(Iaaaa, Ibbbb, Iabab, noa, nva, nob, nvb)
+        I_ref = integrals.eri_blocks(mf)
+        z = I.vvvv - I_ref.vvvv
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vvvv block"
+        self.assertTrue(s,err)
 
-    #    z = I.vvvo - I_ref.vvvo
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vvvo block"
-    #    self.assertTrue(s,err)
+        z = I.vvvo - I_ref.vvvo
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vvvo block"
+        self.assertTrue(s,err)
 
-    #    z = I.vovv - I_ref.vovv
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vovo block"
-    #    self.assertTrue(s,err)
+        z = I.vovv - I_ref.vovv
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vovo block"
+        self.assertTrue(s,err)
 
-    #    z = I.vovo - I_ref.vovo
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vovo block"
-    #    self.assertTrue(s,err)
+        z = I.vovo - I_ref.vovo
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vovo block"
+        self.assertTrue(s,err)
 
-    #    z = I.vvoo - I_ref.vvoo
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vvoo block"
-    #    self.assertTrue(s,err)
+        z = I.vvoo - I_ref.vvoo
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vvoo block"
+        self.assertTrue(s,err)
 
-    #    z = I.oovv - I_ref.oovv
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in oovv block"
-    #    self.assertTrue(s,err)
+        z = I.oovv - I_ref.oovv
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in oovv block"
+        self.assertTrue(s,err)
 
-    #    z = I.vooo - I_ref.vooo
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in vooo block"
-    #    self.assertTrue(s,err)
+        z = I.vooo - I_ref.vooo
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in vooo block"
+        self.assertTrue(s,err)
 
-    #    z = I.ooov - I_ref.ooov
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in ooov block"
-    #    self.assertTrue(s,err)
+        z = I.ooov - I_ref.ooov
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in ooov block"
+        self.assertTrue(s,err)
 
-    #    z = I.oooo - I_ref.oooo
-    #    s = numpy.linalg.norm(z) < self.thresh
-    #    err = "error in oooo block"
-    #    self.assertTrue(s,err)
+        z = I.oooo - I_ref.oooo
+        s = numpy.linalg.norm(z) < self.thresh
+        err = "error in oooo block"
+        self.assertTrue(s,err)
 
     def test_T(self):
         noa = 3
