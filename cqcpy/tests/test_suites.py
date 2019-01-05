@@ -1,6 +1,7 @@
 import sys
 import unittest
 from cqcpy.tests import test_cc_ampl
+from cqcpy.tests import test_ft_utils
 from cqcpy.tests import test_lambda_equations
 from cqcpy.tests import test_spin_utils
 from cqcpy.tests import test_test
@@ -12,6 +13,9 @@ def full_suite():
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccd"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ucc_energy"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_uccsd"))
+
+    suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
+    suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
 
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt_int"))
