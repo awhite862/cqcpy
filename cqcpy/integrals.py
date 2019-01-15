@@ -126,6 +126,7 @@ def get_chem_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=True):
     """Get unrestricted, antisymmetrized ERIs in chemist's
     notation for given orbital Coeffs.
     """
+    import pyscf.pbc.df.fft_ao2mo as fft_ao2mo
     n1 = o1.shape[1]
     n2 = o2.shape[1]
     n3 = o3.shape[1]
@@ -202,29 +203,30 @@ class eri_blocks(object):
             self.has_oooo = True
         mo_coeff = mf.mo_coeff
         mo_occ = mf.mo_occ
-        print("Integrals object ......")
+        pbc = False
+        try:
+            ktemp = mf.kpt
+            pbc = True
+        except AttributeError:
+            pbc = False 
+
         if len(mo_occ.shape) == 1:
-            print("RHF")
             o = mf.mo_coeff[:,mo_occ>0]
             v = mf.mo_coeff[:,mo_occ==0]
-            try:
-                ktemp = mf.kpt
-                print("Solid state code")
+            if pbc:
                 self._build_integrals_sol(mf,o,o,v,v)
-            except AttributeError:
+            else:
                 self._build_integrals_mol(mf,o,o,v,v)
         elif len(mo_occ.shape) == 2:
-            print("UHF")
             mo_occa = mo_occ[0]
             mo_occb = mo_occ[1]
             oa = (mf.mo_coeff[0])[:,mo_occa>0]
             va = (mf.mo_coeff[0])[:,mo_occa==0]
             ob = (mf.mo_coeff[1])[:,mo_occb>0]
             vb = (mf.mo_coeff[1])[:,mo_occb==0]
-            try:
-                ktemp = mf.kpt
+            if pbc:
                 self._build_integrals_sol(mf,oa,ob,va,vb)
-            except AttributeError:
+            else:
                 self._build_integrals_mol(mf,oa,ob,va,vb)
 
     def _build_integrals_mol(self, mf, oa, ob, va, vb):
@@ -249,20 +251,20 @@ class eri_blocks(object):
 
     def _build_integrals_sol(self, mf, oa, ob, va, vb):
         if self.has_vvvv:
-            self.vvvv = get_phys_antiu_sol(mf.mol,va,va,va,va,vb,vb,vb,vb)
+            self.vvvv = get_phys_antiu_sol(mf,va,va,va,va,vb,vb,vb,vb)
         if self.has_vvvo:
-            self.vvvo = get_phys_antiu_sol(mf.mol,va,va,va,oa,vb,vb,vb,ob)
+            self.vvvo = get_phys_antiu_sol(mf,va,va,va,oa,vb,vb,vb,ob)
         if self.has_vovv:
-            self.vovv = get_phys_antiu_sol(mf.mol,va,oa,va,va,vb,ob,vb,vb)
+            self.vovv = get_phys_antiu_sol(mf,va,oa,va,va,vb,ob,vb,vb)
         if self.has_vvoo:
-            self.vvoo = get_phys_antiu_sol(mf.mol,va,va,oa,oa,vb,vb,ob,ob)
+            self.vvoo = get_phys_antiu_sol(mf,va,va,oa,oa,vb,vb,ob,ob)
         if self.has_vovo:
-            self.vovo = get_phys_antiu_sol(mf.mol,va,oa,va,oa,vb,ob,vb,ob)
+            self.vovo = get_phys_antiu_sol(mf,va,oa,va,oa,vb,ob,vb,ob)
         if self.has_oovv:
-            self.oovv = get_phys_antiu_sol(mf.mol,oa,oa,va,va,ob,ob,vb,vb)
+            self.oovv = get_phys_antiu_sol(mf,oa,oa,va,va,ob,ob,vb,vb)
         if self.has_vooo:
-            self.vooo = get_phys_antiu_sol(mf.mol,va,oa,oa,oa,vb,ob,ob,ob)
+            self.vooo = get_phys_antiu_sol(mf,va,oa,oa,oa,vb,ob,ob,ob)
         if self.has_ooov:
-            self.ooov = get_phys_antiu_sol(mf.mol,oa,oa,oa,va,ob,ob,ob,vb)
+            self.ooov = get_phys_antiu_sol(mf,oa,oa,oa,va,ob,ob,ob,vb)
         if self.has_oooo:
-            self.oooo = get_phys_antiu_sol(mf.mol,oa,oa,oa,oa,ob,ob,ob,ob)
+            self.oooo = get_phys_antiu_sol(mf,oa,oa,oa,oa,ob,ob,ob,ob)
