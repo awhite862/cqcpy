@@ -1,106 +1,111 @@
 import numpy
 from pyscf import gto, scf
 import pyscf.ao2mo as mol_ao2mo
-#import pyscf.pbc.df.df_ao2mo as sol_ao2mo
 
-def get_chem(mol,o1,o2,o3,o4):
+def get_chem(mol,o1,o2,o3,o4,anti=False):
     """Get ERIs in chemist's notation for given orbital Coeffs."""
     n1 = o1.shape[1]
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    I = mol_ao2mo.general(mol,(o1,o2,o3,o4),compact=False).reshape(n1,n2,n3,n4)
-    return I
-
-def get_chem_anti(mol,o1,o2,o3,o4):
-    """Get antisymmetrized ERIs in chemist's notation for given orbital Coeffs."""
-    n1 = o1.shape[1]
-    n2 = o2.shape[1]
-    n3 = o3.shape[1]
-    n4 = o4.shape[1]
     Id = mol_ao2mo.general(mol,(o1,o2,o3,o4),compact=False).reshape(n1,n2,n3,n4)
-    Ix = mol_ao2mo.general(mol,(o1,o4,o3,o2),compact=False).reshape(n1,n4,n3,n2)
-    return Id - Ix.transpose(0,3,2,1)
-    
-
-def get_phys(mol,o1,o2,o3,o4):
-    """Get ERIs in physicist's notation for given orbital Coeffs."""
-    n1 = o1.shape[1]
-    n2 = o2.shape[1]
-    n3 = o3.shape[1]
-    n4 = o4.shape[1]
-    I = mol_ao2mo.general(mol,(o1,o3,o2,o4),compact=False).reshape(n1,n3,n2,n4)
-    I2 = I.transpose(0,2,1,3)
-    return I2
-
-def get_phys_anti(mol,o1,o2,o3,o4):
-    """Get antisymmetrized ERIs in physicist's notation for given orbital Coeffs."""
-    n1 = o1.shape[1]
-    n2 = o2.shape[1]
-    n3 = o3.shape[1]
-    n4 = o4.shape[1]
-    Id = mol_ao2mo.general(mol,(o1,o3,o2,o4),compact=False).reshape(n1,n3,n2,n4)
-    Ix = mol_ao2mo.general(mol,(o1,o4,o2,o3),compact=False).reshape(n1,n4,n2,n3)
-    return Id.transpose(0,2,1,3) - Ix.transpose(0,2,3,1)
-
-def get_chem_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=True):
-    """Get unrestricted, antisymmetrized ERIs in chemist's
-    notation for given orbital Coeffs.
-    """
-    n1 = o1.shape[1]
-    n2 = o2.shape[1]
-    n3 = o3.shape[1]
-    n4 = o4.shape[1]
-    m1 = p1.shape[1]
-    m2 = p2.shape[1]
-    m3 = p3.shape[1]
-    m4 = p4.shape[1]
-    q1 = numpy.hstack((o1,p1))
-    q2 = numpy.hstack((o2,p2))
-    q3 = numpy.hstack((o3,p3))
-    q4 = numpy.hstack((o4,p4))
-    Id = mol_ao2mo.general(mol,(q1,q2,q3,q4),compact=False).reshape(
-        n1+m1,n2+m2,n3+m3,n4+m4)
-    Ix = mol_ao2mo.general(mol,(q1,q4,q3,q2),compact=False).reshape(
-        n1+m1,n4+m4,n3+m3,n2+m2)
-    Id[:n1,n2:,:,:] = 0
-    Id[n1:,:n2,:,:] = 0
-    Id[:,:,:n3,n4:] = 0
-    Id[:,:,n3:,:n4] = 0
-    Ix[:n1,n4:,:,:] = 0
-    Ix[n1:,:n4,:,:] = 0
-    Ix[:,:,:n3,n2:] = 0
-    Ix[:,:,n3:,:n2] = 0
     if anti:
+        Ix = mol_ao2mo.general(mol,(o1,o4,o3,o2),compact=False).reshape(n1,n4,n3,n2)
         return Id - Ix.transpose(0,3,2,1)
     else:
         return Id
 
-def get_chem_antiu_all(mol,oa,ob,anti=True):
-    """Get unrestricted, antisymmetrized ERIs in chemist's
+def get_chem_anti(mol,o1,o2,o3,o4):
+    """Get antisymmetrized ERIs in chemist's notation for given orbital Coeffs."""
+    return get_chem(mol,o1,o1,o3,o4,anti=True)
+
+def get_phys(mol,o1,o2,o3,o4,anti=False):
+    """Get ERIs in physicist's notation for given orbital Coeffs."""
+    return get_chem(mol,o1,o3,o2,o4,anti=anti).transpose((0,2,1,3))
+
+def get_phys_anti(mol,o1,o2,o3,o4):
+    """Get antisymmetrized ERIs in physicist's notation for given orbital Coeffs."""
+    return get_phys(mol,o1,o2,o3,o4,anti=True)
+
+def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
+    """Get unrestricted, ERIs in chemist's
+    notation for given alphd and beta orbital Coeffs.
+    """
+    Ia = get_chem(mol,o1,o2,o3,o4,anti=anti)
+    Ib = get_chem(mol,p1,p2,p3,p4,anti=anti)
+    Iaabb = get_chem(mol,o1,o2,p3,p4)
+    Ibbaa = get_chem(mol,p1,p2,o3,o4)
+    a1 = o1.shape[1]
+    a2 = o2.shape[1]
+    a3 = o3.shape[1]
+    a4 = o4.shape[1]
+    b1 = p1.shape[1]
+    b2 = p2.shape[1]
+    b3 = p3.shape[1]
+    b4 = p4.shape[1]
+    n1 = a1 + b1 
+    n2 = a2 + b2 
+    n3 = a3 + b3 
+    n4 = a4 + b4 
+    I = numpy.zeros((n1,n2,n3,n4))
+    I[:a1,:a2,:a3,:a4] = Ia
+    I[a1:,a2:,a3:,a4:] = Ib
+    I[:a1,:a2,a3:,a4:] = Iaabb
+    I[a1:,a2:,:a3,:a4] = Ibbaa
+    if anti:
+        Iaabbx = get_chem(mol,o1,o4,p3,p2)
+        Ibbaax = get_chem(mol,p1,p4,o3,o2)
+        I[:a1,a2:,a3:,:a4] = -Iaabbx.transpose((0,3,2,1))
+        I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
+    return I
+
+def get_chem_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4):
+    """Get unrestricted, ERIs in chemist's
+    notation for given alphd and beta orbital Coeffs.
+    """
+    return get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=True)
+
+def get_chemu_all(mol,oa,ob,anti=False):
+    """Get unrestricted ERIs in chemist's
     notation for given orbital Coeffs.
     """
     na = oa.shape[1]
     nb = ob.shape[1]
     n = na + nb
-    ofull = numpy.hstack((oa,ob))
-    Id = mol_ao2mo.general(mol,(ofull,ofull,ofull,ofull),
-        compact=False).reshape(n,n,n,n)
-    Id[:na,na:,:,:] = 0
-    Id[na:,:na,:,:] = 0
-    Id[:,:,:na,na:] = 0
-    Id[:,:,na:,:na] = 0
+    Ia = mol_ao2mo.general(mol,(oa,oa,oa,oa),
+        compact=False).reshape(na,na,na,na)
+    Ib = mol_ao2mo.general(mol,(ob,ob,ob,ob),
+        compact=False).reshape(nb,nb,nb,nb)
+    Iab = mol_ao2mo.general(mol,(oa,oa,ob,ob),
+        compact=False).reshape(na,na,nb,nb)
+    Id = numpy.zeros((n,n,n,n))
+    Id[:na,:na,:na,:na] = Ia
+    Id[na:,na:,na:,na:] = Ib
+    Id[:na,:na,na:,na:] = Iab
+    Id[na:,na:,:na,:na] = Iab.transpose((2,3,0,1))
     if anti:
         return Id - Id.transpose(0,3,2,1)
     else:
         return Id
 
-def get_phys_antiu_all(mol,oa,ob,anti=True):
+def get_chem_antiu_all(mol,oa,ob):
+    """Get unrestricted, antisymmetrized ERIs in chemist's
+    notation for given orbital Coeffs.
+    """
+    return get_chemu_all(mol,oa,ob,anti=True)
+
+def get_physu_all(mol,oa,ob,anti=False):
+    """Get unrestricted ERIs in physicist's
+    notation for given orbital Coeffs.
+    """
+    I = get_chemu_all(mol,oa,ob,anti=anti)
+    return I.transpose(0,2,1,3)
+
+def get_phys_antiu_all(mol,oa,ob):
     """Get unrestricted, antisymmetrized ERIs in physicist's
     notation for given orbital Coeffs.
     """
-    I = get_chem_antiu_all(mol,oa,ob,anti=anti)
-    return I.transpose(0,2,1,3)
+    return get_physu_all(mol,oa,ob,anti=True)
 
 def get_phys_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4):
     """Get unrestricted, antisymmetrized ERIs in physicist's
@@ -109,52 +114,72 @@ def get_phys_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4):
     I = get_chem_antiu(mol,o1,o3,o2,o4,p1,p3,p2,p4)
     return I.transpose(0,2,1,3)
 
-def get_phys_antiu_all_gen(mf,anti=True):
-    """Get unrestricted, antisymmetrized ERIs in physicist's
+def get_physu_all_gen(mf,anti=False):
+    """Get unrestricted, ERIs in physicist's
     notation for given scf reference.
     """
     mol = mf.mol
     if len(mf.mo_occ.shape) == 1:
         mo = mf.mo_coeff
-        return get_phys_antiu_all(mol,mo,mo,anti=anti)
+        return get_physu_all(mol,mo,mo,anti=anti)
     elif len(mf.mo_occ.shape) == 2:
         moa = mf.mo_coeff[0]
         mob = mf.mo_coeff[1]
-        return get_phys_antiu_all(mol,moa,mob,anti=anti)
+        return get_physu_all(mol,moa,mob,anti=anti)
 
-def get_chem_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=True):
-    """Get unrestricted, antisymmetrized ERIs in chemist's
-    notation for given orbital Coeffs.
+def get_phys_antiu_all_gen(mf):
+    """Get unrestricted, antisymmetrized ERIs in physicist's
+    notation for given scf reference.
     """
-    import pyscf.pbc.df.fft_ao2mo as fft_ao2mo
+    return get_physu_all_gen(mf,anti=True)
+
+def get_chem_sol(mf,o1,o2,o3,o4,anti=False):
+    """Get ERIs in chemist's notation for given orbital Coeffs."""
     n1 = o1.shape[1]
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    m1 = p1.shape[1]
-    m2 = p2.shape[1]
-    m3 = p3.shape[1]
-    m4 = p4.shape[1]
-    q1 = numpy.hstack((o1,p1))
-    q2 = numpy.hstack((o2,p2))
-    q3 = numpy.hstack((o3,p3))
-    q4 = numpy.hstack((o4,p4))
-    Id = mf.with_df.ao2mo((q1,q2,q3,q4),None,compact=False).reshape(
-        n1+m1,n2+m2,n3+m3,n4+m4)
-    Ix = mf.with_df.ao2mo((q1,q4,q3,q2),None,compact=False).reshape(
-        n1+m1,n4+m4,n3+m3,n2+m2)
-    Id[:n1,n2:,:,:] = 0
-    Id[n1:,:n2,:,:] = 0
-    Id[:,:,:n3,n4:] = 0
-    Id[:,:,n3:,:n4] = 0
-    Ix[:n1,n4:,:,:] = 0
-    Ix[n1:,:n4,:,:] = 0
-    Ix[:,:,:n3,n2:] = 0
-    Ix[:,:,n3:,:n2] = 0
+    Id = mf.with_df.ao2mo((o1,o2,o3,o4),compact=False).reshape(n1,n2,n3,n4)
     if anti:
+        Ix = mf.with_df.ao2mo((o1,o4,o3,o2),compact=False).reshape(n1,n4,n3,n2)
         return Id - Ix.transpose(0,3,2,1)
     else:
         return Id
+
+def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
+    """Get unrestricted ERIs in chemist's
+    notation for given orbital Coeffs.
+    """
+    Ia = get_chem_sol(mf,o1,o2,o3,o4,anti=anti)
+    Ib = get_chem_sol(mf,p1,p2,p3,p4,anti=anti)
+    Iaabb = get_chem_sol(mf,o1,o2,p3,p4)
+    Ibbaa = get_chem_sol(mf,p1,p2,o3,o4)
+    a1 = o1.shape[1]
+    a2 = o2.shape[1]
+    a3 = o3.shape[1]
+    a4 = o4.shape[1]
+    b1 = p1.shape[1]
+    b2 = p2.shape[1]
+    b3 = p3.shape[1]
+    b4 = p4.shape[1]
+    n1 = a1 + b1 
+    n2 = a2 + b2 
+    n3 = a3 + b3 
+    n4 = a4 + b4 
+    I = numpy.zeros((n1,n2,n3,n4))
+    I[:a1,:a2,:a3,:a4] = Ia
+    I[a1:,a2:,a3:,a4:] = Ib
+    I[:a1,:a2,a3:,a4:] = Iaabb
+    I[a1:,a2:,:a3,:a4] = Ibbaa
+    if anti:
+        Iaabbx = get_chem_sol(mf,o1,o4,p3,p2)
+        Ibbaax = get_chem_sol(mf,p1,p4,o3,o2)
+        I[:a1,a2:,a3:,:a4] = -Iaabbx.transpose((0,3,2,1))
+        I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
+    return I
+
+def get_chem_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4):
+    return get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=True)
 
 def get_phys_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4):
     """Get unrestricted, antisymmetrized ERIs in physicist's
@@ -163,7 +188,6 @@ def get_phys_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4):
     I = get_chem_antiu_sol(mf,o1,o3,o2,o4,p1,p3,p2,p4)
     return I.transpose(0,2,1,3)
 
-# TODO: clean this up
 class eri_blocks(object):
     """Object for storing ERI blocks.
 
