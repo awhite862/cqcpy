@@ -128,7 +128,7 @@ def get_chem_sol(mf,o1,o2,o3,o4,anti=False):
         return Id
 
 def get_phys_sol(mf,o1,o2,o3,o4,anti=False):
-    return get_chem_sol(mf,o1,o2,o3,p4,anti=False).transpose((0,2,1,3))
+    return get_chem_sol(mf,o1,o3,o2,o4,anti=anti).transpose((0,2,1,3))
 
 def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     """Get unrestricted ERIs in chemist's
