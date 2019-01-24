@@ -1,7 +1,6 @@
 import unittest
 import numpy
 
-from pyscf import gto, scf, cc
 from cqcpy import integrals
 from cqcpy import test_utils
 from cqcpy.ov_blocks import make_two_e_blocks_full
@@ -266,6 +265,7 @@ class SpinUtilsTest(unittest.TestCase):
         self.assertTrue(s,err)
 
     def test_Be_plus(self):
+        from pyscf import gto, scf, cc
         mol = gto.M(
             verbose = 0,
             atom = 'Be 0 0 0',

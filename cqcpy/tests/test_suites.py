@@ -2,11 +2,18 @@ import sys
 import unittest
 from cqcpy.tests import test_cc_ampl
 from cqcpy.tests import test_ft_utils
+from cqcpy.tests import test_integrals
 from cqcpy.tests import test_lambda_equations
 from cqcpy.tests import test_spin_utils
 from cqcpy.tests import test_test
 
 def full_suite():
+    try:
+        import pyscf
+        with_pyscf = True
+    except:
+        with_pyscf = False
+
     suite = unittest.TestSuite()
 
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccsd_stanton"))
@@ -25,7 +32,6 @@ def full_suite():
     suite.addTest(test_spin_utils.SpinUtilsTest("test_F_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I"))
-    suite.addTest(test_spin_utils.SpinUtilsTest("test_Be_plus"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_T"))
 
     suite.addTest(test_test.TestTest("test_framework"))
@@ -35,6 +41,15 @@ def full_suite():
     suite.addTest(test_test.TestTest("test_Lsym"))
     suite.addTest(test_test.TestTest("test_ft_int_sym"))
     suite.addTest(test_test.TestTest("test_ft_Tsym"))
+ 
+    if not with_pyscf:
+        print("Warning: PySCF not found, skipping some tests")
+    else:
+        suite.addTest(test_spin_utils.SpinUtilsTest("test_Be_plus"))
+
+        suite.addTest(test_integrals.IntegralsTest("test_phys"))
+        suite.addTest(test_integrals.IntegralsTest("test_u"))
+        suite.addTest(test_integrals.IntegralsTest("test_sol_phys"))
 
     return suite
 
