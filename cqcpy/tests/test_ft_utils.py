@@ -65,6 +65,26 @@ class FTUtilsTest(unittest.TestCase):
                 fail = abs(val - ref)/abs(ref) > tol
                 self.assertFalse(fail,"Value: {}  Ref: {}".format(val,ref))
 
+    def test_dfermi(self):
+        beta = 2.0
+        e = 1.0
+        mu = 0.7
+        delta = 1e-4
+        fo = ft_utils.fermi_function(beta,e,mu)
+        fv = ft_utils.vfermi_function(beta,e,mu)
+        fof = numpy.sqrt(ft_utils.fermi_function(beta + delta,e,mu))
+        fob = numpy.sqrt(ft_utils.fermi_function(beta - delta,e,mu))
+        fvf = numpy.sqrt(ft_utils.vfermi_function(beta + delta,e,mu))
+        fvb = numpy.sqrt(ft_utils.vfermi_function(beta - delta,e,mu))
+        dfo_fd = (fof - fob)/(2.0*delta)
+        dfv_fd = (fvf - fvb)/(2.0*delta)
+        dx = (e - mu)
+        dfo = -0.5*dx*fv*numpy.sqrt(fo)
+        dfv = 0.5*dx*numpy.sqrt(fv)*fo
+        diffo = abs(dfo - dfo_fd)
+        diffv = abs(dfv - dfv_fd)
+        self.assertTrue(diffo < 1e-8)
+        self.assertTrue(diffv < 1e-8)
 
 if __name__ == '__main__':
     unittest.main()
