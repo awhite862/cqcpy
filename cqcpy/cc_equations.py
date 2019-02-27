@@ -1719,122 +1719,126 @@ def ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old):
 
     return L1,L2
 
-# TODO: flip signs in all these
 def ccsd_1rdm_ba(T1,T2,L1,L2):
-    pba = -numpy.einsum('ia,bi->ba',L1,T1) \
-        - 0.5*numpy.einsum('kicb,caki->ab',L2,T2)
+    pba = numpy.einsum('ia,bi->ba',L1,T1) \
+        + 0.5*numpy.einsum('kicb,caki->ab',L2,T2)
     return pba
 
 def ccsd_1rdm_ji(T1,T2,L1,L2):
-    pji = numpy.einsum('ia,aj->ij',L1,T1) \
-        + 0.5*numpy.einsum('kiab,abkj->ij',L2,T2)
+    pji = -numpy.einsum('ia,aj->ij',L1,T1) \
+        - 0.5*numpy.einsum('kiab,abkj->ij',L2,T2)
     return pji
 
-def ccsd_1rdm_ai(T1,T2,L1,L2):
-    pai = T1\
-        - numpy.einsum('jb,baji->ai',L1,T2)\
-        + numpy.einsum('jb,bi,aj->ai',L1,T1,T1)\
-        + 0.5*numpy.einsum('kjcb,ci,abkj->ai',L2,T1,T2)\
-        + 0.5*numpy.einsum('kjcb,ak,cbij->ai',L2,T1,T2)
+def ccsd_1rdm_ai(T1,T2,L1,L2,tfac=1.0):
+    pai = tfac*T1\
+        + numpy.einsum('jb,baji->ai',L1,T2)\
+        - numpy.einsum('jb,bi,aj->ai',L1,T1,T1)\
+        - 0.5*numpy.einsum('kjcb,ci,abkj->ai',L2,T1,T2)\
+        - 0.5*numpy.einsum('kjcb,ak,cbij->ai',L2,T1,T2)
     return pai
 
 def ccsd_2rdm_cdab(T1,T2,L1,L2):
-    Pcdab = -0.5*einsum('ijab,cdij->cdab',L2,T2)
-    Pcdab -= 0.5*einsum('ijab,ci,dj->cdab',L2,T1,T1)
-    Pcdab += 0.5*einsum('ijab,di,cj->cdab',L2,T1,T1)
+    Pcdab = 0.5*einsum('ijab,cdij->cdab',L2,T2)
+    Pcdab += 0.5*einsum('ijab,ci,dj->cdab',L2,T1,T1)
+    Pcdab -= 0.5*einsum('ijab,di,cj->cdab',L2,T1,T1)
     return Pcdab
 
 def ccsd_2rdm_ciab(T1,T2,L1,L2):
-    Pciab = -einsum('jiab,cj->ciab',L2,T1)
+    Pciab = einsum('jiab,cj->ciab',L2,T1)
     return Pciab
 
 def ccsd_2rdm_bcai(T1,T2,L1,L2):
-    Pbcai = -einsum('ja,bcji->bcai',L1,T2)
-    Pbcai -= einsum('ja,bj,ci->bcai',L1,T1,T1)
-    Pbcai += einsum('ja,cj,bi->bcai',L1,T1,T1)
-    Pbcai -= 0.5*einsum('jlad,bdjl,ci->bcai',L2,T2,T1)
-    Pbcai += 0.5*einsum('jlad,cdjl,bi->bcai',L2,T2,T1)
-    Pbcai -= einsum('jkad,cdik,bj->bcai',L2,T2,T1)
-    Pbcai += einsum('jkad,bdik,cj->bcai',L2,T2,T1)
-    Pbcai += 0.5*einsum('jkda,cbjk,di->bcai',L2,T2,T1)
-    Pbcai += einsum('kjda,ck,di,bj->bcai',L2,T1,T1,T1)
+    Pbcai = einsum('ja,bcji->bcai',L1,T2)
+    Pbcai += einsum('ja,bj,ci->bcai',L1,T1,T1)
+    Pbcai -= einsum('ja,cj,bi->bcai',L1,T1,T1)
+    Pbcai += 0.5*einsum('jlad,bdjl,ci->bcai',L2,T2,T1)
+    Pbcai -= 0.5*einsum('jlad,cdjl,bi->bcai',L2,T2,T1)
+    Pbcai += einsum('jkad,cdik,bj->bcai',L2,T2,T1)
+    Pbcai -= einsum('jkad,bdik,cj->bcai',L2,T2,T1)
+    Pbcai -= 0.5*einsum('jkda,cbjk,di->bcai',L2,T2,T1)
+    Pbcai -= einsum('kjda,ck,di,bj->bcai',L2,T1,T1,T1)
     return Pbcai
 
 def ccsd_2rdm_bjai(T1,T2,L1,L2):
-    Pbjai = einsum('ja,bi->bjai',L1,T1)
-    Pbjai += einsum('kjac,bcki->bjai',L2,T2)
-    Pbjai += einsum('kjac,bk,ci->bjai',L2,T1,T1)
+    Pbjai = -einsum('ja,bi->bjai',L1,T1)
+    Pbjai -= einsum('kjac,bcki->bjai',L2,T2)
+    Pbjai -= einsum('kjac,bk,ci->bjai',L2,T1,T1)
     return Pbjai
 
-def ccsd_2rdm_abij(T1,T2,L1,L2):
-    Pabij = T2.copy()
-    Pabij += einsum('ai,bj->abij',T1,T1)
-    Pabij -= einsum('aj,bi->abij',T1,T1)
-    Pabij += einsum('kc,abkj,ci->abij',L1,T2,T1)
-    Pabij -= einsum('kc,abki,cj->abij',L1,T2,T1)
-    Pabij += einsum('kc,cbij,ak->abij',L1,T2,T1)
-    Pabij -= einsum('kc,caij,bk->abij',L1,T2,T1)
-    Pabij -= einsum('kc,bcjk,ai->abij',L1,T2,T1)
-    Pabij += einsum('kc,acjk,bi->abij',L1,T2,T1)
-    Pabij += einsum('kc,bcik,aj->abij',L1,T2,T1)
-    Pabij -= einsum('kc,acik,bj->abij',L1,T2,T1)
-    Pabij += einsum('kc,ak,bj,ci->abij',L1,T1,T1,T1)
-    Pabij -= einsum('kc,bk,aj,ci->abij',L1,T1,T1,T1)
-    Pabij -= einsum('kc,ak,bi,cj->abij',L1,T1,T1,T1)
-    Pabij += einsum('kc,bk,ai,cj->abij',L1,T1,T1,T1)
-    Pabij -= 0.25*einsum('klcd,abkl,cdij->abij',L2,T2,T2)
-    Pabij -= 0.5*einsum('klcd,caki,bdjl->abij',L2,T2,T2)
-    Pabij += 0.5*einsum('klcd,cakj,bdil->abij',L2,T2,T2)
-    Pabij += 0.5*einsum('klcd,cbki,adjl->abij',L2,T2,T2)
-    Pabij -= 0.5*einsum('klcd,cbkj,adil->abij',L2,T2,T2)
-    Pabij += 0.5*einsum('klcd,bdkl,acij->abij',L2,T2,T2)
-    Pabij -= 0.5*einsum('klcd,adkl,bcij->abij',L2,T2,T2)
-    Pabij += 0.5*einsum('klcd,abik,cdjl->abij',L2,T2,T2)
-    Pabij -= 0.5*einsum('klcd,abjk,cdil->abij',L2,T2,T2)
-    Pabij -=0.25*einsum('klcd,cdij,ak,bl->abij',L2,T2,T1,T1)
-    Pabij +=0.25*einsum('klcd,cdij,bk,al->abij',L2,T2,T1,T1)
-    Pabij -=0.25*einsum('klcd,abkl,ci,dj->abij',L2,T2,T1,T1)
-    Pabij +=0.25*einsum('klcd,abkl,cj,di->abij',L2,T2,T1,T1)
-    Pabij += einsum('klcd,bdjl,ak,ci->abij',L2,T2,T1,T1)
-    Pabij -= einsum('klcd,adjl,bk,ci->abij',L2,T2,T1,T1)
-    Pabij -= einsum('klcd,bdil,ak,cj->abij',L2,T2,T1,T1)
-    Pabij += einsum('klcd,adil,bk,cj->abij',L2,T2,T1,T1)
-    Pabij += 0.5*einsum('klcd,cdjl,bk,ai->abij',L2,T2,T1,T1)
-    Pabij -= 0.5*einsum('klcd,cdjl,ak,bi->abij',L2,T2,T1,T1)
-    Pabij -= 0.5*einsum('klcd,cdil,bk,aj->abij',L2,T2,T1,T1)
-    Pabij += 0.5*einsum('klcd,cdil,ak,bj->abij',L2,T2,T1,T1)
-    Pabij += 0.5*einsum('klcd,bdkl,cj,ai->abij',L2,T2,T1,T1)
-    Pabij -= 0.5*einsum('klcd,adkl,cj,bi->abij',L2,T2,T1,T1)
-    Pabij -= 0.5*einsum('klcd,bdkl,ci,aj->abij',L2,T2,T1,T1)
-    Pabij += 0.5*einsum('klcd,adkl,ci,bj->abij',L2,T2,T1,T1)
-    Pabij -= 0.25*einsum('klcd,ci,ak,dj,bl->abij',L2,T1,T1,T1,T1)
-    Pabij += 0.25*einsum('klcd,ci,bk,dj,al->abij',L2,T1,T1,T1,T1)
-    Pabij += 0.25*einsum('klcd,cj,ak,di,bl->abij',L2,T1,T1,T1,T1)
-    Pabij -= 0.25*einsum('klcd,cj,bk,di,al->abij',L2,T1,T1,T1,T1)
+def ccsd_2rdm_abij(T1,T2,L1,L2,tfac=1.0):
+    Pabij = tfac*T2.copy()
+    Pabij += tfac*einsum('ai,bj->abij',T1,T1)
+    Pabij -= tfac*einsum('aj,bi->abij',T1,T1)
+    Pabij -= einsum('kc,abkj,ci->abij',L1,T2,T1)
+    Pabij += einsum('kc,abki,cj->abij',L1,T2,T1)
+    Pabij -= einsum('kc,cbij,ak->abij',L1,T2,T1)
+    Pabij += einsum('kc,caij,bk->abij',L1,T2,T1)
+    Pabij += einsum('kc,bcjk,ai->abij',L1,T2,T1)
+    Pabij -= einsum('kc,acjk,bi->abij',L1,T2,T1)
+    Pabij -= einsum('kc,bcik,aj->abij',L1,T2,T1)
+    Pabij += einsum('kc,acik,bj->abij',L1,T2,T1)
+    Pabij -= einsum('kc,ak,bj,ci->abij',L1,T1,T1,T1)
+    Pabij += einsum('kc,bk,aj,ci->abij',L1,T1,T1,T1)
+    Pabij += einsum('kc,ak,bi,cj->abij',L1,T1,T1,T1)
+    Pabij -= einsum('kc,bk,ai,cj->abij',L1,T1,T1,T1)
+    Pabij += 0.25*einsum('klcd,abkl,cdij->abij',L2,T2,T2)
+    Pabij += 0.5*einsum('klcd,caki,bdjl->abij',L2,T2,T2)
+    Pabij -= 0.5*einsum('klcd,cakj,bdil->abij',L2,T2,T2)
+    Pabij -= 0.5*einsum('klcd,cbki,adjl->abij',L2,T2,T2)
+    Pabij += 0.5*einsum('klcd,cbkj,adil->abij',L2,T2,T2)
+    Pabij -= 0.5*einsum('klcd,bdkl,acij->abij',L2,T2,T2)
+    Pabij += 0.5*einsum('klcd,adkl,bcij->abij',L2,T2,T2)
+    Pabij -= 0.5*einsum('klcd,abik,cdjl->abij',L2,T2,T2)
+    Pabij += 0.5*einsum('klcd,abjk,cdil->abij',L2,T2,T2)
+    Pabij += 0.25*einsum('klcd,cdij,ak,bl->abij',L2,T2,T1,T1)
+    Pabij -= 0.25*einsum('klcd,cdij,bk,al->abij',L2,T2,T1,T1)
+    Pabij += 0.25*einsum('klcd,abkl,ci,dj->abij',L2,T2,T1,T1)
+    Pabij -= 0.25*einsum('klcd,abkl,cj,di->abij',L2,T2,T1,T1)
+    Pabij -= einsum('klcd,bdjl,ak,ci->abij',L2,T2,T1,T1)
+    Pabij += einsum('klcd,adjl,bk,ci->abij',L2,T2,T1,T1)
+    Pabij += einsum('klcd,bdil,ak,cj->abij',L2,T2,T1,T1)
+    Pabij -= einsum('klcd,adil,bk,cj->abij',L2,T2,T1,T1)
+    Pabij -= 0.5*einsum('klcd,cdjl,bk,ai->abij',L2,T2,T1,T1)
+    Pabij += 0.5*einsum('klcd,cdjl,ak,bi->abij',L2,T2,T1,T1)
+    Pabij += 0.5*einsum('klcd,cdil,bk,aj->abij',L2,T2,T1,T1)
+    Pabij -= 0.5*einsum('klcd,cdil,ak,bj->abij',L2,T2,T1,T1)
+    Pabij -= 0.5*einsum('klcd,bdkl,cj,ai->abij',L2,T2,T1,T1)
+    Pabij += 0.5*einsum('klcd,adkl,cj,bi->abij',L2,T2,T1,T1)
+    Pabij += 0.5*einsum('klcd,bdkl,ci,aj->abij',L2,T2,T1,T1)
+    Pabij -= 0.5*einsum('klcd,adkl,ci,bj->abij',L2,T2,T1,T1)
+    Pabij += 0.25*einsum('klcd,ci,ak,dj,bl->abij',L2,T1,T1,T1,T1)
+    Pabij -= 0.25*einsum('klcd,ci,bk,dj,al->abij',L2,T1,T1,T1,T1)
+    Pabij -= 0.25*einsum('klcd,cj,ak,di,bl->abij',L2,T1,T1,T1,T1)
+    Pabij += 0.25*einsum('klcd,cj,bk,di,al->abij',L2,T1,T1,T1,T1)
     return Pabij
 
 def ccsd_2rdm_jkai(T1,T2,L1,L2):
-    Pjkai = einsum('jkab,bi->jkai',L2,T1)
+    Pjkai = -einsum('jkab,bi->jkai',L2,T1)
     return Pjkai
 
 def ccsd_2rdm_kaij(T1,T2,L1,L2):
-    Pkaij = einsum('kb,baij->kaij',L1,T2)
-    Pkaij += einsum('kb,bi,aj->kaij',L1,T1,T1)
-    Pkaij -= einsum('kb,bj,ai->kaij',L1,T1,T1)
-    Pkaij += 0.5*einsum('klcd,cdil,aj->kaij',L2,T2,T1)
-    Pkaij -= 0.5*einsum('klcd,cdjl,ai->kaij',L2,T2,T1)
-    Pkaij += einsum('klcd,adjl,ci->kaij',L2,T2,T1)
-    Pkaij -= einsum('klcd,adil,cj->kaij',L2,T2,T1)
-    Pkaij -= 0.5*einsum('lkdb,dbji,al->kaij',L2,T2,T1)
-    Pkaij -= 0.5*einsum('lkdb,al,dj,bi->kaij',L2,T1,T1,T1)
-    Pkaij += 0.5*einsum('lkdb,al,di,bj->kaij',L2,T1,T1,T1)
+    Pkaij = -einsum('kb,baij->kaij',L1,T2)
+    Pkaij -= einsum('kb,bi,aj->kaij',L1,T1,T1)
+    Pkaij += einsum('kb,bj,ai->kaij',L1,T1,T1)
+    Pkaij -= 0.5*einsum('klcd,cdil,aj->kaij',L2,T2,T1)
+    Pkaij += 0.5*einsum('klcd,cdjl,ai->kaij',L2,T2,T1)
+    Pkaij -= einsum('klcd,adjl,ci->kaij',L2,T2,T1)
+    Pkaij += einsum('klcd,adil,cj->kaij',L2,T2,T1)
+    Pkaij += 0.5*einsum('lkdb,dbji,al->kaij',L2,T2,T1)
+    Pkaij += 0.5*einsum('lkdb,al,dj,bi->kaij',L2,T1,T1,T1)
+    Pkaij -= 0.5*einsum('lkdb,al,di,bj->kaij',L2,T1,T1,T1)
     return Pkaij
 
 def ccsd_2rdm_klij(T1,T2,L1,L2):
-    Pklij = -0.5*einsum('klab,abij->klij',L2,T2)
-    Pklij -= 0.5*einsum('klab,ai,bj->klij',L2,T1,T1)
-    Pklij += 0.5*einsum('klab,aj,bi->klij',L2,T1,T1)
+    Pklij = 0.5*einsum('klab,abij->klij',L2,T2)
+    Pklij += 0.5*einsum('klab,ai,bj->klij',L2,T1,T1)
+    Pklij -= 0.5*einsum('klab,aj,bi->klij',L2,T1,T1)
     return Pklij
+
+#def ccsd_1rdm_ba_opt(T1,T2,L1,L2):
+#    pba = -numpy.einsum('ia,bi->ba',L1,T1) \
+#        - 0.5*numpy.einsum('kicb,caki->ab',L2,T2)
+#    return pba
 
 def ccsd_pt_simple(F,I,eo,ev,T1,T2):
     raise Exception("ccsd(T) is not implemented")
