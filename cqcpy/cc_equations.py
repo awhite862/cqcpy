@@ -1835,10 +1835,27 @@ def ccsd_2rdm_klij(T1,T2,L1,L2):
     Pklij -= 0.5*einsum('klab,aj,bi->klij',L2,T1,T1)
     return Pklij
 
-#def ccsd_1rdm_ba_opt(T1,T2,L1,L2):
-#    pba = -numpy.einsum('ia,bi->ba',L1,T1) \
-#        - 0.5*numpy.einsum('kicb,caki->ab',L2,T2)
-#    return pba
+def ccsd_1rdm_ba_opt(T1,T2,L1,L2):
+    pba = numpy.einsum('ia,bi->ba',L1,T1) \
+        + 0.5*numpy.einsum('kicb,caki->ab',L2,T2)
+    return pba
+
+def ccsd_1rdm_ji_opt(T1,T2,L1,L2):
+    pji = -numpy.einsum('ia,aj->ij',L1,T1) \
+        - 0.5*numpy.einsum('kiab,abkj->ij',L2,T2)
+    return pji
+
+def ccsd_1rdm_ai_opt(T1,T2,L1,L2,tfac=1.0):
+    pai = tfac*T1
+    T2temp = T2 - einsum('bi,aj->baji',T1,T1)
+    pai += numpy.einsum('jb,baji->ai',L1,T2temp)
+
+    Pac = 0.5*einsum('kjcb,abkj->ac',L2,T2)
+    pai -= einsum('ac,ci->ai',Pac,T1)
+
+    Pik = 0.5*einsum('kjcb,cbij->ik',L2,T2)
+    pai -= einsum('ik,ak->ai',Pik,T1)
+    return pai
 
 def ccsd_pt_simple(F,I,eo,ev,T1,T2):
     raise Exception("ccsd(T) is not implemented")
