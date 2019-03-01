@@ -23,6 +23,7 @@ def full_suite():
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_uccsd"))
 
     suite.addTest(test_cc_rdm.CCRDMTest("test_1rdm_opt"))
+    suite.addTest(test_cc_rdm.CCRDMTest("test_2rdm_opt"))
 
     suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
