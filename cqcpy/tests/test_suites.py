@@ -24,6 +24,8 @@ def full_suite():
 
     suite.addTest(test_cc_rdm.CCRDMTest("test_1rdm_opt"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_2rdm_opt"))
+    suite.addTest(test_cc_rdm.CCRDMTest("test_u1rdm"))
+    suite.addTest(test_cc_rdm.CCRDMTest("test_u2rdm"))
 
     suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
@@ -47,7 +49,7 @@ def full_suite():
     suite.addTest(test_test.TestTest("test_ft_Tsym"))
  
     if not with_pyscf:
-        print("Warning: PySCF not found, skipping some tests")
+        print("WARNING: PySCF not found, skipping some tests")
     else:
         suite.addTest(test_spin_utils.SpinUtilsTest("test_Be_plus"))
 
