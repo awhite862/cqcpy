@@ -2065,7 +2065,7 @@ def uccsd_2rdm_bjai(T1a,T1b,T2aa,T2ab,T2bb,
 
     PBJAI -= einsum('kjac,bcki->bjai',L2bb,T2tempbb)
     PBJAI -= einsum('kJcA,cBkI->BJAI',L2ab,T2ab)
-    return Pbjai,PbJaI,PbJAi,PBjaI,PBjAi,PBJAI
+    return Pbjai,PBJAI,PbJaI,PbJAi,PBjaI,PBjAi
 
 def uccsd_2rdm_klij(T1a,T1b,T2aa,T2ab,T2bb,
         L1a,L1b,L2aa,L2ab,L2bb):

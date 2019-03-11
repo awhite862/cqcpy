@@ -158,6 +158,25 @@ def make_random_ft_T(ng,n):
 
     return T1,T2
 
+def make_random_ft_T1_spatial(ng,na,nb):
+    # Note this also can be used for Lambdas
+    T1a = numpy.random.random((ng,na,na))
+    T1b = numpy.random.random((ng,nb,nb))
+
+    return T1a,T1b
+
+def make_random_ft_T2_spatial(ng,na,nb):
+    T2aa = numpy.random.random((ng,na,na,na,na))
+    T2aa -= T2aa.transpose((0,1,2,4,3))
+    T2aa -= T2aa.transpose((0,2,1,3,4))
+    T2aa += T2aa.transpose((0,2,1,4,3))
+    T2bb = numpy.random.random((ng,nb,nb,nb,nb))
+    T2bb -= T2bb.transpose((0,1,2,4,3))
+    T2bb -= T2bb.transpose((0,2,1,3,4))
+    T2bb += T2bb.transpose((0,2,1,4,3))
+    T2ab = numpy.random.random((ng,na,nb,na,nb))
+    return T2aa,T2ab,T2bb
+
 def make_random_ft_D(n):
     en = numpy.random.random((n))
     D1 = en[:,None] - en[None,:]

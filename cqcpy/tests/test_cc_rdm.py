@@ -176,7 +176,7 @@ class CCRDMTest(unittest.TestCase):
                 T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
                 T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
-        Pbjai_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u, PBJAI_u = cc_equations.uccsd_2rdm_bjai(
+        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
                 T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
                 T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
