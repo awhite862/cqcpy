@@ -110,7 +110,6 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     if diffa == 0 and diffb == 0:
         # from Ha
         pa = braa.occ.copy()
-        na = pa.sum()
         Ea = numpy.einsum('ii,i->',ha, pa)
         Ea += 0.5*numpy.einsum('ijij,i,j->',Ia, pa, pa)
         Ea -= 0.5*numpy.einsum('ijji,i,j->',Ia, pa, pa)
@@ -190,9 +189,10 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         j1,j2 = min(o2,v2),max(o2,v2)
         sign1 = 1.0 if ba[i1+1:i2].sum()%2 == 0 else -1.0
         sign2 = 1.0 if ba[j1+1:j2].sum()%2 == 0 else -1.0
+        sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
         Hel = Ia[v1,v2,o1,o2] - Ia[v1,v2,o2,o1]
-        return sign1*sign2*Hel
+        return sign*Hel
 
     elif diffa == 0 and diffb == 2:
         o = numpy.nonzero(bo)[0]
@@ -204,9 +204,10 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         j1,j2 = min(o2,v2),max(o2,v2)
         sign1 = 1.0 if bb[i1+1:i2].sum()%2 == 0 else -1.0
         sign2 = 1.0 if bb[j1+1:j2].sum()%2 == 0 else -1.0
+        sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Hb
         Hel = Ib[v1,v2,o1,o2] - Ib[v1,v2,o2,o1]
-        return sign1*sign2*Hel
+        return sign*Hel
 
     else:
         return 0.0
