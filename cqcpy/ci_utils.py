@@ -211,3 +211,10 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
 
     else:
         return 0.0
+
+def H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab):
+    out = numpy.zeros(vec.shape)
+    for i,b in enumerate(basis):
+        for j,k in enumerate(basis):
+            out[i] += vec[j]*ci_matrixel(b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
+    return out

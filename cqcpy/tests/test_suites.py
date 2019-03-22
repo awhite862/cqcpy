@@ -2,6 +2,7 @@ import sys
 import unittest
 from cqcpy.tests import test_cc_ampl
 from cqcpy.tests import test_cc_rdm
+from cqcpy.tests import test_ci_utils
 from cqcpy.tests import test_ft_utils
 from cqcpy.tests import test_integrals
 from cqcpy.tests import test_lambda_equations
@@ -26,6 +27,8 @@ def full_suite():
     suite.addTest(test_cc_rdm.CCRDMTest("test_2rdm_opt"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_u1rdm"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_u2rdm"))
+
+    suite.addTest(test_ci_utils.CIUtilsTest("test_mat_on_vec_cisd"))
 
     suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
