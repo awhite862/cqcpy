@@ -30,6 +30,12 @@ def cc_energy(t1,t2,f,eri):
     Es2 = cc_energy_s2(t1,eri)
     return Ed + Es1 + 0.5*Es2
 
+def mp2_energy(t1,t2,f,eri):
+    """Return the coupled cluster energy."""
+    Ed = cc_energy_d(t2,eri)
+    Es1 = cc_energy_s1(t1,f)
+    return Ed + Es1
+
 def ucc_energy(t1,t2,fa,fb,Ia,Ib,Iabab):
     t1a,t1b = t1
     t2aa,t2ab,t2bb = t2

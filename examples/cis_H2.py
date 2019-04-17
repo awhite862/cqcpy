@@ -33,17 +33,9 @@ I = integrals.get_phys(mol, mos, mos, mos, mos)
 N = mol.nelectron
 na = N//2
 nb = na
-sa = ci_utils.s_strings(nmo, na)
-sb = ci_utils.s_strings(nmo, nb)
-occ = [1 if i < na else 0 for i in range(nmo)]
-ref = ci_utils.Dstring(nmo,occ)
-basis = []
-for a in sa:
-    basis.append((a,ref))
-for b in sb:
-    basis.append((ref,b))
+basis = ci_utils.get_ucis_basis(nmo, na, nb, gs=False)
+nd = len(basis)
 
-nd = len(sa)+len(sb)
 H = numpy.zeros((nd,nd))
 const = -Escf + mol.energy_nuc()
 F = mf.get_fock()

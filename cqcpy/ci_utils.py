@@ -13,7 +13,7 @@ class Dstring(object):
             return (None,None)
 
         if i == a:
-            return (1.0,dstring(self.n,self.occ))
+            return (1.0,Dstring(self.n,self.occ))
         elif i < a:
             occnew = self.occ.copy()
             occnew[i] = 0
@@ -27,7 +27,10 @@ class Dstring(object):
             occnew[a] = 1
             otemp = self.occ[a+1:i]
             sign = 1 if otemp.sum()%2 == 0 else -1
-            return (sign,dstring(self.n,occnew))
+            return (sign,Dstring(self.n,occnew))
+
+    def __eq__(self, other):
+        return numpy.array_equal(self.occ, other.occ) and self.n == other.n
 
 def level(ref, string):
     diff = [abs(o1 - o2) for o1,o2 in zip(ref.occ, string.occ)]
@@ -97,6 +100,804 @@ def q_strings(n, nocc):
                                     s4,d4 = d3.excite(l,d+nocc)
                                     dlist.append(d4)
     return dlist
+
+def get_ucis_basis(n, na, nb, gs=True):
+    sa = s_strings(n, na)
+    sb = s_strings(n, nb)
+    occa = [1 if i < na else 0 for i in range(n)]
+    occb = [1 if i < nb else 0 for i in range(n)]
+    refa = Dstring(n,occa)
+    refb = Dstring(n,occb)
+    if gs:
+        basis = [(refa,refb)]
+    else:
+        basis = []
+    for a in sa:
+        basis.append((a,refb))
+    for b in sb:
+        basis.append((refa,b))
+    return basis
+
+def ucisd_basis(n, na, nb):
+    sa = s_strings(n, na)
+    sb = s_strings(n, nb)
+    da = d_strings(n, na)
+    db = d_strings(n, nb)
+    occa = [1 if i < na else 0 for i in range(n)]
+    occb = [1 if i < nb else 0 for i in range(n)]
+    refa = Dstring(n,occa)
+    refb = Dstring(n,occb)
+    basis = [(refa,refb)]
+    for a in sa:
+        basis.append((a,refb))
+    for b in sb:
+        basis.append((refa,b))
+    for a in da:
+        basis.append((a,refb))
+    for b in db:
+        basis.append((refa,b))
+    for a in sa:
+        for b in sb:
+            basis.append((a,b))
+    return basis
+
+def ucisdt_basis(n, na, nb):
+    sa = s_strings(n, na)
+    sb = s_strings(n, nb)
+    da = d_strings(n, na)
+    db = d_strings(n, nb)
+    ta = t_strings(n, na)
+    tb = t_strings(n, nb)
+    occa = [1 if i < na else 0 for i in range(n)]
+    occb = [1 if i < nb else 0 for i in range(n)]
+    refa = Dstring(n,occa)
+    refb = Dstring(n,occb)
+    basis = [(refa,refb)]
+    for a in sa:
+        basis.append((a,refb))
+    for b in sb:
+        basis.append((refa,b))
+    for a in da:
+        basis.append((a,refb))
+    for b in db:
+        basis.append((refa,b))
+    for a in sa:
+        for b in sb:
+            basis.append((a,b))
+    for a in ta:
+        basis.append((a,refb))
+    for b in tb:
+        basis.append((refa,b))
+    for a in da:
+        for b in sb:
+            basis.append((a,b))
+    for a in sa:
+        for b in db:
+            basis.append((a,b))
+    return basis
+
+def ucisdtq_basis(n, na, nb):
+    sa = s_strings(n, na)
+    sb = s_strings(n, nb)
+    da = d_strings(n, na)
+    db = d_strings(n, nb)
+    ta = t_strings(n, na)
+    tb = t_strings(n, nb)
+    qa = q_strings(n, na)
+    qb = q_strings(n, nb)
+    occa = [1 if i < na else 0 for i in range(n)]
+    occb = [1 if i < nb else 0 for i in range(n)]
+    refa = Dstring(n,occa)
+    refb = Dstring(n,occb)
+    basis = [(refa,refb)]
+    for a in sa:
+        basis.append((a,refb))
+    for b in sb:
+        basis.append((refa,b))
+    for a in da:
+        basis.append((a,refb))
+    for b in db:
+        basis.append((refa,b))
+    for a in sa:
+        for b in sb:
+            basis.append((a,b))
+    for a in ta:
+        basis.append((a,refb))
+    for b in tb:
+        basis.append((refa,b))
+    for a in da:
+        for b in sb:
+            basis.append((a,b))
+    for a in sa:
+        for b in db:
+            basis.append((a,b))
+    for a in qa:
+        basis.append((a,refb))
+    for b in qb:
+        basis.append((refa,b))
+    for a in ta:
+        for b in sb:
+            basis.append((a,b))
+    for a in da:
+        for b in db:
+            basis.append((a,b))
+    for a in sa:
+        for b in tb:
+            basis.append((a,b))
+    return basis
+
+def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
+    na = noa + nva
+    nb = nob + nvb
+    assert(na == nb)
+    if order < 1:
+        raise Exception("Unrecognized CI expansion order: {}".format(order))
+    if order == 1:
+        basis = ucis_basis(na, noa, nob)
+    elif order == 2:
+        basis = ucisd_basis(na, noa, nob)
+    elif order == 3:
+        basis = ucisdt_basis(na, noa, nob)
+    elif order == 4:
+        basis = ucisdtq_basis(na, noa, nob)
+    else:
+        raise Exception("Higher than 4th order is not supported")
+
+    occa = [1 if i < noa else 0 for i in range(na)]
+    occb = [1 if i < nob else 0 for i in range(nb)]
+    refa = Dstring(na,occa)
+    refb = Dstring(nb,occb)
+    nd = len(basis)
+    C = numpy.zeros(nd)
+    C[0] = 1.0
+    print("order: {}".format(order))
+
+    if order >= 1:
+        # loop over T1a
+        for i in range(noa):
+            for a in range(nva):
+                s,astr = refa.excite(i,a + noa)
+                if astr is not None:
+                    idx = basis.index((astr,refb))
+                    C[idx] += s*T1a[a,i]
+        # loop over T1b
+        for i in range(nob):
+            for a in range(nvb):
+                s,bstr = refb.excite(i,a + nob)
+                if bstr is not None:
+                    idx = basis.index((refa,bstr))
+                    C[idx] += s*T1b[a,i]
+
+    if order >= 2:
+        # loop over T2aa
+        for i in range(noa):
+            for j in range(i+1,noa):
+                for a in range(nva):
+                    for b in range(a+1,nva):
+                        s1,astr = refa.excite(i,a + noa)
+                        if astr is None:
+                            continue
+                        s2,astr = astr.excite(j,b + noa)
+                        if astr is not None:
+                            idx = basis.index((astr,refb))
+                            C[idx] += s1*s2*T2aa[a,b,i,j]
+        # loop over T2bb
+        for i in range(nob):
+            for j in range(i+1,nob):
+                for a in range(nvb):
+                    for b in range(a+1,nvb):
+                        s1,bstr = refb.excite(i,a + nob)
+                        if bstr is None:
+                            continue
+                        s2,bstr = bstr.excite(j,b + nob)
+                        if bstr is not None:
+                            idx = basis.index((refa,bstr))
+                            C[idx] += s1*s2*T2bb[a,b,i,j]
+        # loop over T2ab
+        for i in range(noa):
+            for j in range(nob):
+                for a in range(nva):
+                    for b in range(nvb):
+                        sa,astr = refa.excite(i,a + noa)
+                        sb,bstr = refb.excite(j,b + nob)
+                        if astr is not None and bstr is not None:
+                            idx = basis.index((astr,bstr))
+                            C[idx] += sa*sb*T2ab[a,b,i,j]
+
+        # loop over T1a^2
+        for i in range(noa):
+            for j in range(noa):
+                for a in range(nva):
+                    for b in range(nva):
+                        s1,astr = refa.excite(i,a + noa)
+                        if astr is None:
+                            continue
+                        s2,astr = astr.excite(j,b + noa)
+                        if astr is not None:
+                            idx = basis.index((astr,refb))
+                            C[idx] += 0.5*s1*s2*T1a[a,i]*T1a[b,j]
+        # loop over T1b^2
+        for i in range(nob):
+            for j in range(nob):
+                for a in range(nvb):
+                    for b in range(nvb):
+                        s1,bstr = refb.excite(i,a + nob)
+                        if bstr is None:
+                            continue
+                        s2,bstr = bstr.excite(j,b + nob)
+                        if bstr is not None:
+                            idx = basis.index((refa,bstr))
+                            C[idx] += 0.5*s1*s2*T1b[a,i]*T1b[b,j]
+        # loop over T1a*T1b
+        for i in range(noa):
+            for j in range(nob):
+                for a in range(nva):
+                    for b in range(nvb):
+                        sa,astr = refa.excite(i,a + noa)
+                        sb,bstr = refb.excite(j,b + nob)
+                        if astr is not None and bstr is not None:
+                            idx = basis.index((astr,bstr))
+                            C[idx] += sa*sb*T1a[a,i]*T1b[b,j]
+    if order >= 3:
+        # loop over T1a*T2aa
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(j+1,noa):
+                    for a in range(nva):
+                        for b in range(nva):
+                            for c in range(b+1,nva):
+                                s1,astr = refa.excite(i,a + noa)
+                                if astr is None:
+                                    continue
+                                s2,astr = astr.excite(j,b + noa)
+                                if astr is None:
+                                    continue
+                                s3,astr = astr.excite(k,c + noa)
+                                if astr is not None:
+                                    idx = basis.index((astr,refb))
+                                    C[idx] += s1*s2*s3*T1a[a,i]*T2aa[b,c,j,k]
+        # loop over T1a*T2ab
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(nob):
+                    for a in range(nva):
+                        for b in range(nva):
+                            for c in range(nvb):
+                                s1a,astr = refa.excite(i,a + noa)
+                                if astr is None:
+                                    continue
+                                s2a,astr = astr.excite(j,b + noa)
+                                sb,bstr = refb.excite(k,c + nob)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1a*s2a*sb*T1a[a,i]*T2ab[b,c,j,k]
+        # loop over T1b*T2aa
+        for i in range(nob):
+            for j in range(noa):
+                for k in range(j+1,noa):
+                    for a in range(nvb):
+                        for b in range(nva):
+                            for c in range(b+1,nva):
+                                sb,bstr = refb.excite(i,a + nob)
+                                s1a,astr = refa.excite(j,b + noa)
+                                if astr is None:
+                                    continue
+                                s2a,astr = astr.excite(k,c + noa)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1a*s2a*sb*T1b[a,i]*T2aa[b,c,j,k]
+        # loop over T1a*T2bb
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(j+1,nob):
+                    for a in range(nva):
+                        for b in range(nvb):
+                            for c in range(b+1,nvb):
+                                sa,astr = refa.excite(i,a + noa)
+                                s1b,bstr = refb.excite(j,b + nob)
+                                if bstr is None:
+                                    continue
+                                s2b,bstr = bstr.excite(k,c + nob)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1b*s2b*sa*T1a[a,i]*T2bb[b,c,j,k]
+        # loop over T1b*T2ab
+        for i in range(nob):
+            for j in range(noa):
+                for k in range(nob):
+                    for a in range(nvb):
+                        for b in range(nva):
+                            for c in range(nvb):
+                                s1b,bstr = refb.excite(i,a + nob)
+                                if bstr is None:
+                                    continue
+                                sa,astr = refa.excite(j,b + noa)
+                                s2b,bstr = bstr.excite(k,c + nob)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1b*s2b*sa*T1b[a,i]*T2ab[b,c,j,k]
+        # loop over T1b*T2bb
+        for i in range(nob):
+            for j in range(nob):
+                for k in range(j+1,nob):
+                    for a in range(nvb):
+                        for b in range(nvb):
+                            for c in range(b+1,nvb):
+                                s1,bstr = refb.excite(i,a + nob)
+                                if bstr is None:
+                                    continue
+                                s2,bstr = bstr.excite(j,b + nob)
+                                if bstr is None:
+                                    continue
+                                s3,bstr = bstr.excite(k,c + nob)
+                                if bstr is not None:
+                                    idx = basis.index((refa,bstr))
+                                    C[idx] += s1*s2*s3*T1b[a,i]*T2bb[b,c,j,k]
+
+        # loop over T1a^3
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(noa):
+                    for a in range(nva):
+                        for b in range(nva):
+                            for c in range(nva):
+                                s1,astr = refa.excite(i,a + noa)
+                                if astr is None:
+                                    continue
+                                s2,astr = astr.excite(j,b + noa)
+                                if astr is None:
+                                    continue
+                                s3,astr = astr.excite(k,c + noa)
+                                if astr is not None:
+                                    idx = basis.index((astr,refb))
+                                    C[idx] += s1*s2*s3*T1a[a,i]*T1a[b,j]*T1a[c,k]/6.0
+        # loop over T1a^2T1b
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(nob):
+                    for a in range(nva):
+                        for b in range(nva):
+                            for c in range(nvb):
+                                s1a,astr = refa.excite(i,a + noa)
+                                if astr is None:
+                                    continue
+                                s2a,astr = astr.excite(j,b + noa)
+                                sb,bstr = refb.excite(k,c + nob)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1a*s2a*sb*T1a[a,i]*T1a[b,j]*T1b[c,k]/2.0
+        # loop over T1aT1b^2
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(nob):
+                    for a in range(nva):
+                        for b in range(nvb):
+                            for c in range(nvb):
+                                sa,astr = refa.excite(i,a + noa)
+                                s1b,bstr = refb.excite(j,b + nob)
+                                if bstr is None:
+                                    continue
+                                s2b,bstr = bstr.excite(k,c + nob)
+                                if astr is not None and bstr is not None:
+                                    idx = basis.index((astr,bstr))
+                                    C[idx] += s1b*s2b*sa*T1a[a,i]*T1b[b,j]*T1b[c,k]/2.0
+        # loop over T1b^3
+        for i in range(nob):
+            for j in range(nob):
+                for k in range(nob):
+                    for a in range(nvb):
+                        for b in range(nvb):
+                            for c in range(nvb):
+                                s1,bstr = refb.excite(i,a + nob)
+                                if bstr is None:
+                                    continue
+                                s2,bstr = bstr.excite(j,b + nob)
+                                if bstr is None:
+                                    continue
+                                s3,bstr = bstr.excite(k,c + nob)
+                                if bstr is not None:
+                                    idx = basis.index((refa,bstr))
+                                    C[idx] += s1*s2*s3*T1b[a,i]*T1b[b,j]*T1b[c,k]/6.0
+    if order >= 4:
+        # loop over T2aa^2
+        for i in range(noa):
+            for j in range(i+1,noa):
+                for k in range(noa):
+                    for l in range(k+1,noa):
+                        for a in range(nva):
+                            for b in range(a+1,nva):
+                                for c in range(nva):
+                                    for d in range(c+1,nva):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        if astr is None:
+                                            continue
+                                        sa4,astr = astr.excite(l,d + noa)
+                                        if astr is not None:
+                                            idx = basis.index((astr,refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T2aa[a,b,i,j]*T2aa[c,d,k,l]/2.0
+        # loop over T2aa*T2ab
+        for i in range(noa):
+            for j in range(i+1,noa):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(a+1,nva):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        sb1,bstr = refb.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T2aa[a,b,i,j]*T2ab[c,d,k,l]
+        # loop over T2aa*T2bb
+        for i in range(noa):
+            for j in range(i+1,noa):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nva):
+                            for b in range(a+1,nva):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        sb1,bstr = refb.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        sb2,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T2aa[a,b,i,j]*T2bb[c,d,k,l]
+        # loop over T2ab^2
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(k,c + noa)
+                                        sb1,bstr = refb.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        sb2,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T2ab[a,b,i,j]*T2ab[c,d,k,l]/2.0
+        # loop over T2ab*T2bb
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        sa,astr = refa.excite(i,a + noa)
+                                        s1,bstr = refb.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa*s1*s2*s3*T2ab[a,b,i,j]*T2bb[c,d,k,l]
+        # loop over T2bb^2
+        for i in range(nob):
+            for j in range(i+1,nob):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nvb):
+                            for b in range(a+1,nvb):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        s1,bstr = refb.excite(i,a + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s4,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None:
+                                            idx = basis.index((refa,bstr))
+                                            C[idx] += s1*s2*s3*s4*T2bb[a,b,i,j]*T2bb[c,d,k,l]/2.0
+
+        # loop over T1a^2*T2aa
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(noa):
+                    for l in range(k+1,noa):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nva):
+                                    for d in range(c+1,nva):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        if astr is None:
+                                            continue
+                                        sa4,astr = astr.excite(l,d + noa)
+                                        if astr is not None:
+                                            idx = basis.index((astr,refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a,i]*T1a[b,j]*T2aa[c,d,k,l]/2.0
+        # loop over T1a^2*T2ab
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        sb1,bstr = refb.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1a[b,j]*T2ab[c,d,k,l]/2.0
+        # loop over T1a*T1b*T2aa
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(noa):
+                    for l in range(k+1,noa):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nva):
+                                    for d in range(c+1,nva):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(k,c + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(l,d + noa)
+                                        sb1,bstr = refb.excite(j,b + nob)
+                                        if astr is not None and bstr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1b[b,j]*T2aa[c,d,k,l]
+        # loop over T1a^2*T2bb
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sb1,bstr = refb.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        sb2,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1a[b,j]*T2bb[c,d,k,l]/2.0
+        # loop over T1a*T1b*T2ab
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(k,c + noa)
+                                        sb1,bstr = refb.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        sb2,bstr = bstr.excite(l,d + nob)
+                                        if astr is not None and bstr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1b[b,j]*T2ab[c,d,k,l]
+        # loop over T1a*T1b*T2bb
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        sa,astr = refa.excite(i,a + noa)
+                                        s1,bstr = refb.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa*s1*s2*s3*T1a[a,i]*T1b[b,j]*T2bb[c,d,k,l]
+        # loop over T1b^2*T2ab
+        for i in range(nob):
+            for j in range(nob):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nvb):
+                            for b in range(nvb):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa,astr = refa.excite(k,c + noa)
+                                        s1,bstr = refb.excite(i,a + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += s1*s2*s3*sa*T1b[a,i]*T1b[b,j]*T2ab[c,d,k,l]/2.0
+        # loop over T1b^2*T2bb
+        for i in range(nob):
+            for j in range(nob):
+                for k in range(nob):
+                    for l in range(k+1,nob):
+                        for a in range(nvb):
+                            for b in range(nvb):
+                                for c in range(nvb):
+                                    for d in range(c+1,nvb):
+                                        s1,bstr = refb.excite(i,a + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s4,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None:
+                                            idx = basis.index((refa,bstr))
+                                            C[idx] += s1*s2*s3*s4*T1b[a,i]*T1b[b,j]*T2bb[c,d,k,l]/2.0
+
+        # loop over T1a^4
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(noa):
+                    for l in range(noa):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nva):
+                                    for d in range(nva):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        if astr is None:
+                                            continue
+                                        sa4,astr = astr.excite(l,d + noa)
+                                        if astr is not None:
+                                            idx = basis.index((astr,refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a,i]*T1a[b,j]*T1a[c,k]*T1a[d,l]/24.0
+        # loop over T1a^3T1b
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(noa):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nva):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        if astr is None:
+                                            continue
+                                        sa3,astr = astr.excite(k,c + noa)
+                                        sb1,bstr = refb.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1a[b,j]*T1a[c,k]*T1b[d,l]/6.0
+        # loop over T1a^2T1b^2
+        for i in range(noa):
+            for j in range(noa):
+                for k in range(nob):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nva):
+                                for c in range(nvb):
+                                    for d in range(nvb):
+                                        sa1,astr = refa.excite(i,a + noa)
+                                        if astr is None:
+                                            continue
+                                        sa2,astr = astr.excite(j,b + noa)
+                                        sb1,bstr = refb.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        sb2,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1a[b,j]*T1b[c,k]*T1b[d,l]/4.0
+        # loop over T1aT1b^3
+        for i in range(noa):
+            for j in range(nob):
+                for k in range(nob):
+                    for l in range(nob):
+                        for a in range(nva):
+                            for b in range(nvb):
+                                for c in range(nvb):
+                                    for d in range(nvb):
+                                        sa,astr = refa.excite(i,a + noa)
+                                        s1,bstr = refb.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None and astr is not None:
+                                            idx = basis.index((astr,bstr))
+                                            C[idx] += sa*s1*s2*s3*T1a[a,i]*T1b[b,j]*T1b[c,k]*T1b[d,l]/6.0
+        # loop over T1b^4
+        for i in range(nob):
+            for j in range(nob):
+                for k in range(nob):
+                    for l in range(nob):
+                        for a in range(nvb):
+                            for b in range(nvb):
+                                for c in range(nvb):
+                                    for d in range(nvb):
+                                        s1,bstr = refb.excite(i,a + nob)
+                                        if bstr is None:
+                                            continue
+                                        s2,bstr = bstr.excite(j,b + nob)
+                                        if bstr is None:
+                                            continue
+                                        s3,bstr = bstr.excite(k,c + nob)
+                                        if bstr is None:
+                                            continue
+                                        s4,bstr = bstr.excite(l,d + nob)
+                                        if bstr is not None:
+                                            idx = basis.index((refa,bstr))
+                                            C[idx] += s1*s2*s3*s4*T1b[a,i]*T1b[b,j]*T1b[c,k]*T1b[d,l]/24.0
+    if order >= 5:
+        raise Exception("Order {} is not supported".format(order))
+    return C
 
 def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     diffa = diff(braa, keta)//2
@@ -211,6 +1012,85 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
 
     else:
         return 0.0
+
+def sa_on_vec(basis, vec, i, a):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        ab,bb = basis[ix]
+        sa,anew = ab.excite(i,a)
+        if anew is None:
+            continue
+        try:
+            idx = basis.index((anew,bb))
+            out[idx] += sa*x
+        except ValueError:
+            pass
+    return out
+
+def sb_on_vec(basis, vec, i, a):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        ab,bb = basis[ix]
+        sb,bnew = bb.excite(i,a)
+        if bnew is None:
+            continue
+        try:
+            idx = basis.index((ab,bnew))
+            out[idx] += sb*x
+        except ValueError:
+            pass
+    return out
+
+def da_on_vec(basis, vec, i, j, a, b):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        ab,bb = basis[ix]
+        s1,atemp = ab.excite(i,a)
+        if atemp is None:
+            continue
+        s2,anew = atemp.excite(j,b)
+        if anew is None:
+            continue
+        try:
+            idx = basis.index((anew,bb))
+            out[idx] += s1*s2*x
+        except ValueError:
+            pass
+    return out
+
+def db_on_vec(basis, vec, i, j, a, b):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        ab,bb = basis[ix]
+        s1,btemp = bb.excite(i,a)
+        if btemp is None:
+            continue
+        s2,bnew = btemp.excite(j,b)
+        if bnew is None:
+            continue
+        try:
+            idx = basis.index((ab,bnew))
+            out[idx] += s1*s2*x
+        except ValueError:
+            pass
+    return out
+
+def sasb_on_vec(basis, vec, i, j, a, b):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        ab,bb = basis[ix]
+        sa,anew = ab.excite(i,a)
+        if anew is None:
+            continue
+        sb,bnew = bb.excite(j,b)
+        if bnew is None:
+            continue
+        try:
+            idx = basis.index((anew,bnew))
+            out[idx] += sa*sb*x
+        except ValueError:
+            pass
+    return out
 
 def H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab):
     out = numpy.zeros(vec.shape)
