@@ -32,6 +32,28 @@ class Dstring(object):
     def __eq__(self, other):
         return numpy.array_equal(self.occ, other.occ) and self.n == other.n
 
+#class Pstring(object):
+#    def __init__(self,n,occ):
+#        self.occ = numpy.asarray(occ)
+#        assert(n == self.occ.shape[0])
+#        self.n = n
+#
+#    def raise(self, p):
+#        occnew = self.occ.copy()
+#        occnew[p] = occnew[p] + 1
+#        return Pstring(self.n,occnew)
+#
+#    def lower(self, p):
+#        occnew = self.occ.copy()
+#        if occnew[p] == 0:
+#            return None
+#        else:
+#            occnew[p] = occnew[p] - 1
+#            return Pstring(self.n,occnew)
+#
+#    def __eq__(self, other):
+#        return numpy.array_equal(self.occ, other.occ) and self.n == other.n
+
 def level(ref, string):
     diff = [abs(o1 - o2) for o1,o2 in zip(ref.occ, string.occ)]
     return numpy.array(diff,dtype=int).sum()
@@ -225,6 +247,69 @@ def ucisdtq_basis(n, na, nb):
         for b in tb:
             basis.append((a,b))
     return basis
+
+def get_gcis_basis(nmo, n, gs=True):
+    nb = n//2
+    na = n - nb
+    occa = [1 if i < na else 0 for i in range(nmo//2)]
+    occb = [1 if i < nb else 0 for i in range(nmo//2)]
+    occ = occa + occb
+    ref = Dstring(nmo,occ)
+    singles = s_strings(nmo, n)
+    basis = [ref] if gs else []
+    for s in singles:
+        basis.append(s)
+    return basis
+
+def get_gcisd_basis(nmo, n):
+    occa = [1 if i < na else 0 for i in range(n - n//2)]
+    occb = [1 if i < nb else 0 for i in range(n//2)]
+    occ = occa + occb
+    ref = Dstring(nmo,occ)
+    singles = s_strings(nmo, n)
+    doubles = d_strings(nmo, n)
+    basis = [ref]
+    for s in singles:
+        basis.append(s)
+    for d in doubles:
+        basis.append(d)
+    return basis
+
+def get_gcist_basis(nmo, n):
+    occa = [1 if i < na else 0 for i in range(n - n//2)]
+    occb = [1 if i < nb else 0 for i in range(n//2)]
+    occ = occa + occb
+    ref = Dstring(nmo,occ)
+    singles = s_strings(nmo, n)
+    doubles = d_strings(nmo, n)
+    triples = t_strings(nmo, n)
+    basis = [ref]
+    for s in singles:
+        basis.append(s)
+    for d in doubles:
+        basis.append(d)
+    for t in triples:
+        basis.append(t)
+    return basis
+
+def get_gcistq_basis(nmo, n):
+    occa = [1 if i < na else 0 for i in range(n - n//2)]
+    occb = [1 if i < nb else 0 for i in range(n//2)]
+    occ = occa + occb
+    ref = Dstring(nmo,occ)
+    singles = s_strings(nmo, n)
+    doubles = d_strings(nmo, n)
+    triples = t_strings(nmo, n)
+    quadles = q_strings(nmo, n)
+    basis = [ref]
+    for s in singles:
+        basis.append(s)
+    for d in doubles:
+        basis.append(d)
+    for t in triples:
+        basis.append(t)
+    for q in quadles:
+        basis.append(q)
 
 def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     na = noa + nva
@@ -898,6 +983,18 @@ def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     if order >= 5:
         raise Exception("Order {} is not supported".format(order))
     return C
+
+def gci_matrixel(bra, ket, h, I, const):
+    diff = diff(bra, ket)//2
+    aa = [(ob - ok) for ob,ok in zip(bra.occ,ket.occ)]
+    ao = [-1 if a < 0 else 0 for a in aa]
+    av = [1 if a > 0 else 0 for a in aa]
+    if diff == 0:
+        pass
+    if diff == 1:
+        pass
+    if diff == 2:
+        pass
 
 def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     diffa = diff(braa, keta)//2
