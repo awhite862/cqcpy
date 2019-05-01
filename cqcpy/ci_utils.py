@@ -61,65 +61,89 @@ def level(ref, string):
 def diff(bra, ket):
     return level(bra, ket)
 
-def s_strings(n, nocc):
-    occ = [1 if i < nocc else 0 for i in range(n)]
+def s_strings(n, nocc, occ=None):
+    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    vir = [1 if x == 0 else 0 for x in occ]
+    iocc = [i for i,x in enumerate(occ) if x > 0]
+    ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
     nvir = n - nocc
     dlist = []
-    for i in range(nocc):
-        for a in range(nvir):
-            sign,occnew = ref.excite(i,a+nocc)
+    for i in iocc:
+        for a in ivir:
+            sign,occnew = ref.excite(i,a)
             dlist.append(occnew)
     return dlist
 
-def d_strings(n, nocc):
-    occ = [1 if i < nocc else 0 for i in range(n)]
+def d_strings(n, nocc, occ=None):
+    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    vir = [1 if x == 0 else 0 for x in occ]
+    iocc = [i for i,x in enumerate(occ) if x > 0]
+    ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
     nvir = n - nocc
     dlist = []
-    for i in range(nocc):
-        for a in range(nvir):
-            for j in range(i+1,nocc):
-                for b in range(a+1,nvir):
-                    s1,d1 = ref.excite(i,a+nocc)
-                    s2,d2 = d1.excite(j,b+nocc)
+    for i in iocc:
+        for a in ivir:
+            for j in iocc:
+                if j <= i: continue
+                for b in ivir:
+                    if b <= a: continue
+                    s1,d1 = ref.excite(i,a)
+                    s2,d2 = d1.excite(j,b)
                     dlist.append(d2)
     return dlist
 
-def t_strings(n, nocc):
-    occ = [1 if i < nocc else 0 for i in range(n)]
+def t_strings(n, nocc, occ=None):
+    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    vir = [1 if x == 0 else 0 for x in occ]
+    iocc = [i for i,x in enumerate(occ) if x > 0]
+    ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
     nvir = n - nocc
     dlist = []
-    for i in range(nocc):
-        for a in range(nvir):
-            for j in range(i+1,nocc):
-                for b in range(a+1,nvir):
-                    for k in range(j+1,nocc):
-                        for c in range(b+1,nvir):
-                            s1,d1 = ref.excite(i,a+nocc)
-                            s2,d2 = d1.excite(j,b+nocc)
-                            s3,d3 = d2.excite(k,c+nocc)
+    for i in iocc:
+        for a in ivir:
+            for j in iocc:
+                if j <= i: continue
+                for b in ivir:
+                    if b <= a: continue
+                    for k in iocc:
+                        if k <= j: continue
+                        for c in ivir:
+                            if c <= b: continue
+                            s1,d1 = ref.excite(i,a)
+                            s2,d2 = d1.excite(j,b)
+                            s3,d3 = d2.excite(k,c)
                             dlist.append(d3)
     return dlist
 
-def q_strings(n, nocc):
-    occ = [1 if i < nocc else 0 for i in range(n)]
+def q_strings(n, nocc, occ=None):
+    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    vir = [1 if x == 0 else 0 for x in occ]
+    iocc = [i for i,x in enumerate(occ) if x > 0]
+    ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
     nvir = n - nocc
     dlist = []
-    for i in range(nocc):
-        for a in range(nvir):
-            for j in range(i+1,nocc):
-                for b in range(a+1,nvir):
-                    for k in range(j+1,nocc):
-                        for c in range(b+1,nvir):
-                            for l in range(k+1,nocc):
-                                for d in range(c+1,nvir):
-                                    s1,d1 = ref.excite(i,a+nocc)
-                                    s2,d2 = d1.excite(j,b+nocc)
-                                    s3,d3 = d2.excite(k,c+nocc)
-                                    s4,d4 = d3.excite(l,d+nocc)
+    for i in occ:
+        for a in ivir:
+            for j in occ:
+                if j <= i: continue
+                for b in ivir:
+                    if b <= a: continue
+                    for k in iocc:
+                        if k <= j: continue
+                        for c in ivir:
+                            if c <= b: continue
+                            for l in iocc:
+                                if l <= k: continue
+                                for d in ivir:
+                                    if d <= c: continue
+                                    s1,d1 = ref.excite(i,a)
+                                    s2,d2 = d1.excite(j,b)
+                                    s3,d3 = d2.excite(k,c)
+                                    s4,d4 = d3.excite(l,d)
                                     dlist.append(d4)
     return dlist
 
@@ -248,26 +272,28 @@ def ucisdtq_basis(n, na, nb):
             basis.append((a,b))
     return basis
 
-def get_gcis_basis(nmo, n, gs=True):
+def gcis_basis(nmo, n, gs=True):
     nb = n//2
     na = n - nb
     occa = [1 if i < na else 0 for i in range(nmo//2)]
     occb = [1 if i < nb else 0 for i in range(nmo//2)]
     occ = occa + occb
     ref = Dstring(nmo,occ)
-    singles = s_strings(nmo, n)
+    singles = s_strings(nmo, n, occ=occ)
     basis = [ref] if gs else []
     for s in singles:
         basis.append(s)
     return basis
 
-def get_gcisd_basis(nmo, n):
-    occa = [1 if i < na else 0 for i in range(n - n//2)]
-    occb = [1 if i < nb else 0 for i in range(n//2)]
+def gcisd_basis(nmo, n):
+    nb = n//2
+    na = n - n//2
+    occa = [1 if i < na else 0 for i in range(nmo//2)]
+    occb = [1 if i < nb else 0 for i in range(nmo//2)]
     occ = occa + occb
     ref = Dstring(nmo,occ)
-    singles = s_strings(nmo, n)
-    doubles = d_strings(nmo, n)
+    singles = s_strings(nmo, n, occ=occ)
+    doubles = d_strings(nmo, n, occ=occ)
     basis = [ref]
     for s in singles:
         basis.append(s)
@@ -275,14 +301,16 @@ def get_gcisd_basis(nmo, n):
         basis.append(d)
     return basis
 
-def get_gcist_basis(nmo, n):
-    occa = [1 if i < na else 0 for i in range(n - n//2)]
-    occb = [1 if i < nb else 0 for i in range(n//2)]
+def gcisdt_basis(nmo, n):
+    nb = n//2
+    na = n - n//2
+    occa = [1 if i < na else 0 for i in range(nmo//2)]
+    occb = [1 if i < nb else 0 for i in range(nmo//2)]
     occ = occa + occb
     ref = Dstring(nmo,occ)
-    singles = s_strings(nmo, n)
-    doubles = d_strings(nmo, n)
-    triples = t_strings(nmo, n)
+    singles = s_strings(nmo, n, occ=occ)
+    doubles = d_strings(nmo, n, occ=occ)
+    triples = t_strings(nmo, n, occ=occ)
     basis = [ref]
     for s in singles:
         basis.append(s)
@@ -292,15 +320,17 @@ def get_gcist_basis(nmo, n):
         basis.append(t)
     return basis
 
-def get_gcistq_basis(nmo, n):
-    occa = [1 if i < na else 0 for i in range(n - n//2)]
-    occb = [1 if i < nb else 0 for i in range(n//2)]
+def gcisdtq_basis(nmo, n):
+    nb = n//2
+    na = n - n//2
+    occa = [1 if i < na else 0 for i in range(nmo//2)]
+    occb = [1 if i < nb else 0 for i in range(nmo//2)]
     occ = occa + occb
     ref = Dstring(nmo,occ)
-    singles = s_strings(nmo, n)
-    doubles = d_strings(nmo, n)
-    triples = t_strings(nmo, n)
-    quadles = q_strings(nmo, n)
+    singles = s_strings(nmo, n, occ=occ)
+    doubles = d_strings(nmo, n, occ=occ)
+    triples = t_strings(nmo, n, occ=occ)
+    quadles = q_strings(nmo, n, occ=occ)
     basis = [ref]
     for s in singles:
         basis.append(s)
@@ -310,6 +340,187 @@ def get_gcistq_basis(nmo, n):
         basis.append(t)
     for q in quadles:
         basis.append(q)
+    return basis
+
+def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
+    nmo = no + nv
+    if order < 1:
+        raise Exception("Unrecognized CI expansion order: {}".format(order))
+    if order == 1:
+        basis = gcis_basis(nmo, no)
+    elif order == 2:
+        basis = gcisd_basis(nmo, no)
+    elif order == 3:
+        basis = gcisdt_basis(nmo, no)
+    elif order == 4:
+        basis = gcisdtq_basis(nmo, no)
+    else:
+        raise Exception("Higher than 4th order is not supported")
+
+    if occ is None: occ = [1 if i < nocc else 0 for i in range(nmo//2)]
+    vir = [1 if x == 0 else 0 for x in occ]
+    iocc = [i for i,x in enumerate(occ) if x > 0]
+    ivir = [i for i,x in enumerate(vir) if x > 0]
+    ref = Dstring(nmo,occ)
+
+    nd = len(basis)
+    C = numpy.zeros(nd)
+    C[0] = 1.0
+    if order >= 1:
+        # loop over T1
+        for ii,i in enumerate(iocc):
+            for ia,a in enumerate(ivir):
+                s,dstr = ref.excite(i,a)
+                if dstr is not None:
+                    idx = basis.index(dstr)
+                    C[idx] += s*T1[ia,ii]
+    if order >= 2:
+        # loop over T2
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                if j <= i: continue
+                for ia,a in enumerate(ivir):
+                    for ib,b in enumerate(ivir):
+                        if b <= a: continue
+                        s1,dstr = ref.excite(i,a)
+                        if dstr is None:
+                            continue
+                        s2,dstr = dstr.excite(j,b)
+                        if dstr is not None:
+                            idx = basis.index(dstr)
+                            C[idx] += s1*s2*T2[ia,ib,ii,ij]
+        # loop over T1^2
+        for ii,i in enumerate(iocc):
+            for ij,i in enumerate(iocc):
+                if j <= i: continue
+                for ia,a in enumerate(ivir):
+                    for ib,b in enumerate(ivir):
+                        if b <= a: continue
+                        s1,dstr = ref.excite(i,a)
+                        if dstr is None:
+                            continue
+                        s2,dstr = dstr.excite(j,b)
+                        if dstr is not None:
+                            idx = basis.index(dstr)
+                            C[idx] += 0.5*s1*s2*T1[ia,ii]*T1[ib,ij]
+    if order >= 3:
+        # loop over T1T2
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                if j <= i: continue
+                for ik,k in enumerate(iocc):
+                    if k <= j: continue
+                    for ia,a in enumerate(ivir):
+                        for ib,b in enumerate(ivir):
+                            if b <= a: continue
+                            for ic,c in enumerate(ivir):
+                                if c <= b: continue
+                                s1,dstr = ref.excite(i,a)
+                                if dstr is None:
+                                    continue
+                                s2,dstr = dstr.excite(j,b)
+                                if dstr is None:
+                                    continue
+                                s3,dstr = dstr.excite(k,c)
+                                if dstr is not None:
+                                    idx = basis.index(dstr)
+                                    C[idx] += s1*s2*s3*T1[ia,ii]*T2[ib,ic,ij,ik]
+        # loop over T1^3
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                if j <= i: continue
+                for ik,k in enumerate(iocc):
+                    if k <= j: continue
+                    for ia,a in enumerate(ivir):
+                        for ib,b in enumerate(ivir):
+                            if b <= a: continue
+                            for ic,c in enumerate(ivir):
+                                if c <= b: continue
+                                s1,dstr = ref.excite(i,a)
+                                if dstr is None:
+                                    continue
+                                s2,dstr = dstr.excite(j,b)
+                                if dstr is None:
+                                    continue
+                                s3,dstr = dstr.excite(k,c)
+                                if dstr is not None:
+                                    idx = basis.index(dstr)
+                                    C[idx] += s1*s2*s3*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]/6.0
+    if order >= 4:
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                if j <= i: continue
+                for ik,k in enumerate(iocc):
+                    for il,l in enumerate(iocc):
+                        if l <= k: continue
+                        for ia,a in enumerate(ivir):
+                            for ib,b in enumerate(ivir):
+                                if b <= a: continue
+                                for ic,c in enumerate(ivir):
+                                    for idd,d in enumerate(ivir):
+                                        if d <= c: continue
+                                        s1,dstr = ref.excite(i,a)
+                                        if dstr is None:
+                                            continue
+                                        s2,dstr = dstr.excite(j,b)
+                                        if dstr is None:
+                                            continue
+                                        s3,dstr = dstr.excite(k,c)
+                                        if dstr is None:
+                                            continue
+                                        s4,dstr = dstr.excite(l,d)
+                                        if dstr is not None:
+                                            idx = basis.index(dstr)
+                                            # T2^2
+                                            C[idx] += s1*s2*s3*s4*T2[ia,ib,ii,ij]*T2[ic,idd,ik,il]/2.0
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                for ik,k in enumerate(iocc):
+                    for il,l in enumerate(iocc):
+                        if l <= k: continue
+                        for ia,a in enumerate(ivir):
+                            for ib,b in enumerate(ivir):
+                                for ic,c in enumerate(ivir):
+                                    for idd,d in enumerate(ivir):
+                                        if d <= c: continue
+                                        s1,dstr = ref.excite(i,a)
+                                        if dstr is None:
+                                            continue
+                                        s2,dstr = dstr.excite(j,b)
+                                        if dstr is None:
+                                            continue
+                                        s3,dstr = dstr.excite(k,c)
+                                        if dstr is None:
+                                            continue
+                                        s4,dstr = dstr.excite(l,d)
+                                        if dstr is not None:
+                                            idx = basis.index(dstr)
+                                            # T1^2T2
+                                            C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T2[ic,idd,ik,il]/2.0
+        for ii,i in enumerate(iocc):
+            for ij,j in enumerate(iocc):
+                for ik,k in enumerate(iocc):
+                    for il,l in enumerate(iocc):
+                        for ia,a in enumerate(ivir):
+                            for ib,b in enumerate(ivir):
+                                for ic,c in enumerate(ivir):
+                                    for idd,d in enumerate(ivir):
+                                        if d <= c: continue
+                                        s1,dstr = ref.excite(i,a)
+                                        if dstr is None:
+                                            continue
+                                        s2,dstr = dstr.excite(j,b)
+                                        if dstr is None:
+                                            continue
+                                        s3,dstr = dstr.excite(k,c)
+                                        if dstr is None:
+                                            continue
+                                        s4,dstr = dstr.excite(l,d)
+                                        if dstr is not None:
+                                            idx = basis.index(dstr)
+                                            # T1^4
+                                            C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]*T1[idd,il]/24.0
+    return C
 
 def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     na = noa + nva
@@ -335,7 +546,7 @@ def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     nd = len(basis)
     C = numpy.zeros(nd)
     C[0] = 1.0
-    print("order: {}".format(order))
+    #print("order: {}".format(order))
 
     if order >= 1:
         # loop over T1a
@@ -985,16 +1196,45 @@ def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     return C
 
 def gci_matrixel(bra, ket, h, I, const):
-    diff = diff(bra, ket)//2
+    ddd = diff(bra, ket)//2
     aa = [(ob - ok) for ob,ok in zip(bra.occ,ket.occ)]
     ao = [-1 if a < 0 else 0 for a in aa]
     av = [1 if a > 0 else 0 for a in aa]
-    if diff == 0:
-        pass
-    if diff == 1:
-        pass
-    if diff == 2:
-        pass
+    if ddd == 0:
+        p = bra.occ.copy()
+        Hel = numpy.einsum('ii,i->',h, p)
+        Hel += 0.5*numpy.einsum('ijij,i,j->',I, p, p)
+        Hel -= 0.5*numpy.einsum('ijji,i,j->',I, p, p)
+        return Hel
+    elif ddd == 1:
+        o = numpy.nonzero(ao)[0][0]
+        v = numpy.nonzero(av)[0][0]
+        p = ket.occ.copy()
+        b = bra.occ.copy()
+        i1 = min(o,v)
+        i2 = max(o,v)
+        sign = 1.0 if b[i1+1:i2].sum()%2 == 0 else -1.0
+        Hel = 0.0
+        Hel += h[v,o]
+        Hel += numpy.einsum('ii,i->',I[v,:,o,:],p)
+        Hel -= numpy.einsum('ii,i->',I[v,:,:,o],p)
+        return sign*Hel
+    elif ddd == 2:
+        o = numpy.nonzero(ao)[0]
+        v = numpy.nonzero(av)[0]
+        o1,o2 = o
+        v1,v2 = v
+        b = bra.occ.copy()
+        i1,i2 = min(o1,v1),max(o1,v1)
+        j1,j2 = min(o2,v2),max(o2,v2)
+        sign1 = 1.0 if b[i1+1:i2].sum()%2 == 0 else -1.0
+        sign2 = 1.0 if b[j1+1:j2].sum()%2 == 0 else -1.0
+        sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
+        # from Ha
+        Hel = I[v1,v2,o1,o2] - I[v1,v2,o2,o1]
+        return sign1*sign2*Hel
+    else:
+        return 0.0
 
 def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     diffa = diff(braa, keta)//2
@@ -1110,6 +1350,20 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     else:
         return 0.0
 
+def s_on_vec(basis, vec, i, a):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        dd = basis[ix]
+        s,new = dd.excite(i,a)
+        if new is None:
+            continue
+        try:
+            idx = basis.index(new)
+            out[idx] += s*x
+        except ValueError:
+            pass
+    return out
+
 def sa_on_vec(basis, vec, i, a):
     out = numpy.zeros(vec.shape)
     for ix,x in enumerate(vec):
@@ -1134,6 +1388,23 @@ def sb_on_vec(basis, vec, i, a):
         try:
             idx = basis.index((ab,bnew))
             out[idx] += sb*x
+        except ValueError:
+            pass
+    return out
+
+def d_on_vec(basis, vec, i, j, a, b):
+    out = numpy.zeros(vec.shape)
+    for ix,x in enumerate(vec):
+        dd = basis[ix]
+        s1,temp = dd.excite(i,a)
+        if temp is None:
+            continue
+        s2,new = temp.excite(j,b)
+        if new is None:
+            continue
+        try:
+            idx = basis.index(new)
+            out[idx] += s1*s2*x
         except ValueError:
             pass
     return out
@@ -1194,4 +1465,11 @@ def H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab):
     for i,b in enumerate(basis):
         for j,k in enumerate(basis):
             out[i] += vec[j]*ci_matrixel(b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
+    return out
+
+def gH_on_vec(basis, vec, h, I,):
+    out = numpy.zeros(vec.shape)
+    for i,b in enumerate(basis):
+        for j,k in enumerate(basis):
+            out[i] += vec[j]*gci_matrixel(b,k,h,I,0.0)
     return out
