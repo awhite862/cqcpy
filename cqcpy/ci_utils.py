@@ -391,11 +391,9 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                             C[idx] += s1*s2*T2[ia,ib,ii,ij]
         # loop over T1^2
         for ii,i in enumerate(iocc):
-            for ij,i in enumerate(iocc):
-                if j <= i: continue
+            for ij,j in enumerate(iocc):
                 for ia,a in enumerate(ivir):
                     for ib,b in enumerate(ivir):
-                        if b <= a: continue
                         s1,dstr = ref.excite(i,a)
                         if dstr is None:
                             continue
@@ -407,12 +405,10 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
         # loop over T1T2
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
-                if j <= i: continue
                 for ik,k in enumerate(iocc):
                     if k <= j: continue
                     for ia,a in enumerate(ivir):
                         for ib,b in enumerate(ivir):
-                            if b <= a: continue
                             for ic,c in enumerate(ivir):
                                 if c <= b: continue
                                 s1,dstr = ref.excite(i,a)
@@ -447,6 +443,7 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                                     idx = basis.index(dstr)
                                     C[idx] += s1*s2*s3*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]/6.0
     if order >= 4:
+        # T2^2
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
                 if j <= i: continue
@@ -471,8 +468,8 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                                         s4,dstr = dstr.excite(l,d)
                                         if dstr is not None:
                                             idx = basis.index(dstr)
-                                            # T2^2
                                             C[idx] += s1*s2*s3*s4*T2[ia,ib,ii,ij]*T2[ic,idd,ik,il]/2.0
+        # T1^2T2
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
                 for ik,k in enumerate(iocc):
@@ -495,7 +492,6 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                                         s4,dstr = dstr.excite(l,d)
                                         if dstr is not None:
                                             idx = basis.index(dstr)
-                                            # T1^2T2
                                             C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T2[ic,idd,ik,il]/2.0
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
@@ -505,7 +501,6 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                             for ib,b in enumerate(ivir):
                                 for ic,c in enumerate(ivir):
                                     for idd,d in enumerate(ivir):
-                                        if d <= c: continue
                                         s1,dstr = ref.excite(i,a)
                                         if dstr is None:
                                             continue
