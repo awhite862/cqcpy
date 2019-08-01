@@ -1709,25 +1709,25 @@ def ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old):
     return L1,L2
 
 def ccsd_1rdm_ba(T1,T2,L1,L2):
-    pba = numpy.einsum('ia,bi->ba',L1,T1) \
-        + 0.5*numpy.einsum('kica,cbki->ba',L2,T2)
+    pba = einsum('ia,bi->ba',L1,T1) \
+        + 0.5*einsum('kica,cbki->ba',L2,T2)
     return pba
 
 ccsd_1rdm_ba_opt = ccsd_1rdm_ba
 
 def ccsd_1rdm_ji(T1,T2,L1,L2):
-    pji = -numpy.einsum('ja,ai->ji',L1,T1) \
-        - 0.5*numpy.einsum('kjca,caki->ji',L2,T2)
+    pji = -einsum('ja,ai->ji',L1,T1) \
+        - 0.5*einsum('kjca,caki->ji',L2,T2)
     return pji
 
 ccsd_1rdm_ji_opt = ccsd_1rdm_ji
 
 def ccsd_1rdm_ai(T1,T2,L1,L2,tfac=1.0):
     pai = tfac*T1\
-        + numpy.einsum('jb,baji->ai',L1,T2)\
-        - numpy.einsum('jb,bi,aj->ai',L1,T1,T1)\
-        - 0.5*numpy.einsum('kjcb,ci,abkj->ai',L2,T1,T2)\
-        - 0.5*numpy.einsum('kjcb,ak,cbij->ai',L2,T1,T2)
+        + einsum('jb,baji->ai',L1,T2)\
+        - einsum('jb,bi,aj->ai',L1,T1,T1)\
+        - 0.5*einsum('kjcb,ci,abkj->ai',L2,T1,T2)\
+        - 0.5*einsum('kjcb,ak,cbij->ai',L2,T1,T2)
     return pai
 
 def ccsd_2rdm_cdab(T1,T2,L1,L2):
@@ -1845,7 +1845,7 @@ def ccsd_2rdm_klij(T1,T2,L1,L2):
 def ccsd_1rdm_ai_opt(T1,T2,L1,L2,tfac=1.0):
     pai = tfac*T1
     T2temp = T2 - einsum('bi,aj->baji',T1,T1)
-    pai += numpy.einsum('jb,baji->ai',L1,T2temp)
+    pai += einsum('jb,baji->ai',L1,T2temp)
 
     Pac = 0.5*einsum('kjcb,abkj->ac',L2,T2)
     pai -= einsum('ac,ci->ai',Pac,T1)
@@ -1960,24 +1960,24 @@ def ccsd_2rdm_klij_opt(T1,T2,L1,L2):
 
 def uccsd_1rdm_ba(T1a,T1b,T2aa,T2ab,T2bb,
         L1a,L1b,L2aa,L2ab,L2bb):
-    pba_a = numpy.einsum('ia,bi->ba',L1a,T1a)
-    pba_a += 0.5*numpy.einsum('kica,cbki->ba',L2aa,T2aa)
-    pba_a += numpy.einsum('ikac,bcik->ba',L2ab,T2ab)
+    pba_a = einsum('ia,bi->ba',L1a,T1a)
+    pba_a += 0.5*einsum('kica,cbki->ba',L2aa,T2aa)
+    pba_a += einsum('ikac,bcik->ba',L2ab,T2ab)
 
-    pba_b = numpy.einsum('ia,bi->ba',L1b,T1b)
-    pba_b += 0.5*numpy.einsum('kica,cbki->ba',L2bb,T2bb)
-    pba_b += numpy.einsum('kica,cbki->ba',L2ab,T2ab)
+    pba_b = einsum('ia,bi->ba',L1b,T1b)
+    pba_b += 0.5*einsum('kica,cbki->ba',L2bb,T2bb)
+    pba_b += einsum('kica,cbki->ba',L2ab,T2ab)
     return pba_a,pba_b
 
 def uccsd_1rdm_ji(T1a,T1b,T2aa,T2ab,T2bb,
         L1a,L1b,L2aa,L2ab,L2bb):
-    pji_a = -numpy.einsum('ja,ai->ji',L1a,T1a)
-    pji_a -= 0.5*numpy.einsum('kjca,caki->ji',L2aa,T2aa)
-    pji_a -= numpy.einsum('jkac,acik->ji',L2ab,T2ab)
+    pji_a = -einsum('ja,ai->ji',L1a,T1a)
+    pji_a -= 0.5*einsum('kjca,caki->ji',L2aa,T2aa)
+    pji_a -= einsum('jkac,acik->ji',L2ab,T2ab)
 
-    pji_b = -numpy.einsum('ja,ai->ji',L1b,T1b)
-    pji_b -= 0.5*numpy.einsum('kjca,caki->ji',L2bb,T2bb)
-    pji_b -= numpy.einsum('kjca,caki->ji',L2ab,T2ab)
+    pji_b = -einsum('ja,ai->ji',L1b,T1b)
+    pji_b -= 0.5*einsum('kjca,caki->ji',L2bb,T2bb)
+    pji_b -= einsum('kjca,caki->ji',L2ab,T2ab)
 
     return pji_a, pji_b
 
@@ -1988,8 +1988,8 @@ def uccsd_1rdm_ai(T1a,T1b,T2aa,T2ab,T2bb,
     T2tempab = T2ab
 
     pai_a = tfac*T1a
-    pai_a += numpy.einsum('jb,baji->ai',L1a,T2tempaa)
-    pai_a += numpy.einsum('jb,abij->ai',L1b,T2tempab)
+    pai_a += einsum('jb,baji->ai',L1a,T2tempaa)
+    pai_a += einsum('jb,abij->ai',L1b,T2tempab)
 
     Pac_a = 0.5*einsum('kjcb,abkj->ac',L2aa,T2aa)
     Pac_a += einsum('kjcb,abkj->ac',L2ab,T2ab)
@@ -2000,8 +2000,8 @@ def uccsd_1rdm_ai(T1a,T1b,T2aa,T2ab,T2bb,
     pai_a -= einsum('ik,ak->ai',Pik_a,T1a)
 
     pai_b = tfac*T1b
-    pai_b += numpy.einsum('jb,baji->ai',L1b,T2tempbb)
-    pai_b += numpy.einsum('jb,baji->ai',L1a,T2tempab)
+    pai_b += einsum('jb,baji->ai',L1b,T2tempbb)
+    pai_b += einsum('jb,baji->ai',L1a,T2tempab)
 
     Pac_b = 0.5*einsum('kjcb,abkj->ac',L2bb,T2bb)
     Pac_b += einsum('jkbc,bajk->ac',L2ab,T2ab)

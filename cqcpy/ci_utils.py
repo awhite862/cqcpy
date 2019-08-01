@@ -32,27 +32,27 @@ class Dstring(object):
     def __eq__(self, other):
         return numpy.array_equal(self.occ, other.occ) and self.n == other.n
 
-#class Pstring(object):
-#    def __init__(self,n,occ):
-#        self.occ = numpy.asarray(occ)
-#        assert(n == self.occ.shape[0])
-#        self.n = n
-#
-#    def raise(self, p):
-#        occnew = self.occ.copy()
-#        occnew[p] = occnew[p] + 1
-#        return Pstring(self.n,occnew)
-#
-#    def lower(self, p):
-#        occnew = self.occ.copy()
-#        if occnew[p] == 0:
-#            return None
-#        else:
-#            occnew[p] = occnew[p] - 1
-#            return Pstring(self.n,occnew)
-#
-#    def __eq__(self, other):
-#        return numpy.array_equal(self.occ, other.occ) and self.n == other.n
+class Pstring(object):
+    def __init__(self,n,occ):
+        self.occ = numpy.asarray(occ)
+        assert(n == self.occ.shape[0])
+        self.n = n
+
+    def raize(self, p):
+        occnew = self.occ.copy()
+        occnew[p] = occnew[p] + 1
+        return Pstring(self.n,occnew)
+
+    def lower(self, p):
+        occnew = self.occ.copy()
+        if occnew[p] == 0:
+            return None
+        else:
+            occnew[p] = occnew[p] - 1
+            return Pstring(self.n,occnew)
+
+    def __eq__(self, other):
+        return numpy.array_equal(self.occ, other.occ) and self.n == other.n
 
 def level(ref, string):
     diff = [abs(o1 - o2) for o1,o2 in zip(ref.occ, string.occ)]
@@ -147,7 +147,26 @@ def q_strings(n, nocc, occ=None):
                                     dlist.append(d4)
     return dlist
 
-def get_ucis_basis(n, na, nb, gs=True):
+def s_pstrings(nmode):
+    occ = [0 for i in range(nmode)]
+    ref = Pstring(nmode, occ)
+    blist = []
+    for i in range(nmode):
+        temp = ref.raize(i)
+        blist.append(temp)
+    return blist
+
+def d_pstrings(nmode):
+    occ = [0 for i in range(nmode)]
+    ref = Pstring(nmode, occ)
+    blist = []
+    for i in range(nmode):
+        for j in range(i,nmode):
+            temp = ref.raize(i).raize(j)
+            blist.append(temp)
+    return blist
+
+def ucis_basis(n, na, nb, gs=True):
     sa = s_strings(n, na)
     sb = s_strings(n, nb)
     occa = [1 if i < na else 0 for i in range(n)]
@@ -342,6 +361,27 @@ def gcisdtq_basis(nmo, n):
         basis.append(q)
     return basis
 
+def vcis_basis(nmode):
+    occ = [0 for i in range(nmode)]
+    ref = Pstring(nmode, occ)
+    basis = [ref]
+    singles = s_pstrings(nmode)
+    for s in singles:
+        basis.append(s)
+    return basis
+
+def vcisd_basis(nmode):
+    occ = [0 for i in range(nmode)]
+    ref = Pstring(nmode, occ)
+    basis = [ref]
+    singles = s_pstrings(nmode)
+    doubles = d_pstrings(nmode)
+    for s in singles:
+        basis.append(s)
+    for d in doubles:
+        basis.append(d)
+    return basis
+
 def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
     nmo = no + nv
     if order < 1:
@@ -424,14 +464,10 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
         # loop over T1^3
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
-                if j <= i: continue
                 for ik,k in enumerate(iocc):
-                    if k <= j: continue
                     for ia,a in enumerate(ivir):
                         for ib,b in enumerate(ivir):
-                            if b <= a: continue
                             for ic,c in enumerate(ivir):
-                                if c <= b: continue
                                 s1,dstr = ref.excite(i,a)
                                 if dstr is None:
                                     continue
