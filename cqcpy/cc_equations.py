@@ -831,6 +831,104 @@ class lambda_int(object):
             - 0.5*I.oooo
         self.IToovv2 = einsum('ljdb,cdkl->kjcb',I.oovv,T2old)
 
+def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
+    t1 = time.time()
+
+    T2A = T2old.copy()
+    T2A += 0.5*einsum('ai,bj->abij',T1old,T1old)
+    T2A -= 0.5*einsum('bi,aj->abij',T1old,T1old)
+
+    Fvv = F.vv.copy()
+    Fvv -= 0.5*einsum('jb,aj->ab',F.ov,T1old)
+    Fvv -= einsum('ajcb,cj->ab',I.vovv,T1old)
+    Fvv -= 0.5*einsum('jkbc,acjk->ab',I.oovv,T2A)
+
+    Foo = F.oo.copy()
+    Foo += 0.5*einsum('jb,bi->ji',F.ov,T1old)
+    Foo += einsum('jkib,bk->ji',I.ooov,T1old)
+    Foo += 0.5*einsum('jkbc,bcik->ji',I.oovv,T2A)
+
+    Fov = F.ov.copy()
+    Fov += einsum('jkbc,ck->jb',I.oovv,T1old)
+
+    T2B = T2old.copy()
+    T2B += einsum('ai,bj->abij',T1old,T1old)
+    T2B -= einsum('bi,aj->abij',T1old,T1old)
+
+    Woooo = I.oooo.copy()
+    Woooo += einsum('klic,cj->klij',I.ooov,T1old)
+    Woooo -= einsum('kljc,ci->klij',I.ooov,T1old)
+    Woooo += 0.25*einsum('klcd,cdij->klij',I.oovv,T2B)
+
+    Wvvvv = I.vvvv.copy()
+    Wvvvv -= einsum('akcd,bk->abcd',I.vovv,T1old)
+    Wvvvv += einsum('bkcd,ak->abcd',I.vovv,T1old)
+    Wvvvv += 0.25*einsum('klcd,abkl->abcd',I.oovv,T2B)
+
+    Wovvo = -I.vovo.transpose((1,0,2,3))
+    Wovvo -= einsum('bkcd,dj->kbcj',I.vovv,T1old)
+    Wovvo += einsum('kljc,bl->kbcj',I.ooov,T1old)
+    temp = 0.5*T2old + einsum('dj,bl->dbjl',T1old,T1old)
+    Wovvo -= einsum('klcd,dbjl->kbcj',I.oovv,temp)
+
+    F1ov = Fov
+    F1vv = Fvv - 0.5*einsum('me,am->ae',Fov,T1old)
+    F1oo = Foo + 0.5*einsum('me,ei->mi',Fov,T1old)
+
+    W1oooo = Woooo + 0.25*einsum('mnef,efij->mnij',I.oovv,T2B)
+    W1vvvv = Wvvvv + 0.25*einsum('mnef,abmn->abef',I.oovv,T2B)
+    W1ovvo = Wovvo - 0.5*einsum('mnef,fbjn->mbej',I.oovv,T2old)
+    W1ooov = I.ooov + einsum('mnfe,fi->mnie',I.oovv,T1old)
+    W1vovv = I.vovv - einsum('nmef,an->amef',I.oovv,T1old)
+
+    W1vvvo = I.vvvo - einsum('me,abmi->abei',F1ov,T2old)
+    W1vvvo += einsum('abef,fi->abei',W1vvvv,T1old)
+    W1vvvo -= 0.5*einsum('mnie,abmn->abei',I.ooov,T2B)
+    temp = -einsum('bmef,afmi->abei',I.vovv,T2old)
+    Xt = -I.vovo.transpose((1,0,2,3)) - einsum('mnef,bfni->mbei',I.oovv,T2old)
+    temp += einsum('mbei,am->abei',Xt,T1old)
+    W1vvvo -= temp - temp.transpose((1,0,2,3))
+
+    W1ovoo = -I.vooo.transpose((1,0,2,3)) - einsum('me,beij->mbij',F1ov,T2old) 
+    W1ovoo -= einsum('mnij,bn->mbij',W1oooo,T1old)
+    W1ovoo -= 0.5*einsum('bmef,efij->mbij',I.vovv,T2B)
+    temp = einsum('mnie,bejn->mbij',I.ooov,T2old)
+    Xt = -I.vovo.transpose((1,0,2,3)) - einsum('mnef,bfnj->mbej',I.oovv,T2old)
+    temp += einsum('ei,mbej->mbij',T1old,Xt)
+    W1ovoo += temp - temp.transpose((0,1,3,2))
+
+    Gvv = -0.5*einsum('mnaf,efmn->ae',L2old,T2old)
+    Goo = 0.5*einsum('inef,efmn->mi',L2old,T2old)
+
+    L1 += einsum('ie,ea->ia',L1old,F1vv)
+    L1 -= einsum('ma,im->ia',L1old,F1oo)
+    L1 += einsum('me,ieam->ia',L1old,W1ovvo)
+    L1 += 0.5*einsum('imef,efam->ia',L2old,W1vvvo)
+    L1 -= 0.5*einsum('mnae,iemn->ia',L2old,W1ovoo)
+    L1 -= einsum('ef,eifa->ia',Gvv,W1vovv)
+    L1 -= einsum('mn,mina->ia',Goo,W1ooov)
+
+    L2 += 0.5*einsum('mnab,ijmn->ijab',L2old,W1oooo)
+    L2 += 0.5*einsum('ijef,efab->ijab',L2old,W1vvvv)
+
+    tempijab = einsum('ia,jb->ijab',L1old,F1ov)
+    tempijab += einsum('imae,jebm->ijab',L2old,W1ovvo)
+    L2 += tempijab - tempijab.transpose((0,1,3,2)) \
+            - tempijab.transpose((1,0,2,3)) + tempijab.transpose((1,0,3,2))
+
+    tempij = -einsum('imab,jm->ijab',L2old,F1oo)
+    tempij += einsum('ie,ejab->ijab',L1old,W1vovv)
+    tempij -= einsum('imab,mj->ijab',I.oovv,Goo)
+    L2 += tempij - tempij.transpose((1,0,2,3))
+
+    tempab = einsum('ijae,eb->ijab',L2old,F1vv)
+    tempab -= einsum('ma,ijmb->ijab',L1old,W1ooov)
+    tempab += einsum('ijae,be->ijab',I.oovv,Gvv)
+    L2 += tempab - tempab.transpose((0,1,3,2))
+
+    t2 = time.time()
+    #print("Total Lambda time: {} s".format(t1 - t2))
+
 def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     t1 = time.time()
 
@@ -1643,6 +1741,18 @@ def ccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old):
 
     _LS_TS(L1, I, T1old)
     _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old)
+
+    return L1,L2
+
+def ccsd_lambda_stanton(F, I, L1old, L2old, T1old, T2old):
+    """Coupled cluster singles and doubles (CCSD) Lambda iteration
+    with intermediats.
+    """
+    L1 = F.ov.copy()
+    L2 = I.oovv.copy()
+
+    _LS_TS(L1, I, T1old)
+    _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old)
 
     return L1,L2
 

@@ -16,9 +16,28 @@ class LambdaEquationsTest(unittest.TestCase):
         T1old,T2old = test_utils.make_random_T(no,nv)
         L1old,L2old = test_utils.make_random_L(no,nv)
         F,I = test_utils.make_random_integrals(no,nv)
-        
+
         L1sim, L2sim = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
         L1opt, L2opt = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old)
+
+        D1 = numpy.linalg.norm(L1sim - L1opt)
+        D2 = numpy.linalg.norm(L2sim - L2opt)
+        s1 = D1 < self.thresh
+        s2 = D2 < self.thresh
+        e1 = "Error in optimized L1"
+        e2 = "Error in optimized L2"
+        self.assertTrue(s1,e1)
+        self.assertTrue(s2,e2)
+
+    def test_ccsd_stanton(self):
+        no = self.no
+        nv = self.nv
+        T1old,T2old = test_utils.make_random_T(no,nv)
+        L1old,L2old = test_utils.make_random_L(no,nv)
+        F,I = test_utils.make_random_integrals(no,nv)
+
+        L1sim, L2sim = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
+        L1opt, L2opt = cc_equations.ccsd_lambda_stanton(F, I, L1old, L2old, T1old, T2old)
 
         D1 = numpy.linalg.norm(L1sim - L1opt)
         D2 = numpy.linalg.norm(L2sim - L2opt)
@@ -118,7 +137,6 @@ class LambdaEquationsTest(unittest.TestCase):
         e2 = "Error in UCCSD L2"
         self.assertTrue(s1,e1)
         self.assertTrue(s2,e2)
-
 
 if __name__ == '__main__':
     unittest.main()
