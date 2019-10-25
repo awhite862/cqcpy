@@ -1,7 +1,6 @@
 # cqcpy: Some quantum chemistry utilities in python
-These utilies exist to provide some generally usefuly functionality for development
-and testing of quantum chemistry code. They are not intended to be efficient with regards
-to memory or computation.
+These utilies exist to provide some generally useful functionality for development
+and testing of quantum chemistry code. They are not intended to be computationally efficient.
 
 ## Prerequisites
 + numpy
