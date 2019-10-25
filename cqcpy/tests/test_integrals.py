@@ -1,6 +1,5 @@
 import unittest
 import numpy
-from cqcpy import integrals
 
 class IntegralsTest(unittest.TestCase):
     def setUp(self):
@@ -16,6 +15,7 @@ class IntegralsTest(unittest.TestCase):
         self.mol = mol
         self.mf = mf
 
+        from cqcpy import integrals
         import pyscf.pbc.gto as pbc_gto
         import pyscf.pbc.scf as pbc_scf
         cell = pbc_gto.Cell()
@@ -38,6 +38,7 @@ class IntegralsTest(unittest.TestCase):
         self.cell = cell
 
     def test_phys(self):
+        from cqcpy import integrals
         mo_coeff = self.mf.mo_coeff
         mol = self.mol
         nao = mo_coeff[0].shape[0]
@@ -52,6 +53,7 @@ class IntegralsTest(unittest.TestCase):
         self.assertTrue(diff < 1e-12)
 
     def test_u(self):
+        from cqcpy import integrals
         mo_coeff = self.mf.mo_coeff
         mol = self.mol
         moa = mo_coeff[0]
@@ -62,6 +64,7 @@ class IntegralsTest(unittest.TestCase):
         self.assertTrue(diff < 1e-12)
 
     def test_sol_phys(self):
+        from cqcpy import integrals
         mo_coeff = self.pbc_mf.mo_coeff
         nao = mo_coeff.shape[0]
         mo1 = mo_coeff[:,0].reshape((nao,1))

@@ -1,8 +1,9 @@
 import numpy
-from pyscf import lib
-
-einsum = lib.einsum
-#einsum = einsum
+try:
+    from pyscf import lib
+    einsum = lib.einsum
+except:
+    einsum = numpy.einsum
 
 def cc_energy_d(t2, eri):
     """Return the T2 contribution to the CC energy."""

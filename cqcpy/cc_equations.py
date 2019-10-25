@@ -1,9 +1,10 @@
 import numpy
 import time
-from pyscf import lib
-
-einsum = lib.einsum
-#einsum = einsum
+try:
+    from pyscf import lib
+    einsum = lib.einsum
+except:
+    einsum = numpy.einsum
 
 def _S_S(T1, F, I, T1old, fac=1.0):
     # S[S]-A
