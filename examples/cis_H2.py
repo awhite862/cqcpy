@@ -33,7 +33,7 @@ I = integrals.get_phys(mol, mos, mos, mos, mos)
 N = mol.nelectron
 na = N//2
 nb = na
-basis = ci_utils.get_ucis_basis(nmo, na, nb, gs=False)
+basis = ci_utils.ucis_basis(nmo, na, nb, gs=False)
 nd = len(basis)
 
 H = numpy.zeros((nd,nd))
