@@ -928,7 +928,6 @@ def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     L2 += tempab - tempab.transpose((0,1,3,2))
 
     t2 = time.time()
-    #print("Total Lambda time: {} s".format(t1 - t2))
 
 def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     t1 = time.time()

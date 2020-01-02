@@ -577,7 +577,6 @@ def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
     nd = len(basis)
     C = numpy.zeros(nd)
     C[0] = 1.0
-    #print("order: {}".format(order))
 
     if order >= 1:
         # loop over T1a
