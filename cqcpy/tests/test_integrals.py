@@ -34,7 +34,11 @@ class IntegralsTest(unittest.TestCase):
         cell.build()
         pbc_mf = pbc_scf.RHF(cell, exxdiv=None)
         ehf = pbc_mf.kernel()
+        kpt = cell.make_kpts((1,1,1), scaled_center=(0,0,1./3.))
+        pbc_mf2 = pbc_scf.RHF(cell, kpt=kpt, exxdiv=None)
+        ehf2 = pbc_mf2.kernel()
         self.pbc_mf = pbc_mf
+        self.pbc_mf2 = pbc_mf2
         self.cell = cell
 
     def test_phys(self):
@@ -75,6 +79,110 @@ class IntegralsTest(unittest.TestCase):
         ref = integrals.get_chem_sol(self.pbc_mf, mo1, mo3, mo2, mo4, anti=True).transpose((0,2,1,3))
         out = integrals.get_phys_sol(self.pbc_mf, mo1, mo2, mo3, mo4, anti=True)
         diff = abs(ref[0,0,0,0] - out[0,0,0,0])
+        self.assertTrue(diff < 1e-12)
+
+    def test_fock(self):
+        from cqcpy import integrals
+        from cqcpy import utils
+        mf = self.mf
+        f = mf.get_fock()
+        h1 = mf.get_hcore(self.mf.mol)
+        va = f[0] - h1
+        vb = f[1] - h1
+        moa = mf.mo_coeff[0]
+        mob = mf.mo_coeff[1]
+        vmoa = numpy.einsum('mp,mn,nq->pq',numpy.conj(moa),va,moa)
+        vmob = numpy.einsum('mp,mn,nq->pq',numpy.conj(mob),vb,mob)
+
+        na = mf.mol.nelectron // 2 + mf.mol.spin
+        nb = mf.mol.nelectron - na
+        nmo = moa.shape[1]
+        pad = numpy.zeros(nmo)
+        pbd = numpy.zeros(nmo)
+        pad[:na] = numpy.ones(na)
+        pbd[:nb] = numpy.ones(nb)
+        pmoa = numpy.diag(pad)
+        pmob = numpy.diag(pbd) 
+            
+        p = utils.block_diag(pmoa,pmob)
+        eri = integrals.get_physu_all(mf.mol, moa, mob, anti=True)
+        JK = numpy.einsum('pqrs,qs->pr',eri,p)
+        vtot = utils.block_diag(vmoa,vmob)
+        diff = numpy.linalg.norm(vtot - JK)
+        self.assertTrue(diff < 1e-12)
+
+    def test_fock_sol(self):
+        from cqcpy import integrals
+        from cqcpy import utils
+        mf = self.pbc_mf
+        f = mf.get_fock()
+        h1 = mf.get_hcore(mf.cell)
+        v = f - h1
+        mo = mf.mo_coeff
+        vmo = numpy.einsum('mp,mn,nq->pq',numpy.conj(mo),v,mo)
+
+        na = mf.mol.nelectron // 2 + mf.mol.spin
+        nb = mf.mol.nelectron - na
+        nmo = mo.shape[1]
+        pad = numpy.zeros(nmo)
+        pbd = numpy.zeros(nmo)
+        pad[:na] = numpy.ones(na)
+        pbd[:nb] = numpy.ones(nb)
+        pmoa = numpy.diag(pad)
+        pmob = numpy.diag(pbd) 
+            
+        p = utils.block_diag(pmoa,pmob)
+        eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
+        JK = numpy.einsum('pqrs,qs->pr',eri,p)
+        vtot = utils.block_diag(vmo,vmo)
+        diff = numpy.linalg.norm(vtot - JK)
+        self.assertTrue(diff < 1e-12)
+
+    def test_fock_sol_k(self):
+        from cqcpy import integrals
+        from cqcpy import utils
+        mf = self.pbc_mf2
+        f = mf.get_fock()
+        h1 = mf.get_hcore(mf.cell)
+        v = f - h1
+        mo = mf.mo_coeff
+        vmo = numpy.einsum('mp,mn,nq->pq',numpy.conj(mo),v,mo)
+
+        na = mf.mol.nelectron // 2 + mf.mol.spin
+        nb = mf.mol.nelectron - na
+        nmo = mo.shape[1]
+        pad = numpy.zeros(nmo)
+        pbd = numpy.zeros(nmo)
+        pad[:na] = numpy.ones(na)
+        pbd[:nb] = numpy.ones(nb)
+        pmoa = numpy.diag(pad)
+        pmob = numpy.diag(pbd) 
+            
+        p = utils.block_diag(pmoa,pmob)
+        eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
+        JK = numpy.einsum('pqrs,sq->pr',eri,p)
+        vtot = utils.block_diag(vmo,vmo)
+        diff = numpy.linalg.norm(vtot - JK)
+        self.assertTrue(diff < 1e-12)
+
+    def test_eri_sol_k(self):
+        from cqcpy import integrals
+        import pyscf.pbc.cc as pbc_cc
+        mf = self.pbc_mf2
+        cc = pbc_cc.CCSD(mf)
+        eris = cc.ao2mo()
+        mo = mf.mo_coeff
+        o = mo[:,mf.mo_occ>0]
+        v = mo[:,mf.mo_occ==0]
+
+        oooo = eris.oooo
+        Ioooo = integrals.get_chem_sol(mf, o, o, o, o)
+        diff = numpy.linalg.norm(oooo - Ioooo)
+        self.assertTrue(diff < 1e-12)
+
+        oovv = eris.oovv
+        Ioovv = integrals.get_chem_sol(mf, o, o, v, v)
+        diff = numpy.linalg.norm(oovv - Ioovv)
         self.assertTrue(diff < 1e-12)
 
 if __name__ == '__main__':

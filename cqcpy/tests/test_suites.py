@@ -60,6 +60,10 @@ def full_suite():
         suite.addTest(test_integrals.IntegralsTest("test_phys"))
         suite.addTest(test_integrals.IntegralsTest("test_u"))
         suite.addTest(test_integrals.IntegralsTest("test_sol_phys"))
+        suite.addTest(test_integrals.IntegralsTest("test_fock"))
+        suite.addTest(test_integrals.IntegralsTest("test_fock_sol"))
+        suite.addTest(test_integrals.IntegralsTest("test_fock_sol_k"))
+        suite.addTest(test_integrals.IntegralsTest("test_eri_sol_k"))
 
     return suite
 

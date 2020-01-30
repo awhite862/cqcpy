@@ -31,6 +31,7 @@ def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     """Get unrestricted, ERIs in chemist's
     notation for given alphd and beta orbital Coeffs.
     """
+    dtype = o1.dtype
     Ia = get_chem(mol,o1,o2,o3,o4,anti=anti)
     Ib = get_chem(mol,p1,p2,p3,p4,anti=anti)
     Iaabb = get_chem(mol,o1,o2,p3,p4)
@@ -47,7 +48,7 @@ def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     n2 = a2 + b2 
     n3 = a3 + b3 
     n4 = a4 + b4 
-    I = numpy.zeros((n1,n2,n3,n4))
+    I = numpy.zeros((n1,n2,n3,n4),dtype=dtype)
     I[:a1,:a2,:a3,:a4] = Ia
     I[a1:,a2:,a3:,a4:] = Ib
     I[:a1,:a2,a3:,a4:] = Iaabb
@@ -78,7 +79,8 @@ def get_chemu_all(mol,oa,ob,anti=False):
         compact=False).reshape(nb,nb,nb,nb)
     Iab = mol_ao2mo.general(mol,(oa,oa,ob,ob),
         compact=False).reshape(na,na,nb,nb)
-    Id = numpy.zeros((n,n,n,n))
+    dtype = oa.dtype
+    Id = numpy.zeros((n,n,n,n),dtype=dtype)
     Id[:na,:na,:na,:na] = Ia
     Id[na:,na:,na:,na:] = Ib
     Id[:na,:na,na:,na:] = Iab
@@ -120,9 +122,9 @@ def get_chem_sol(mf,o1,o2,o3,o4,anti=False):
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    Id = mf.with_df.ao2mo((o1,o2,o3,o4),compact=False).reshape(n1,n2,n3,n4)
+    Id = mf.with_df.ao2mo((o1,o2,o3,o4), mf.kpt, compact=False).reshape(n1,n2,n3,n4)
     if anti:
-        Ix = mf.with_df.ao2mo((o1,o4,o3,o2),compact=False).reshape(n1,n4,n3,n2)
+        Ix = mf.with_df.ao2mo((o1,o4,o3,o2), mf.kpt, compact=False).reshape(n1,n4,n3,n2)
         return Id - Ix.transpose(0,3,2,1)
     else:
         return Id
@@ -150,7 +152,8 @@ def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     n2 = a2 + b2 
     n3 = a3 + b3 
     n4 = a4 + b4 
-    I = numpy.zeros((n1,n2,n3,n4))
+    dtype = o1.dtype
+    I = numpy.zeros((n1,n2,n3,n4),dtype=dtype)
     I[:a1,:a2,:a3,:a4] = Ia
     I[a1:,a2:,a3:,a4:] = Ib
     I[:a1,:a2,a3:,a4:] = Iaabb
@@ -180,12 +183,13 @@ def get_chemu_all_sol(mf,oa,ob,anti=False):
     nb = ob.shape[1]
     n = na + nb
     Ia = mf.with_df.ao2mo((oa,oa,oa,oa),
-        compact=False).reshape(na,na,na,na)
+        mf.kpt, compact=False).reshape(na,na,na,na)
     Ib = mf.with_df.ao2mo((ob,ob,ob,ob),
-        compact=False).reshape(nb,nb,nb,nb)
+        mf.kpt, compact=False).reshape(nb,nb,nb,nb)
     Iab = mf.with_df.ao2mo((oa,oa,ob,ob),
-        compact=False).reshape(na,na,nb,nb)
-    Id = numpy.zeros((n,n,n,n))
+        mf.kpt, compact=False).reshape(na,na,nb,nb)
+    dtype = oa.dtype
+    Id = numpy.zeros((n,n,n,n),dtype = oa.dtype)
     Id[:na,:na,:na,:na] = Ia
     Id[na:,na:,na:,na:] = Ib
     Id[:na,:na,na:,na:] = Iab
