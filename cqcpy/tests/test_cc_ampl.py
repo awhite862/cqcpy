@@ -2,6 +2,7 @@ import unittest
 import numpy
 
 from cqcpy import test_utils
+from cqcpy import ov_blocks
 import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_energy as cc_energy
 import cqcpy.cc_equations as cc_equations
@@ -111,7 +112,7 @@ class TamplEquationsTest(unittest.TestCase):
         S1ref,S2ref = cc_equations.ccsd_stanton(F, I, T1, T2)
 
         # Update with UCCSD
-        S1,S2 = cc_equations.uccsd_stanton(Faa, Fbb, Ia, Ib, I_abab, 
+        S1,S2 = cc_equations.uccsd_stanton(Faa, Fbb, Ia, Ib, I_abab,
                 (T1a,T1b), (T2aa,T2ab,T2bb))
         S1a,S1b = S1
         S2aa,S2ab,S2bb = S2
@@ -125,6 +126,61 @@ class TamplEquationsTest(unittest.TestCase):
         e2 = "Error in UCCSD T2"
         self.assertTrue(s1,e1)
         self.assertTrue(s2,e2)
+
+    def test_rcc_energy(self):
+        no = 3
+        nv = 5
+        n = no + nv
+        F = test_utils.make_random_F(no, nv)
+        Itot = numpy.random.random((n,n,n,n))
+        Itot = Itot + Itot.transpose((1,0,3,2))
+        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
+        Ianti = I.oovv - I.oovv.transpose((0,1,3,2))
+
+        T1 = numpy.random.random((nv,no))
+        T2 = numpy.random.random((nv,nv,no,no))
+        T2 = T2 + T2.transpose((1,0,3,2))
+        T1a = T1b = T1
+        T2aa = T2 - T2.transpose((0,1,3,2))
+
+        E_ref = cc_energy.ucc_energy((T1,T1),(T2aa,T2,T2aa),F.ov,F.ov,Ianti,Ianti,I.oovv)
+        E_out = cc_energy.rcc_energy(T1,T2,F.ov,I.oovv)
+
+        s = abs(E_ref - E_out) < self.thresh
+        err = "Error in rcc_energy"
+        self.assertTrue(s,err)
+
+    def test_rccsd(self):
+        no = 3
+        nv = 5
+        n = no + nv
+        F = test_utils.make_random_F(no, nv)
+        Itot = numpy.random.random((n,n,n,n))
+        Itot = Itot + Itot.transpose((1,0,3,2))
+        Ianti = Itot - Itot.transpose((0,1,3,2))
+        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
+        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
+
+        T1 = numpy.random.random((nv,no))
+        T2 = numpy.random.random((nv,nv,no,no))
+        T2 = T2 + T2.transpose((1,0,3,2))
+        T1a = T1b = T1
+        T2aa = T2 - T2.transpose((0,1,3,2))
+
+        # Update with UCCSD
+        uS1,uS2 = cc_equations.uccsd_stanton(F, F, Ia, Ia, I,
+                (T1a,T1b), (T2aa,T2,T2aa))
+        ref1 = uS1[0]
+        ref2 = uS2[1]
+        rS1,rS2 = cc_equations.rccsd_stanton(F, I, T1, T2)
+
+        d1 = numpy.linalg.norm(ref1 - rS1) / numpy.linalg.norm(ref1)
+        d2 = numpy.linalg.norm(ref2 - rS2) / numpy.linalg.norm(ref2)
+
+        e1 = "Error in RCCSD T1"
+        e2 = "Error in RCCSD T2"
+        self.assertTrue(d1 < 1e-14,e1)
+        self.assertTrue(d2 < 1e-14,e2)
 
 if __name__ == '__main__':
     unittest.main()

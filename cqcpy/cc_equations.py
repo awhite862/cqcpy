@@ -178,7 +178,7 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T1 -= fac*einsum('ajbi,bj->ai',I.vovo,T1old)
     T1 += fac*0.5*einsum('ajbc,bcij->ai',I.vovv,T2old)
     T1 -= fac*0.5*einsum('jkib,abjk->ai',I.ooov,T2old)
-    
+
     T2B = T2old.copy()
     T2B += einsum('ai,bj->abij',T1old,T1old)
     T2B -= einsum('bi,aj->abij',T1old,T1old)
@@ -468,10 +468,92 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2ab -= fac*ATab
     T2bb -= fac*ATbb
 
+def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
+    # T1 equation
+    Fov = F.ov.copy()
+    Fvv = F.vv.copy()
+    Fvv -= 0.5*einsum('jb,aj->ab', F.ov, T1old)
+    Iovvv = 2.0*I.ovvv - I.vovv.transpose((1,0,2,3))
+    Fvv += einsum('jacb,cj->ab', Iovvv, T1old)
+    Foo = F.oo.copy()
+    Foo += 0.5*einsum('jb,bi->ji', F.ov, T1old)
+    Ioovo = 2.0*I.oovo - I.oovo.transpose((1,0,2,3))
+    Foo += einsum('kjbi,bk->ji', Ioovo, T1old)
+    T2temp = 2.0*T2old - T2old.transpose((0,1,3,2))
+    Ioovv = 2.0*I.oovv - I.oovv.transpose((1,0,2,3))
+    tau2 = T2old + 0.5*einsum('ai,bj->abij', T1old, T1old)
+    Fvv -= einsum('jkbc,acjk->ab', Ioovv, tau2)
+    Foo += einsum('jkbc,bcik->ji', Ioovv, tau2)
+    Fov += einsum('kjcb,ck->jb', Ioovv, T1old)
+    T1 += einsum('jb,abij->ai', Fov, T2temp)
+    T1 += einsum('ab,bi->ai', Fvv, T1old)
+    T1 -= einsum('ji,aj->ai', Foo, T1old)
+
+    Iovvo = 2.0*I.ovvo - I.ovov.transpose((0,1,3,2))
+    T1 += fac*einsum('jabi,bj->ai', Iovvo, T1old)
+    Ivovv = 2.0*I.vovv - I.vovv.transpose((0,1,3,2))
+    T1 += fac*einsum('ajbc,bcij->ai', Ivovv, T2old)
+    Iooov = 2.0*I.ooov - I.oovo.transpose((0,1,3,2))
+    T1 -= fac*einsum('jkib,abjk->ai', Iooov, T2old)
+
+    # T2 equation
+    tau2 = T2old + einsum('ai,bj->abij', T1old, T1old)
+    Wo = I.oooo.copy()
+    Wo += einsum('klic,cj->klij', I.ooov, T1old)
+    Wo += einsum('klcj,ci->klij', I.oovo, T1old)
+    Wo += 0.5*einsum('klcd,cdij->klij', I.oovv, tau2)
+    T2 += fac*einsum('klij,abkl->abij',Wo, tau2)
+
+    Wv = I.vvvv.copy()
+    Wv -= einsum('akcd,bk->abcd', I.vovv, T1old)
+    Wv -= einsum('kbcd,ak->abcd', I.ovvv, T1old)
+    Wv += 0.5*einsum('klcd,abkl->abcd', I.oovv, tau2)
+    T2 += fac*einsum('abcd,cdij->abij', Wv, tau2)
+
+    temp = -einsum('kbcj,ci,ak->abij', I.ovvo, T1old, T1old)
+    temp += -einsum('akcj,ci,bk->abij', I.vovo, T1old, T1old)
+    temp += -einsum('kbic,cj,ak->abij', I.ovov, T1old, T1old)
+    temp += -einsum('akic,cj,bk->abij', I.voov, T1old, T1old)
+    T2 += fac*temp
+
+    TTT1 = 0.5*(T2old - T2old.transpose((0,1,3,2))) + einsum('dj,bl->dbjl',T1old,T1old)
+    TTT2 = 0.5*T2old + einsum('dj,bl->dbjl',T1old,T1old)
+    W1 = I.ovvo - I.ovov.transpose((0,1,3,2))
+    W1 -= einsum('bkcd,dj->kbcj',I.vovv - I.vovv.transpose((0,1,3,2)),T1old)
+    W1 += einsum('kljc,bl->kbcj',I.ooov - I.oovo.transpose((0,1,3,2)),T1old)
+    W1 -= einsum('klcd,dbjl->kbcj',I.oovv - I.oovv.transpose((0,1,3,2)),TTT1)
+    W1 += 0.5*einsum('klcd,bdjl->kbcj',I.oovv,T2old)
+
+    W2 = I.ovvo.copy()
+    W2 += einsum('kbcd,dj->kbcj',I.ovvv,T1old)
+    W2 -= einsum('klcj,bl->kbcj',I.oovo,T1old)
+    W2 -= einsum('klcd,dbjl->kbcj',I.oovv,TTT1)
+    W2 += 0.5*einsum('klcd,dblj->kbcj',I.oovv - I.oovv.transpose((0,1,3,2)), T2old)
+
+    W3 = -I.ovov.transpose((0,1,3,2)).copy()
+    W3 -= einsum('kbdc,dj->kbcj',I.ovvv,T1old)
+    W3 += einsum('kljc,bl->kbcj',I.ooov,T1old)
+    W3 += einsum('kldc,dbjl->kbcj',I.oovv,TTT2)
+
+    AT = einsum('kbcj,acik->abij', W2, T2old - T2old.transpose((0,1,3,2)))
+    AT += einsum('kbcj,acik->abij', W1, T2old)
+    AT += einsum('kacj,cbik->abij', W3, T2old)
+    T2 += fac*(AT + AT.transpose((1,0,3,2)))
+
+    Fvv -= 0.5*einsum('jb,aj->ab', Fov,T1old)
+    AT = einsum('bc,acij->abij', Fvv,T2old)
+    AT -= einsum('kbij,ak->abij', I.ovoo,T1old)
+    T2 += fac*(AT + AT.transpose((1,0,3,2)))
+
+    Foo += 0.5*einsum('jb,bi->ji', Fov, T1old)
+    AT = einsum('kj,abik->abij', Foo, T2old)
+    AT -= einsum('abcj,ci->abij', I.vvvo, T1old)
+    T2 -= fac*(AT + AT.transpose((1,0,3,2)))
+
 def lccd_simple(F, I, T2old):
     """Linearized coupled cluster doubles (LCCD) iteration."""
     T2 = I.vvoo.copy()
-    
+
     _D_D(T2, F, I, T2old)
 
     return T2
@@ -484,7 +566,7 @@ def lccsd_simple(F, I, T1old, T2old):
     _S_D(T1, F, I, T2old)
 
     T2 = I.vvoo.copy()
-    
+
     _D_S(T2, F, I, T1old)
     _D_D(T2, F, I, T2old)
 
@@ -493,7 +575,7 @@ def lccsd_simple(F, I, T1old, T2old):
 def ccd_simple(F, I, T2old):
     """Coupled cluster doubles (CCD) iteration."""
     T2 = I.vvoo.copy()
-    
+
     _D_D(T2, F, I, T2old)
     _D_DD(T2, F, I, T2old)
 
@@ -510,7 +592,7 @@ def ccsd_simple(F, I, T1old, T2old):
     _S_SSS(T1, F, I, T1old)
 
     T2 = I.vvoo.copy()
-    
+
     _D_S(T2, F, I, T1old)
     _D_D(T2, F, I, T2old)
     _D_SS(T2, F, I, T1old)
@@ -543,6 +625,14 @@ def uccsd_stanton(Faa, Fbb, Ia, Ib, I_abab, T1old, T2old):
     _u_Stanton(T1a,T1b,T2aa,T2ab,T2bb,Faa,Fbb,Ia,Ib,I_abab,T1old,T2old)
 
     return (T1a,T1b),(T2aa,T2ab,T2bb)
+
+def rccsd_stanton(F, I, T1old, T2old):
+    T1 = F.vo.copy()
+    T2 = I.vvoo.copy()
+
+    _r_Stanton(T1,T2,F,I,T1old,T2old)
+
+    return T1,T2
 
 def _LS_TS(L1, I, T1old, fac=1.0):
     L1 += fac*einsum('jiba,bj->ia',I.oovv,T1old)
@@ -890,7 +980,7 @@ def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     temp += einsum('mbei,am->abei',Xt,T1old)
     W1vvvo -= temp - temp.transpose((1,0,2,3))
 
-    W1ovoo = -I.vooo.transpose((1,0,2,3)) - einsum('me,beij->mbij',F1ov,T2old) 
+    W1ovoo = -I.vooo.transpose((1,0,2,3)) - einsum('me,beij->mbij',F1ov,T2old)
     W1ovoo -= einsum('mnij,bn->mbij',W1oooo,T1old)
     W1ovoo -= 0.5*einsum('bmef,efij->mbij',I.vovv,T2B)
     temp = einsum('mnie,bejn->mbij',I.ooov,T2old)
@@ -1518,7 +1608,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
 
     ITVOVVs = IVOVVs - Ib.vovv
     tempbb = einsum('ic,cjab->ijab',L1bold,ITVOVVs)
-    ITVOVVs = None 
+    ITVOVVs = None
     tempbb -= tempbb.transpose((1,0,2,3))
     L2bb -= fac*tempbb
 

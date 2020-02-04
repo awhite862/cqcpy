@@ -50,6 +50,13 @@ def ucc_energy(t1,t2,fa,fb,Ia,Ib,Iabab):
     d += einsum('ijab,abij->',Iabab,tauab)
     return d + s
 
+def rcc_energy(t1,t2,f,I):
+    s = 2.0*einsum('ia,ai->',f,t1)
+    tau = t2 + einsum('ai,bj->abij',t1,t1)
+    d = 2*einsum('abij,ijab->',tau,I)
+    d -= einsum('abij,ijba->',tau,I)
+    return d + s
+
 def ump2_energy(t1,t2,fa,fb,Ia,Ib,Iabab):
     t1a,t1b = t1
     t2aa,t2ab,t2bb = t2

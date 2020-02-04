@@ -22,6 +22,8 @@ def full_suite():
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccd"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ucc_energy"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_uccsd"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_rcc_energy"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_rccsd"))
 
     suite.addTest(test_cc_rdm.CCRDMTest("test_1rdm_opt"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_2rdm_opt"))
