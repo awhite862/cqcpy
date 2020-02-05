@@ -3,6 +3,7 @@ import numpy
 from cqcpy import test_utils
 import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_equations as cc_equations
+import cqcpy.ov_blocks as ov_blocks
 
 class LambdaEquationsTest(unittest.TestCase):
     def setUp(self):
@@ -137,6 +138,46 @@ class LambdaEquationsTest(unittest.TestCase):
         e2 = "Error in UCCSD L2"
         self.assertTrue(s1,e1)
         self.assertTrue(s2,e2)
+
+    def test_rccsd_lambda(self):
+        no = 3
+        nv = 5
+        n = no + nv
+        F = test_utils.make_random_F(no, nv)
+        Itot = numpy.random.random((n,n,n,n))
+        Itot = Itot + Itot.transpose((1,0,3,2))
+        Ianti = Itot - Itot.transpose((0,1,3,2))
+        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
+        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
+
+        T1 = numpy.random.random((nv,no))
+        T2 = numpy.random.random((nv,nv,no,no))
+        T2 = T2 + T2.transpose((1,0,3,2))
+
+        L1 = numpy.random.random((no,nv))
+        L2 = numpy.random.random((no,no,nv,nv))
+        L2 = L2 + L2.transpose((1,0,3,2))
+
+        T1a = T1b = T1
+        T2aa = T2 - T2.transpose((0,1,3,2))
+
+        L1a = L1b = L1
+        L2aa = L2 - L2.transpose((0,1,3,2))
+
+        # Update with UCCSD
+        M1,M2 = cc_equations.uccsd_lambda_opt(F, F, Ia, Ia, I, (L1,L1),
+                (L2aa, L2, L2aa), (T1a,T1b),(T2aa, T2, T2aa))
+        rL1,rL2 = cc_equations.rccsd_lambda_opt(F, I, L1, L2, T1, T2)
+        ref1 = M1[0]
+        ref2 = M2[1]
+
+        d1 = numpy.linalg.norm(ref1 - rL1) / numpy.linalg.norm(ref1)
+        d2 = numpy.linalg.norm(ref2 - rL2) / numpy.linalg.norm(ref2)
+
+        e1 = "Error in RCCSD L1"
+        e2 = "Error in RCCSD L2"
+        self.assertTrue(d1 < 1e-14,e1)
+        self.assertTrue(d2 < 1e-14,e2)
 
 if __name__ == '__main__':
     unittest.main()

@@ -643,6 +643,10 @@ def _u_LS_TS(L1a, L1b, Ia, Ib, Iabab, T1aold, T1bold, fac=1.0):
     L1b += fac*einsum('jiba,bj->ia',Ib.oovv,T1bold)
     L1b += fac*einsum('jiba,bj->ia',Iabab.oovv,T1aold)
 
+def _r_LS_TS(L1, I, T1old, fac=1.0):
+    L1 += fac*einsum('jiba,bj->ia',I.oovv - I.oovv.transpose((0,1,3,2)),T1old)
+    L1 += fac*einsum('ijab,bj->ia',I.oovv,T1old)
+
 def _LS_LS(L1, F, I, L1old, fac=1.0):
     # A
     L1 += fac*einsum('ib,ba->ia',L1old,F.vv)
@@ -1261,11 +1265,11 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     T1aold,T1bold = T1olds
     T2aaold,T2abold,T2bbold = T2olds
 
-    # dims
-    noa,nva = L1aold.shape
-    nob,nvb = L1bold.shape
-    no = noa + nob
-    nv = nva + nvb
+    ## dims
+    #noa,nva = L1aold.shape
+    #nob,nvb = L1bold.shape
+    #no = noa + nob
+    #nv = nva + nvb
 
     t1 = time.time()
     #TTemp = 0.5*T2old + einsum('bj,ck->bcjk',T1old,T1old)
@@ -1489,7 +1493,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     L1b -= fac*einsum('jkba,bijk->ia',L2abold,ITvOoOs)
     ITvOoOs = None
 
-    # VVVO
+    ## VVVO
     ITvvvos =  - 0.5*Ia.vvvo
     ITvvvos += einsum('cjak,bj->cbak',Ia.vovo,T1aold)
     ITvvvos -= 0.5*einsum('ka,bcjk->bcaj',Fa.ov,T2aaold)
@@ -1599,7 +1603,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     L2ab += fac*tempab
     L2bb += fac*tempbb
 
-    ## VOVV
+    ### VOVV
     ITvovvs = Ivovvs - Ia.vovv
     tempaa = einsum('ic,cjab->ijab',L1aold,ITvovvs)
     ITvovvs = None
@@ -1812,6 +1816,337 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     L2ab -= fac*tempab
     L2bb -= fac*tempbb
 
+def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
+    # dims
+    #noa,nva = L1aold.shape
+    #nob,nvb = L1bold.shape
+    #no = noa + nob
+    #nv = nva + nvb
+
+    t1 = time.time()
+    T2anti = T2old - T2old.transpose((0,1,3,2))
+    L2anti = L2old - L2old.transpose((0,1,3,2))
+    #TTemp = 0.5*T2old + einsum('bj,ck->bcjk',T1old,T1old)
+    TTempaa = 0.5*(T2anti) + einsum('bj,ck->bcjk',T1old,T1old)
+    TTempab = 0.5*T2old + einsum('bj,ck->bcjk',T1old,T1old)
+    #TTempbb = 0.5*T2bbold + einsum('bj,ck->bcjk',T1bold,T1bold)
+
+    ##IvovoT1 = einsum('aibc,ck->aibk',I.vovv,T1old)
+    Ivovos1 = einsum('aibc,ck->aibk',I.vovv - I.vovv.transpose((0,1,3,2)),T1old)
+    #IVOVOs1 = einsum('aibc,ck->aibk',Ib.vovv,T1bold)
+    IvOvOs1 = einsum('aibc,ck->aibk',I.vovv,T1old)
+    #IVoVos1 = einsum('iacb,ck->aibk',Iabab.ovvv,T1aold)
+    IvOVos1 = -einsum('aicb,ck->aibk',I.vovv,T1old)
+    IVovOs1 = -einsum('iabc,ck->aibk',I.ovvv,T1old)
+
+    ##IvovoT2 = einsum('bj,jika->biak',T1old,I.ooov)
+    Ivovos2 = einsum('bj,jika->biak',T1old,I.ooov - I.oovo.transpose((0,1,3,2)))
+    #IVOVOs2 = einsum('bj,jika->biak',T1bold,Ib.ooov)
+    IvOvOs2 = -einsum('bj,jiak->biak',T1old,I.oovo)
+    IVoVos2 = -einsum('bj,ijka->biak',T1old,I.ooov)
+    IvOVos2 = einsum('bj,jika->biak',T1old,I.ooov)
+    IVovOs2 = einsum('bj,ijak->biak',T1old,I.oovo)
+
+    ##IvovvT = einsum('ck,kiab->ciab',T1old,I.oovv)
+    Ivovvs = einsum('ck,kiab->ciab',T1old,I.oovv - I.oovv.transpose((0,1,3,2)))
+    #IVOVVs = einsum('ck,kiab->ciab',T1bold,Ib.oovv)
+    IVoVvs = einsum('ck,ikba->ciab',T1old,I.oovv)
+    IvOvVs = einsum('ck,kiab->ciab',T1old,I.oovv)
+    IvOVvs = -einsum('ck,kiba->ciab',T1old,I.oovv)
+    IVovVs = -einsum('ck,ikab->ciab',T1old,I.oovv)
+
+    ##IooovT = einsum('ikbc,bj->ikjc',I.oovv,T1old)
+    Iooovs = einsum('ikbc,bj->ikjc',I.oovv - I.oovv.transpose((0,1,3,2)),T1old)
+    #IOOOVs = einsum('ikbc,bj->ikjc',Ib.oovv,T1bold)
+    IOoOvs = einsum('kicb,bj->ikjc',I.oovv,T1old)
+    IoOoVs = einsum('ikbc,bj->ikjc',I.oovv,T1old)
+    IoOOvs = -einsum('ikcb,bj->ikjc',I.oovv,T1old)
+    #IOooVs = -einsum('kibc,bj->ikjc',Iabab.oovv,T1aold)
+
+    ##IovT = einsum('ikac,ck->ia',I.oovv,T1old)
+    Iovs = einsum('ikac,ck->ia',I.oovv - I.oovv.transpose((0,1,3,2)),T1old)
+    Iovs += einsum('ikac,ck->ia',I.oovv,T1old)
+    #IOVs = einsum('ikac,ck->ia',I.oovv - I.oovv.transpose((0,1,3,2)),T1old)
+    #IOVs += einsum('kica,ck->ia',I.oovv,T1old)
+
+    ### OO
+    Iooov = 2.0*I.ooov - I.oovo.transpose((0,1,3,2))
+    IToo = einsum('ib,bj->ij',F.ov,T1old) + F.oo\
+        + einsum('ikbc,bcjk->ij',I.oovv - I.oovv.transpose((0,1,3,2)),TTempaa)\
+        + einsum('ikbc,bcjk->ij',I.oovv,TTempab)\
+        + 0.5*einsum('ikcb,cbjk->ij',I.oovv,T2old)\
+        + einsum('ijkb,bj->ik',Iooov,T1old)
+    L1 -= fac*einsum('ja,ij->ia',L1old,IToo)
+    temp = einsum('kjab,ik->ijab',L2old,IToo)
+    temp += temp.transpose((1,0,3,2))
+    L2 -= fac*temp
+
+    ## VV
+    Ivovv = 2.0*I.vovv - I.vovv.transpose((0,1,3,2))
+    ITvv = einsum('ja,bj->ba',F.ov,T1old) - F.vv\
+        - einsum('bkac,ck->ba',Ivovv,T1old)
+    ITvv += einsum('jkac,bcjk->ba',I.oovv - I.oovv.transpose((0,1,3,2)),TTempaa)
+    ITvv += einsum('jkac,bcjk->ba',I.oovv,TTempab)
+    ITvv += 0.5*einsum('kjac,bckj->ba',I.oovv,T2old)
+    L1 -= fac*einsum('ib,ba->ia',L1old,ITvv)
+    temp = einsum('ijcb,ca->ijab',L2old,ITvv)
+    temp += temp.transpose((1,0,3,2))
+    L2 -= fac*temp
+
+    ## OOVV
+    IToovvs1 = einsum('kida,bdjk->ijab', I.oovv - I.oovv.transpose((0,1,3,2)), T2anti)
+    IToovvs1 += einsum('ikad,bdjk->ijab',I.oovv,T2old)
+    IToovvs1 -= einsum('ciba,bj->ijac',Ivovvs,T1old)
+    IToovvs1 += einsum('kica,cbkj->ijab',I.oovv - I.oovv.transpose((0,1,3,2)),T2old)
+    IToovvs1 += einsum('ikac,bcjk->ijab',I.oovv, T2anti)
+    IToovvs1 -= einsum('ciba,bj->ijac', IVoVvs, T1old)
+    L1 += fac*einsum('jb,ijab->ia', L1old, IToovvs1)
+    IToOvVs1 = None
+
+    ## VOOO
+    ITvooos = einsum('cibk,bj->cijk', I.vovo - I.voov.transpose((0,1,3,2)), T1old)
+    ITvooos += 0.5*(I.vooo - I.vooo.transpose((0,1,3,2)))
+    ITvooos += 0.5*einsum('ic,bcjk->bijk', F.ov, T2anti)
+    ITvooos += 0.5*einsum('ijkl,bj->bikl', I.oooo - I.oooo.transpose((0,1,3,2)), T1old)
+    ITvooos += einsum('kilc,bcjk->bilj',I.ooov - I.oovo.transpose((0,1,3,2)),T2anti)
+    ITvooos -= einsum('iklc,bcjk->bilj',I.ooov,T2old)
+    ITvooos -= einsum('bicl,ck->bilk',Ivovos2,T1old)
+    ITvooos += 0.5*einsum('dibc,bcjk->dijk', I.vovv - I.vovv.transpose((0,1,3,2)), TTempaa)
+    ITvooos += 0.5*einsum('id,cdkl->cikl',Iovs,T2anti)
+    ITvooos -= einsum('ikjc,cdkl->dijl',Iooovs,T2anti)
+    ITvooos -= einsum('ikjc,dclk->dijl',IoOoVs,T2old)
+    ITvooos -= 0.5*einsum('bicd,cdkl->bikl',Ivovvs,TTempaa)
+    L1 += fac*einsum('jkab,bijk->ia', L2old - L2old.transpose((0,1,3,2)),ITvooos)
+    ITvooos = None
+
+    ITVooOs = -einsum('icbk,bj->cijk',I.ovvo,T1old)
+    ITVooOs -= 0.5*I.ovoo.transpose((1,0,2,3))
+    ITVooOs -= 0.5*einsum('ic,cbjk->bijk',F.ov,T2old)
+    ITVooOs += 0.5*einsum('ijkl,bj->bikl',I.oooo,T1old)
+    ITVooOs += einsum('kilc,cbkj->bilj',I.ooov - I.oovo.transpose((0,1,3,2)),T2old)
+    ITVooOs -= einsum('iklc,bcjk->bilj',I.ooov,T2anti)
+    ITVooOs -= einsum('bicl,ck->bilk',IVoVos2,T1old)
+    ITVooOs -= 0.5*einsum('idbc,bcjk->dijk',I.ovvv,TTempab)
+    ITVooOs -= 0.25*einsum('idcb,cbjk->dijk',I.ovvv,T2old)
+    ITVooOs -= 0.5*einsum('id,dckl->cikl',Iovs,T2old)
+    ITVooOs -= einsum('ikjc,cdkl->dijl',Iooovs,T2old)
+    ITVooOs -= einsum('ikjc,cdkl->dijl',IoOoVs,T2anti)
+    ITVooOs -= 0.5*einsum('bicd,cdkl->bikl',IVovVs,TTempab)
+    ITVooOs += 0.25*einsum('bicd,dckl->bikl',IVoVvs,T2old)
+    L1 += fac*einsum('jkab,bijk->ia',L2old,ITVooOs)
+    ITVooOs = None
+
+    ITVoOos = einsum('ickb,bj->cijk',I.ovov,T1old)
+    ITVoOos += 0.5*I.ovoo.transpose((1,0,3,2))
+    ITVoOos += 0.5*einsum('ic,cbkj->bijk',F.ov,T2old)
+    ITVoOos -= 0.5*einsum('ijlk,bj->bikl',I.oooo,T1old)
+    ITVoOos -= einsum('ikcl,cbjk->bilj',I.oovo,T2old)
+    ITVoOos -= einsum('bicl,ck->bilk',IVovOs2,T1old)
+    ITVoOos += 0.5*einsum('idcb,cbkj->dijk',I.ovvv,TTempab)
+    ITVoOos += 0.25*einsum('idbc,bckj->dijk',I.ovvv,T2old)
+    ITVoOos += 0.5*einsum('id,dclk->cikl',Iovs,T2old)
+    ITVoOos += einsum('ikjc,cdlk->dijl',IoOOvs,T2old)
+    ITVoOos -= 0.5*einsum('bicd,dclk->bikl',IVoVvs,TTempab)
+    ITVoOos += 0.25*einsum('bicd,cdlk->bikl',IVovVs,T2old)
+    L1 -= fac*einsum('kjab,bijk->ia',L2old,ITVoOos)
+    ITVoOos = None
+
+    ## VVVO
+    ITvvvos =  - 0.5*(I.vvvo - I.vvov.transpose((0,1,3,2)))
+    ITvvvos += einsum('cjak,bj->cbak',I.vovo - I.voov.transpose((0,1,3,2)),T1old)
+    ITvvvos -= 0.5*einsum('ka,bcjk->bcaj',F.ov,T2anti)
+    ITvvvos -= 0.5*einsum('cdab,bj->cdaj',I.vvvv - I.vvvv.transpose((0,1,3,2)),T1old)
+    ITvvvos -= einsum('dkca,bcjk->bdaj',I.vovv - I.vovv.transpose((0,1,3,2)),T2anti)
+    ITvvvos += einsum('dkac,bcjk->bdaj',I.vovv,T2old)
+    ITvvvos -= einsum('djak,bj->bdak',Ivovos1,T1old)
+    ITvvvos += 0.5*einsum('jkla,bcjk->bcal',I.ooov - I.oovo.transpose((0,1,3,2)),TTempaa)
+    ITvvvos -= 0.5*einsum('la,cdkl->cdak',Iovs,T2anti)
+    ITvvvos += einsum('bkac,cdkl->bdal',Ivovvs,T2anti)
+    ITvvvos += einsum('bkac,dclk->bdal',IvOvVs,T2old)
+    ITvvvos += 0.5*einsum('klja,cdkl->cdaj',Iooovs,TTempaa)
+    L1 += fac*einsum('ikbc,cbak->ia',L2anti,ITvvvos)
+    ITvvvos = None
+
+    ITVvvOs =  0.5*I.vvvo.transpose((1,0,2,3))
+    ITVvvOs -= einsum('jcak,bj->cbak',I.ovvo,T1old)
+    ITVvvOs -= 0.5*einsum('ka,cbkj->bcaj',F.ov,T2old)
+    ITVvvOs += 0.5*einsum('dcab,bj->cdaj',I.vvvv,T1old)
+    ITVvvOs -= einsum('dkca,cbkj->bdaj',I.vovv - I.vovv.transpose((0,1,3,2)),T2old)
+    ITVvvOs += einsum('dkac,bcjk->bdaj',I.vovv,T2anti)
+    ITVvvOs -= einsum('djak,bj->bdak',IvOvOs1,T1old)
+    ITVvvOs += 0.5*einsum('kjal,cbkj->bcal',I.oovo,TTempab)
+    ITVvvOs += 0.25*einsum('jkal,cbjk->bcal',I.oovo,T2old)
+    ITVvvOs -= 0.5*einsum('la,dclk->cdak',Iovs,T2old)
+    ITVvvOs -= einsum('bkac,dckl->bdal',IVovVs,T2old)
+    ITVvvOs += 0.5*einsum('klja,dclk->cdaj',IOoOvs,TTempab)
+    ITVvvOs -= 0.25*einsum('klja,dckl->cdaj',IoOOvs,T2old)
+    L1 += fac*einsum('ikbc,cbak->ia',L2old,ITVvvOs)
+    ITVvvOs = None
+
+    ITvVvOs = - 0.5*I.vvvo
+    ITvVvOs += einsum('cjak,bj->cbak',I.vovo,T1old)
+    ITvVvOs += 0.5*einsum('ka,bckj->bcaj',F.ov,T2old)
+    ITvVvOs -= 0.5*einsum('cdab,bj->cdaj',I.vvvv,T1old)
+    ITvVvOs += einsum('kdac,bckj->bdaj',I.ovvv,T2old)
+    ITvVvOs -= einsum('djak,bj->bdak',IVovOs1,T1old)
+    ITvVvOs -= 0.5*einsum('jkal,bcjk->bcal',I.oovo,TTempab)
+    ITvVvOs -= 0.25*einsum('kjal,bckj->bcal',I.oovo,T2old)
+    ITvVvOs += 0.5*einsum('la,cdlk->cdak',Iovs,T2old)
+    ITvVvOs += einsum('bkac,cdkl->bdal',Ivovvs,T2old)
+    ITvVvOs += einsum('bkac,cdkl->bdal',IvOvVs,T2anti)
+    ITvVvOs += 0.5*einsum('klja,cdkl->cdaj',IoOOvs,TTempab)
+    ITvVvOs -= 0.25*einsum('klja,cdlk->cdaj',IOoOvs,T2old)
+    L1 -= fac*einsum('ikcb,cbak->ia',L2old,ITvVvOs)
+    ITvVvOs = None
+
+    ## OV
+    ITovs = Iovs + F.ov
+    tempab = einsum('jb,ia->ijab',L1old,ITovs)
+    tempab += tempab.transpose((1,0,3,2))
+    L2 += fac*tempab
+
+    ### VOVV
+    ITvOvVs = IvOvVs - I.vovv
+    tempab = einsum('ic,cjab->ijab',L1old,ITvOvVs)
+    tempab += tempab.transpose((1,0,3,2))
+    L2 -= fac*tempab
+
+    ### OOOV
+    IToOoVs = IoOoVs + I.ooov
+    tempab = einsum('ka,ijkb->ijab',L1old,IToOoVs)
+    tempab += tempab.transpose((1,0,3,2))
+    L2 -= fac*tempab
+
+    ### VOVO
+    ITvovos = -Ivovos1 - Ivovos2 - I.vovo + I.voov.transpose((0,1,3,2))
+    L1 += fac*einsum('jb,biaj->ia',L1old,ITvovos)
+    ITvovos -= einsum('djcb,ck->djbk',Ivovvs,T1old)
+    #tempaa = einsum('ikad,djbk->ijab',L2aaold,ITvovos)
+    tempab = einsum('kjdb,diak->ijab',L2old,ITvovos)
+    #ITvovos = None
+    #ITVOVOs = -IVOVOs1 - IVOVOs2 - Ib.vovo
+    #L1b += fac*einsum('jb,biaj->ia',L1bold,ITVOVOs)
+    #ITVOVOs -= einsum('djcb,ck->djbk',IVOVVs,T1bold)
+    #tempab += einsum('ikad,djbk->ijab',L2abold,ITVOVOs)
+    #tempbb = einsum('ikad,djbk->ijab',L2bbold,ITVOVOs)
+    #ITVOVOs = None
+    ITvOVos = -IvOVos1 - IvOVos2 + I.voov.transpose((0,1,3,2))
+    #L1b += fac*einsum('jb,biaj->ia',L1aold,ITvOVos)
+    ITvOVos -= einsum('djcb,ck->djbk',IvOvVs,T1old)
+    tempab += einsum('ikad,djbk->ijab',L2anti,ITvOVos)
+    #tempbb += einsum('kida,djbk->ijab',L2abold,ITvOVos)
+    #ITvOVos = None
+    ITVovOs = -IVovOs1 - IVovOs2 + I.ovvo.transpose((1,0,2,3))
+    L1 += fac*einsum('jb,biaj->ia',L1old,ITVovOs)
+    #ITVovOs -= einsum('djcb,ck->djbk',IVoVvs,T1bold)
+    #tempaa += einsum('ikad,djbk->ijab',L2abold,ITVovOs)
+    #tempab += einsum('kjdb,diak->ijab',L2bbold,ITVovOs)
+    #ITVovOs = None
+    ITvOvOs = -IvOvOs1 - IvOvOs2 - I.vovo
+    ITvOvOs -= einsum('djcb,ck->djbk',IvOVvs,T1old)
+    tempab += einsum('ikdb,djak->ijab',L2old,ITvOvOs)
+    #ITvOvOs = None
+    #ITVoVos = -IVoVos1 - IVoVos2 - Iabab.ovov.transpose((1,0,3,2))
+    #ITVoVos -= einsum('djcb,ck->djbk',IVovVs,T1aold)
+    #tempab += einsum('kjad,dibk->ijab',L2abold,ITVoVos)
+    #ITVoVos = None
+    #tempaa += tempaa.transpose((1,0,3,2)) - tempaa.transpose((0,1,3,2)) - tempaa.transpose((1,0,2,3))
+    #tempbb += tempbb.transpose((1,0,3,2)) - tempbb.transpose((0,1,3,2)) - tempbb.transpose((1,0,2,3))
+    tempab += tempab.transpose((1,0,3,2))
+    L2 += fac*tempab
+
+    ## VVVV
+    ITvVvVs = -einsum('kdab,ck->cdab',I.ovvv,T1old)
+    ITvVvVs += 0.5*einsum('klab,cdkl->cdab',I.oovv,TTempab)
+    ITvVvVs += 0.25*einsum('lkab,cdlk->cdab',I.oovv,T2old)
+    ITvVvVs += 0.5*I.vvvv
+    L2 += fac*einsum('ijcd,cdab->ijab',L2old,ITvVvVs)
+    ITvVvVs = None
+    ITVvvVs = einsum('dkab,ck->cdab',I.vovv,T1old)
+    ITVvvVs -= 0.5*einsum('lkab,dclk->cdab',I.oovv,TTempab)
+    ITVvvVs -= 0.25*einsum('klab,dckl->cdab',I.oovv,T2old)
+    ITVvvVs -= 0.5*I.vvvv.transpose((1,0,2,3))
+    L2 -= fac*einsum('ijdc,cdab->ijab',L2old,ITVvvVs)
+    ITVvvVs = None
+
+    ## OOOO
+    #IToooos = einsum('ijlc,ck->ijkl',Ia.ooov,T1aold)\
+    #    - 0.5*einsum('ijcd,cdkl->ijkl',Ia.oovv,TTempaa)\
+    #    - 0.5*Ia.oooo
+    #L2aa -= fac*einsum('klab,ijkl->ijab',L2aaold,IToooos)
+    #IToooos = None
+    #ITOOOOs = einsum('ijlc,ck->ijkl',Ib.ooov,T1bold)\
+    #    - 0.5*einsum('ijcd,cdkl->ijkl',Ib.oovv,TTempbb)\
+    #    - 0.5*Ib.oooo
+    #L2bb -= fac*einsum('klab,ijkl->ijab',L2bbold,ITOOOOs)
+    #ITOOOOs = None
+    IToOoOs = -einsum('ijcl,ck->ijkl',I.oovo,T1old)\
+        - 0.5*einsum('ijcd,cdkl->ijkl',I.oovv,TTempab)\
+        - 0.25*einsum('ijdc,dckl->ijkl',I.oovv,T2old)
+    IToOoOs += - 0.5*I.oooo
+    L2 -= fac*einsum('klab,ijkl->ijab',L2old,IToOoOs)
+    IToOoOs = None
+    IToOOos = einsum('ijlc,ck->ijkl',I.ooov,T1old)
+    IToOOos += 0.5*einsum('ijdc,dclk->ijkl',I.oovv,TTempab)
+    IToOOos += 0.25*einsum('ijcd,cdlk->ijkl',I.oovv,T2old)
+    IToOOos += 0.5*I.oooo.transpose((0,1,3,2))
+    L2 += fac*einsum('lkab,ijkl->ijab',L2old,IToOOos)
+    IToOOos = None
+
+    ### OOVV
+    IToovvs = einsum('ljdb,cdkl->kjcb',I.oovv - I.oovv.transpose((0,1,3,2)),T2anti)
+    IToovvs += einsum('jlbd,cdkl->kjcb',I.oovv,T2old)
+    tempab = einsum('kjcb,kica->ijab',L2old,IToovvs)
+    IToOvVs = einsum('ljdb,cdkl->kjcb',I.oovv,T2anti)
+    IToOvVs += einsum('ljdb,cdkl->kjcb',I.oovv - I.oovv.transpose((0,1,3,2)),T2old)
+    tempab += einsum('ikac,kjcb->ijab',L2anti,IToOvVs)
+    ITOOvvs = einsum('ljbd,cdlk->kjcb',I.oovv,T2old)
+    tempab += einsum('ikcb,kjca->ijab',L2old,ITOOvvs)
+    ITOOvvs = None
+    tempab += tempab.transpose((1,0,3,2))
+    L2 += fac*tempab
+
+    ### LT terms
+    Lt1a = einsum('jkbd,bcjk->cd',L2anti,T2anti)
+    Lt1a += 2.0*einsum('kjdb,cbkj->cd',L2old,T2old)
+    L1 += 0.5*fac*einsum('cd,dica->ia',Lt1a,I.vovv - I.vovv.transpose((0,1,3,2)))
+    L1 -= 0.5*fac*einsum('db,bida->ia',Lt1a,Ivovvs)
+
+    #Lt1b = einsum('jkbd,bcjk->cd',L2bbold,T2bbold)
+    #Lt1b += einsum('jkbd,bcjk->cd',L2abold,T2abold)
+    #Lt1b += einsum('kjbd,bckj->cd',L2abold,T2abold)
+    L1 += 0.5*fac*einsum('cd,idac->ia',Lt1a,I.ovvv)
+    #L1b += 0.5*fac*einsum('cd,dica->ia',Lt1b,Ib.vovv)
+    L1 -= 0.5*fac*einsum('db,bida->ia',Lt1a,IVoVvs)
+    #L1b -= 0.5*fac*einsum('db,bida->ia',Lt1b,IVOVVs)
+
+    Lt2a = einsum('jlbc,bcjk->lk',L2anti,T2anti)
+    Lt2a += einsum('ljcb,cbkj->lk',L2old,T2old)
+    Lt2a += einsum('ljbc,bckj->lk',L2old,T2old)
+    L1 -= 0.5*fac*einsum('lk,kila->ia',Lt2a,I.ooov - I.oovo.transpose((0,1,3,2)))
+    #L1b -= 0.5*fac*einsum('lk,kila->ia',Lt2a,Iabab.ooov)
+    L1 -= 0.5*fac*einsum('jl,lija->ia',Lt2a,Iooovs)
+    #L1b -= 0.5*fac*einsum('jl,lija->ia',Lt2a,IoOoVs)
+
+    #Lt2b = einsum('jlbc,bcjk->lk',L2bbold,T2bbold)
+    #Lt2b += einsum('jlbc,bcjk->lk',L2abold,T2abold)
+    #Lt2b += einsum('jlcb,cbjk->lk',L2abold,T2abold)
+    L1 -= 0.5*fac*einsum('lk,ikal->ia',Lt2a,I.oovo)
+    #L1b -= 0.5*fac*einsum('lk,kila->ia',Lt2b,Ib.ooov)
+    L1 -= 0.5*fac*einsum('jl,lija->ia',Lt2a,IOoOvs)
+    #L1b -= 0.5*fac*einsum('jl,lija->ia',Lt2b,IOOOVs)
+
+    #tempaa = 0.5*einsum('da,ijdb->ijab',Lt1a,Ia.oovv)
+    tempab = 0.5*einsum('da,ijdb->ijab',Lt1a,I.oovv)
+    tempab += 0.5*einsum('jl,ilab->ijab',Lt2a,I.oovv)
+    #tempaa -= tempaa.transpose((0,1,3,2))
+    #tempbb = 0.5*einsum('da,ijdb->ijab',Lt1b,Ib.oovv)
+    #tempbb -= tempbb.transpose((0,1,3,2))
+    #tempab += 0.5*einsum('db,ijad->ijab',Lt1a,I.oovv)
+    #L2aa -= fac*tempaa
+    tempab += tempab.transpose((1,0,3,2))
+    L2 -= fac*tempab
+    #L2bb -= fac*tempbb
 
 def ccd_lambda_simple(F, I, L2old, T2old):
     """Coupled cluster doubles (CCD) Lambda iteration."""
@@ -1881,6 +2216,20 @@ def uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab, L1old, L2old, T1old, T2old):
     _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab, L1old, L2old, T1old, T2old)
 
     return (L1a,L1b),(L2aa,L2ab,L2bb)
+
+def rccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old):
+    """Coupled cluster singles and doubles (CCSD) Lambda iteration
+    with intermediats.
+    """
+    # dims
+    no,nv = L1old.shape
+
+    L1 = F.ov.copy()
+    L2 = I.oovv.copy()
+    _r_LS_TS(L1,I,T1old)
+    _rccsd_Lambda_opt(L1, L2, F, I, L1old ,L2old, T1old, T2old)
+
+    return L1,L2 
 
 def ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old):
     """Coupled cluster singles and doubles (CCSD) Lambda iteration."""

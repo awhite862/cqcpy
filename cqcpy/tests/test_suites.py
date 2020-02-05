@@ -40,6 +40,7 @@ def full_suite():
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt_int"))
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccd"))
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_uccsd_lambda"))
+    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_rccsd_lambda"))
 
     suite.addTest(test_spin_utils.SpinUtilsTest("test_F_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I_sym"))
