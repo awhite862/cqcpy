@@ -4,6 +4,7 @@ import numpy
 from cqcpy import test_utils
 import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_equations as cc_equations
+import cqcpy.ov_blocks as ov_blocks
 
 class CCRDMTest(unittest.TestCase):
     def setUp(self):
@@ -265,6 +266,55 @@ class CCRDMTest(unittest.TestCase):
         out += 4.0*numpy.einsum('aBiJ,iJaB->',PaBiJ_u, Aab.oovv)
         diff = abs(out - ref) / abs(ref+0.001)
         self.assertTrue(diff < thresh, "Error in Pabij: {}".format(diff))
+
+    def test_r1rdm(self):
+        no = 3
+        nv = 5
+        thresh = 1e-12
+        n = no + nv
+        F = test_utils.make_random_F(no, nv)
+        Itot = numpy.random.random((n,n,n,n))
+        Itot = Itot + Itot.transpose((1,0,3,2))
+        Ianti = Itot - Itot.transpose((0,1,3,2))
+        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
+        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
+
+        T1 = numpy.random.random((nv,no))
+        T2 = numpy.random.random((nv,nv,no,no))
+        T2 = T2 + T2.transpose((1,0,3,2))
+
+        L1 = numpy.random.random((no,nv))
+        L2 = numpy.random.random((no,no,nv,nv))
+        L2 = L2 + L2.transpose((1,0,3,2))
+
+        T1a = T1b = T1
+        T2aa = T2 - T2.transpose((0,1,3,2))
+
+        L1a = L1b = L1
+        L2aa = L2 - L2.transpose((0,1,3,2))
+
+        # make unrestricted 1-rdm
+        pia_a = L1a.copy()
+        pba_a,pba_b = cc_equations.uccsd_1rdm_ba(T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        pji_a,pji_b = cc_equations.uccsd_1rdm_ji(T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        pai_a,pai_b = cc_equations.uccsd_1rdm_ai(T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+
+        pia = L1.copy()
+        pba = cc_equations.rccsd_1rdm_ba(T1,T2,L1,L2)
+        pji = cc_equations.rccsd_1rdm_ji(T1,T2,L1,L2)
+        pai = cc_equations.rccsd_1rdm_ai(T1,T2,L1,L2)
+
+        diff = numpy.linalg.norm(pia_a - pia)/numpy.sqrt(pia_a.size)
+        self.assertTrue(diff < thresh,"Error in p_ia: {}".format(diff))
+
+        diff = numpy.linalg.norm(pba_a - pba)/numpy.sqrt(pba_a.size)
+        self.assertTrue(diff < thresh,"Error in p_ab: {}".format(diff))
+
+        diff = numpy.linalg.norm(pji_a - pji)/numpy.sqrt(pji_a.size)
+        self.assertTrue(diff < thresh,"Error in p_ji: {}".format(diff))
+
+        diff = numpy.linalg.norm(pai_a - pai)/numpy.sqrt(pai_a.size)
+        self.assertTrue(diff < thresh,"Error in p_ai: {}".format(diff))
 
 if __name__ == '__main__':
     unittest.main()

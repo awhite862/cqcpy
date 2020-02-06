@@ -2484,6 +2484,36 @@ def uccsd_1rdm_ai(T1a,T1b,T2aa,T2ab,T2bb,
     pai_b -= einsum('ik,ak->ai',Pik_b,T1b)
     return pai_a,pai_b
 
+def rccsd_1rdm_ba(T1,T2,L1,L2,tfac=1.0):
+    pba = einsum('ia,bi->ba',L1,T1)
+    pba += 0.5*einsum('kica,cbki->ba',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
+    pba += einsum('ikac,bcik->ba',L2,T2)
+    return pba
+
+def rccsd_1rdm_ji(T1,T2,L1,L2,tfac=1.0):
+    pji = -einsum('ja,ai->ji',L1,T1)
+    pji -= 0.5*einsum('kjca,caki->ji',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
+    pji -= einsum('jkac,acik->ji',L2,T2)
+    return pji
+
+def rccsd_1rdm_ai(T1,T2,L1,L2,tfac=1.0):
+    T2tempaa = T2 - T2.transpose((0,1,3,2)) - einsum('bi,aj->baji',T1,T1)
+    T2tempab = T2
+
+    pai = tfac*T1
+    pai += einsum('jb,baji->ai',L1,T2tempaa)
+    pai += einsum('jb,abij->ai',L1,T2tempab)
+
+    Pac = 0.5*einsum('kjcb,abkj->ac',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
+    Pac += einsum('kjcb,abkj->ac',L2,T2)
+    pai -= einsum('ac,ci->ai',Pac,T1)
+
+    Pik = 0.5*einsum('kjcb,cbij->ik',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
+    Pik += einsum('kjcb,cbij->ik',L2,T2)
+    pai -= einsum('ik,ak->ai',Pik,T1)
+
+    return pai
+
 def uccsd_2rdm_ciab(T1a,T1b,T2aa,T2ab,T2bb,
         L1a,L1b,L2aa,L2ab,L2bb):
     Pciab = einsum('jiab,cj->ciab',L2aa,T1a)
