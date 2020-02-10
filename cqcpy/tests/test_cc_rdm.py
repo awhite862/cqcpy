@@ -316,5 +316,106 @@ class CCRDMTest(unittest.TestCase):
         diff = numpy.linalg.norm(pai_a - pai)/numpy.sqrt(pai_a.size)
         self.assertTrue(diff < thresh,"Error in p_ai: {}".format(diff))
 
+    def test_r2rdm(self):
+        no = 3
+        nv = 5
+        thresh = 1e-12
+        n = no + nv
+        F = test_utils.make_random_F(no, nv)
+        Itot = numpy.random.random((n,n,n,n))
+        Itot = Itot + Itot.transpose((1,0,3,2))
+        Ianti = Itot - Itot.transpose((0,1,3,2))
+        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
+        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
+
+        T1 = numpy.random.random((nv,no))
+        T2 = numpy.random.random((nv,nv,no,no))
+        T2 = T2 + T2.transpose((1,0,3,2))
+
+        L1 = numpy.random.random((no,nv))
+        L2 = numpy.random.random((no,no,nv,nv))
+        L2 = L2 + L2.transpose((1,0,3,2))
+
+        T1a = T1b = T1
+        T2aa = T2 - T2.transpose((0,1,3,2))
+
+        L1a = L1b = L1
+        L2aa = L2 - L2.transpose((0,1,3,2))
+
+        # make unrestricted 2-rdm
+        Pijab_u = L2aa.copy()
+        PIJAB_u = L2aa.copy()
+        PiJaB_u = L2.copy()
+
+        Pciab_u, PCIAB_u, PcIaB_u, PCiAb_u = cc_equations.uccsd_2rdm_ciab(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pjkai_u, PJKAI_u, PjKaI_u, PJkAi_u = cc_equations.uccsd_2rdm_jkai(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pbcai_u, PBCAI_u, PbCaI_u, PBcAi_u = cc_equations.uccsd_2rdm_bcai(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pkaij_u, PKAIJ_u, PkAiJ_u, PKaIj_u = cc_equations.uccsd_2rdm_kaij(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+        Pabij_u, PABIJ_u, PaBiJ_u = cc_equations.uccsd_2rdm_abij(
+                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+
+        # make restricted 2-rdm
+        Pijab = L2.copy()
+
+        Pciab = cc_equations.rccsd_2rdm_ciab(T1, T2, L1, L2)
+        Pjkai = cc_equations.rccsd_2rdm_jkai(T1, T2, L1, L2)
+        Pcdab = cc_equations.rccsd_2rdm_cdab(T1, T2, L1, L2)
+        Pbjai = cc_equations.rccsd_2rdm_bjai(T1, T2, L1, L2)
+        Pbjia = cc_equations.rccsd_2rdm_bjia(T1, T2, L1, L2)
+        Pklij = cc_equations.rccsd_2rdm_klij(T1, T2, L1, L2)
+        Pbcai = cc_equations.rccsd_2rdm_bcai(T1, T2, L1, L2)
+        Pkaij = cc_equations.rccsd_2rdm_kaij(T1, T2, L1, L2)
+        Pabij = cc_equations.rccsd_2rdm_abij(T1, T2, L1, L2)
+
+        # ijab
+        diff = numpy.linalg.norm(Pijab - PiJaB_u)/numpy.sqrt(PiJaB_u.size)
+        self.assertTrue(diff < thresh,"Error in Pijab: {}".format(diff))
+
+        # ciab
+        diff = numpy.linalg.norm(Pciab - PcIaB_u)/numpy.sqrt(PcIaB_u.size)
+        self.assertTrue(diff < thresh,"Error in Picab: {}".format(diff))
+
+        # jkai
+        diff = numpy.linalg.norm(Pjkai - PjKaI_u)/numpy.sqrt(PjKaI_u.size)
+        self.assertTrue(diff < thresh,"Error in Pjkai: {}".format(diff))
+
+        # cdab
+        diff = numpy.linalg.norm(Pcdab - PcDaB_u)/numpy.sqrt(PcDaB_u.size)
+        self.assertTrue(diff < thresh,"Error in Pcdab: {}".format(diff))
+
+        # bjai
+        diff = numpy.linalg.norm(Pbjai - PbJaI_u)/numpy.sqrt(PbJaI_u.size)
+        self.assertTrue(diff < thresh,"Error in Pbjai: {}".format(diff))
+
+        # bjia
+        diff = numpy.linalg.norm(Pbjia + PbJAi_u.transpose((0,1,3,2)))/numpy.sqrt(PbJAi_u.size)
+        self.assertTrue(diff < thresh,"Error in Pbjai: {}".format(diff))
+
+        # klij
+        diff = numpy.linalg.norm(Pklij - PkLiJ_u)/numpy.sqrt(PkLiJ_u.size)
+        self.assertTrue(diff < thresh,"Error in Pklij: {}".format(diff))
+
+        # bcai
+        diff = numpy.linalg.norm(Pbcai - PbCaI_u)/numpy.sqrt(PbCaI_u.size)
+        self.assertTrue(diff < thresh,"Error in Pbcai: {}".format(diff))
+
+        # kaij
+        diff = numpy.linalg.norm(Pkaij - PkAiJ_u)/numpy.sqrt(PkAiJ_u.size)
+        self.assertTrue(diff < thresh,"Error in Pkaij: {}".format(diff))
+
+        # abij
+        diff = numpy.linalg.norm(Pabij - PaBiJ_u)/numpy.sqrt(PaBiJ_u.size)
+        self.assertTrue(diff < thresh,"Error in Pabij: {}".format(diff))
+
 if __name__ == '__main__':
     unittest.main()
