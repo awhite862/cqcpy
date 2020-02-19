@@ -499,22 +499,29 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     # T2 equation
     tau2 = T2old + einsum('ai,bj->abij', T1old, T1old)
     Wo = I.oooo.copy()
-    Wo += einsum('klic,cj->klij', I.ooov, T1old)
-    Wo += einsum('klcj,ci->klij', I.oovo, T1old)
+    tmp = einsum('klic,cj->klij', I.ooov, T1old)
+    #Wo += einsum('klic,cj->klij', I.ooov, T1old)
+    #Wo += einsum('klcj,ci->klij', I.oovo, T1old)
+    Wo += tmp + tmp.transpose((1,0,3,2))
     Wo += 0.5*einsum('klcd,cdij->klij', I.oovv, tau2)
     T2 += fac*einsum('klij,abkl->abij',Wo, tau2)
 
     Wv = I.vvvv.copy()
-    Wv -= einsum('akcd,bk->abcd', I.vovv, T1old)
-    Wv -= einsum('kbcd,ak->abcd', I.ovvv, T1old)
+    tmp = einsum('akcd,bk->abcd', I.vovv, T1old)
+    #Wv -= einsum('akcd,bk->abcd', I.vovv, T1old)
+    #Wv -= einsum('kbcd,ak->abcd', I.ovvv, T1old)
+    Wv -= (tmp + tmp.transpose((1,0,3,2)))
     Wv += 0.5*einsum('klcd,abkl->abcd', I.oovv, tau2)
     T2 += fac*einsum('abcd,cdij->abij', Wv, tau2)
 
-    temp = -einsum('kbcj,ci,ak->abij', I.ovvo, T1old, T1old)
-    temp += -einsum('akcj,ci,bk->abij', I.vovo, T1old, T1old)
-    temp += -einsum('kbic,cj,ak->abij', I.ovov, T1old, T1old)
-    temp += -einsum('akic,cj,bk->abij', I.voov, T1old, T1old)
-    T2 += fac*temp
+    temp1 = -einsum('kbcj,ci,ak->abij', I.ovvo, T1old, T1old)
+    temp1 += temp1.transpose((1,0,3,2))
+    #temp1 += -einsum('akic,cj,bk->abij', I.voov, T1old, T1old)
+    T2 += fac*temp1
+    temp2 = -einsum('akcj,ci,bk->abij', I.vovo, T1old, T1old)
+    temp2 += temp2.transpose((1,0,3,2))
+    #temp2 += -einsum('kbic,cj,ak->abij', I.ovov, T1old, T1old)
+    T2 += fac*temp2
 
     TTT1 = 0.5*(T2old - T2old.transpose((0,1,3,2))) + einsum('dj,bl->dbjl',T1old,T1old)
     TTT2 = 0.5*T2old + einsum('dj,bl->dbjl',T1old,T1old)
@@ -2902,54 +2909,51 @@ def rccsd_2rdm_klij(T1, T2, L1, L2):
 
 def rccsd_2rdm_bcai(T1, T2, L1, L2):
     T2temp = T2 + einsum('ci,dj->cdij',T1,T1)
-    Pbcai = einsum('ja,bCjI->bCaI',L1,T2temp)
+    Pbcai = einsum('ja,bcji->bcai',L1,T2temp)
 
     LT = einsum('jlad,bdjl->ba',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
-    LT += 2.0*einsum('jLaD,bDjL->ba',L2,T2)
+    LT += 2.0*einsum('jlad,bdjl->ba',L2,T2)
 
-    Pbcai += 0.5*einsum('ba,CI->bCaI',LT,T1)
+    Pbcai += 0.5*einsum('ba,ci->bcai',LT,T1)
 
-    LTtempab1 = einsum('jkad,dCkI->jCaI',L2 - L2.transpose((0,1,3,2)),T2)
-    LTtempab1 += einsum('jKaD,CDIK->jCaI',L2,T2 - T2.transpose((0,1,3,2)))
-    LTtempab2 = einsum('kJaD,cDkI->JcaI',L2,T2)
-    LTtempab3 = einsum('kJdA,cdik->JcAi',L2,T2 - T2.transpose((0,1,3,2)))
-    LTtempab3 += einsum('JKAD,cDiK->JcAi',L2 - L2.transpose((0,1,3,2)),T2)
-    LTtempab4 = einsum('jKdA,dCiK->jCAi',L2,T2)
+    LTtempab1 = einsum('jkad,dcki->jcai',L2 - L2.transpose((0,1,3,2)),T2)
+    LTtempab1 += einsum('jkad,cdik->jcai',L2,T2 - T2.transpose((0,1,3,2)))
+    LTtempab2 = einsum('kjad,cdki->jcai',L2,T2)
+    LTtempab3 = einsum('kjda,cdik->jcai',L2,T2 - T2.transpose((0,1,3,2)))
+    LTtempab3 += einsum('jkad,cdik->jcai',L2 - L2.transpose((0,1,3,2)),T2)
+    LTtempab4 = einsum('jkda,dcik->jcai',L2,T2)
 
     Pbcai += einsum('jCaI,bj->bCaI',LTtempab1,T1)
     Pbcai -= einsum('JbaI,CJ->bCaI',LTtempab2,T1)
 
-    Pbcai -= einsum('jKaD,bCjK,DI->bCaI',L2,T2temp,T1)
+    Pbcai -= einsum('jkad,bcjk,di->bcai',L2,T2temp,T1)
     return Pbcai
 
 def rccsd_2rdm_kaij(T1, T2, L1, L2):
     T2temp = T2 + einsum('ci,dj->cdij',T1,T1)
     T2aa = T2 - T2.transpose((0,1,3,2))
-    Pkaij = -einsum('kb,bAiJ->kAiJ',L1,T2temp)
+    Pkaij = -einsum('kb,baij->kaij',L1,T2temp)
 
     LTo = einsum('klcd,cdil->ki',L2 - L2.transpose((0,1,3,2)),T2 - T2.transpose((0,1,3,2)))
-    LTo += 2.0*einsum('kLcD,cDiL->ki',L2,T2)
-    tmp = -0.5*einsum('ki,AJ->kAiJ',LTo,T1)
+    LTo += 2.0*einsum('klcd,cdil->ki',L2,T2)
+    tmp = -0.5*einsum('ki,aj->kaij',LTo,T1)
     Pkaij += tmp
 
     Lklid = einsum('klcd,ci->klid',L2 - L2.transpose((0,1,3,2)),T1)
-    LkLiD = einsum('kLcD,ci->kLiD',L2,T1)
-    #LKlId = einsum('lKdC,CI->KlId',L2ab,T1b)
-    #LKLID = einsum('klcd,ci->klid',L2bb,T1b)
-    LkLId = -einsum('kLdC,CI->kLId',L2,T1)
-    #LKliD = -einsum('lKcD,ci->KliD',L2,T1)
+    LkLiD = einsum('klcd,ci->klid',L2,T1)
+    LkLId = -einsum('kldc,ci->klid',L2,T1)
 
-    tmp = -einsum('klid,dAlJ->kAiJ',Lklid,T2)
-    tmp -= einsum('kLJd,dAiL->kAiJ',LkLId,T2)
-    tmp -= einsum('kLiD,ADJL->kAiJ',LkLiD,T2aa)
+    tmp = -einsum('klid,dalj->kaij',Lklid,T2)
+    tmp -= einsum('kljd,dail->kaij',LkLId,T2)
+    tmp -= einsum('klid,adjl->kaij',LkLiD,T2aa)
 
-    tmp = -einsum('KlId,adjl->KaIj',LkLiD,T2aa)
-    tmp -= einsum('KLID,aDjL->KaIj',Lklid,T2)
-    tmp -= einsum('KljD,aDlI->KaIj',LkLId,T2)
+    tmp = -einsum('klid,adjl->kaij',LkLiD,T2aa)
+    tmp -= einsum('klid,adjl->kaij',Lklid,T2)
+    tmp -= einsum('kljd,adli->kaij',LkLId,T2)
 
     Pkaij += tmp
 
-    Pkaij += einsum('kLbD,bDiJ,AL->kAiJ',L2,T2temp,T1)
+    Pkaij += einsum('klbd,bdij,al->kaij',L2,T2temp,T1)
 
     return Pkaij
 
@@ -2960,81 +2964,81 @@ def rccsd_2rdm_abij(T1, T2, L1, L2):
     Pabij += einsum('ai,bj->abij',T1,T1)
 
     LTki = einsum('kc,ci->ki',L1,T1)
-    tmp = -einsum('ki,aBkJ->aBiJ',LTki,T2)
-    tmp -= einsum('KJ,aBiK->aBiJ',LTki,T2)
+    tmp = -einsum('ki,abkj->abij',LTki,T2)
+    tmp -= einsum('kj,abik->abij',LTki,T2)
     Pabij += tmp
 
     LTac = einsum('kc,ak->ac',L1,T1)
-    tmp = -einsum('ac,cBiJ->aBiJ',LTac,T2)
-    tmp -= einsum('BC,aCiJ->aBiJ',LTac,T2)
+    tmp = -einsum('ac,cbij->abij',LTac,T2)
+    tmp -= einsum('bc,acij->abij',LTac,T2)
     Pabij += tmp
 
     T2tempa = T2a - einsum('bk,cj->bcjk',T1,T1)
     LTbj = einsum('kc,bcjk->bj',L1,T2tempa)
-    LTbj += einsum('KC,bCjK->bj',L1,T2)
-    Pabij += einsum('ai,BJ->aBiJ',LTbj,T1)
-    Pabij += einsum('BJ,ai->aBiJ',LTbj,T1)
+    LTbj += einsum('kc,bcjk->bj',L1,T2)
+    Pabij += einsum('ai,bj->abij',LTbj,T1)
+    Pabij += einsum('bj,ai->abij',LTbj,T1)
 
-    LToO = einsum('kLcD,cDiJ->kLiJ',L2,T2)
-    Pabij += einsum('kLiJ,aBkL->aBiJ',LToO,T2)
+    LToO = einsum('klcd,cdij->klij',L2,T2)
+    Pabij += einsum('klij,abkl->abij',LToO,T2)
 
     LTlida = einsum('klcd,caki->lida',L2a,T2a)
-    LTlida += einsum('lKdC,aCiK->lida',L2,T2)
+    LTlida += einsum('lkdc,acik->lida',L2,T2)
 
-    LTliDA = einsum('lKcD,cAiK->liDA',L2,T2)
-    LTlIdA = einsum('klcd,cAkI->lIdA',L2a,T2)
-    LTlIdA += einsum('lKdC,CAKI->lIdA',L2,T2a)
+    LTliDA = einsum('lkcd,caik->lida',L2,T2)
+    LTlIdA = einsum('klcd,caki->lida',L2a,T2)
+    LTlIdA += einsum('lkdc,caki->lida',L2,T2a)
 
-    tmp = 0.5*einsum('lida,dBlJ->aBiJ',LTlida,T2)
-    tmp += 0.5*einsum('LiDa,BDJL->aBiJ',LTlIdA,T2a)
-    tmp += 0.5*einsum('LJda,dBiL->aBiJ',LTliDA,T2)
-    tmp += 0.5*einsum('liDB,aDlJ->aBiJ',LTliDA,T2)
-    tmp += 0.5*einsum('lJdB,adil->aBiJ',LTlIdA,T2a)
-    tmp += 0.5*einsum('LJDB,aDiL->aBiJ',LTlida,T2)
+    tmp = 0.5*einsum('lida,dblj->abij',LTlida,T2)
+    tmp += 0.5*einsum('lida,bdjl->abij',LTlIdA,T2a)
+    tmp += 0.5*einsum('ljda,dbil->abij',LTliDA,T2)
+    tmp += 0.5*einsum('lidb,adlj->abij',LTliDA,T2)
+    tmp += 0.5*einsum('ljdb,adil->abij',LTlIdA,T2a)
+    tmp += 0.5*einsum('ljdb,adil->abij',LTlida,T2)
 
     Pabij += tmp
 
     T2tempab = T2 + einsum('cj,ai->acij',T1,T1)
     Lcb = einsum('klcd,bdkl->cb',L2a,T2a)
-    Lcb += 2.0*einsum('kLcD,bDkL->cb',L2,T2)
-    tmp = -0.5*einsum('CB,aCiJ->aBiJ',Lcb,T2tempab)
-    tmp -= 0.5*einsum('ca,cBiJ->aBiJ',Lcb,T2tempab)
+    Lcb += 2.0*einsum('klcd,bdkl->cb',L2,T2)
+    tmp = -0.5*einsum('cb,acij->abij',Lcb,T2tempab)
+    tmp -= 0.5*einsum('ca,cbij->abij',Lcb,T2tempab)
     Pabij += tmp
 
     Lkj = einsum('klcd,cdjl->kj',L2a,T2a)
-    Lkj += 2.0*einsum('kLcD,cDjL->kj',L2,T2)
-    tmp = -0.5*einsum('KJ,aBiK->aBiJ',Lkj,T2tempab)
-    tmp -= 0.5*einsum('ki,aBkJ->aBiJ',Lkj,T2tempab)
+    Lkj += 2.0*einsum('klcd,cdjl->kj',L2,T2)
+    tmp = -0.5*einsum('kj,abik->abij',Lkj,T2tempab)
+    tmp -= 0.5*einsum('ki,abkj->abij',Lkj,T2tempab)
     Pabij += tmp
 
     T2tempab = T2 + einsum('ci,dj->cdij',T1,T1)
-    LToO = einsum('kLcD,cDiJ->kLiJ',L2,T2tempab)
-    LToO += einsum('kLdC,dCiJ->kLiJ',L2,T2)
-    LTOo = -einsum('lKdC,dCiJ->KliJ',L2,T2)
-    LTOo -= einsum('lKcD,cDiJ->KliJ',L2,T2tempab)
-    tmp1 = einsum('kLiJ,ak->aLiJ',LToO,T1)
-    tmp2 = einsum('KliJ,AK->AliJ',LTOo,T1)
-    tmp = 0.25*einsum('aLiJ,BL->aBiJ',tmp1,T1)
-    tmp -= 0.25*einsum('BliJ,al->aBiJ',tmp2,T1)
+    LToO = einsum('klcd,cdij->klij',L2,T2tempab)
+    LToO += einsum('kldc,dcij->klij',L2,T2)
+    LTOo = -einsum('lkdc,dcij->klij',L2,T2)
+    LTOo -= einsum('lkcd,cdij->klij',L2,T2tempab)
+    tmp1 = einsum('klij,ak->alij',LToO,T1)
+    tmp2 = einsum('klij,ak->alij',LTOo,T1)
+    tmp = 0.25*einsum('alij,bl->abij',tmp1,T1)
+    tmp -= 0.25*einsum('blij,al->abij',tmp2,T1)
     Pabij += tmp
 
-    LoOoV = einsum('kLcD,ci->kLiD',L2,T1)
-    LoOOv = -einsum('kLdC,CI->kLId',L2,T1)
-    LoOoO = einsum('kLiD,DJ->kLiJ',LoOoV,T1)
-    LoOoO -= einsum('kLJd,di->kLiJ',LoOOv,T1)
-    Pabij += 0.25*einsum('kLiJ,aBkL->aBiJ',LoOoO,T2tempab)
-    Pabij += 0.25*einsum('lKiJ,aBlK->aBiJ',LoOoO,T2)
+    LoOoV = einsum('klcd,ci->klid',L2,T1)
+    LoOOv = -einsum('kldc,ci->klid',L2,T1)
+    LoOoO = einsum('klid,dj->klij',LoOoV,T1)
+    LoOoO -= einsum('kljd,di->klij',LoOOv,T1)
+    Pabij += 0.25*einsum('klij,abkl->abij',LoOoO,T2tempab)
+    Pabij += 0.25*einsum('lkij,ablk->abij',LoOoO,T2)
 
     Lalid = einsum('klcd,ak,ci->alid',L2a,T1,T1)
-    LaLiD = einsum('kLcD,ak,ci->aLiD',L2,T1,T1)
-    LaLId = -einsum('kLdC,ak,CI->aLId',L2,T1,T1)
+    LaLiD = einsum('klcd,ak,ci->alid',L2,T1,T1)
+    LaLId = -einsum('kldc,ak,ci->alid',L2,T1,T1)
 
-    tmp = einsum('aLiD,BDJL->aBiJ',LaLiD,T2a)
-    tmp += einsum('BlJd,adil->aBiJ',LaLiD,T2a)
-    tmp += einsum('alid,dBlJ->aBiJ',Lalid,T2)
-    tmp += einsum('aLJd,dBiL->aBiJ',LaLId,T2)
-    tmp += einsum('BliD,aDlJ->aBiJ',LaLId,T2)
-    tmp += einsum('BLJD,aDiL->aBiJ',Lalid,T2)
+    tmp = einsum('alid,bdjl->abij',LaLiD,T2a)
+    tmp += einsum('bljd,adil->abij',LaLiD,T2a)
+    tmp += einsum('alid,dblj->abij',Lalid,T2)
+    tmp += einsum('aljd,dbil->abij',LaLId,T2)
+    tmp += einsum('blid,adlj->abij',LaLId,T2)
+    tmp += einsum('bljd,adil->abij',Lalid,T2)
 
     Pabij -= tmp
     return Pabij
