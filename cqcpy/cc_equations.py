@@ -158,18 +158,18 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T2A += 0.5*einsum('ai,bj->abij',T1old,T1old)
     T2A -= 0.5*einsum('bi,aj->abij',T1old,T1old)
 
-    Fvv = F.vv.copy()
+    Fvv = F.vv.astype(T1.dtype)
     Fvv -= 0.5*einsum('jb,aj->ab',F.ov,T1old)
     Fvv -= einsum('ajcb,cj->ab',I.vovv,T1old)
     Fvv -= 0.5*einsum('jkbc,acjk->ab',I.oovv,T2A)
 
-    Foo = F.oo.copy()
+    Foo = F.oo.astype(T1.dtype)
     Foo += 0.5*einsum('jb,bi->ji',F.ov,T1old)
     Foo += einsum('jkib,bk->ji',I.ooov,T1old)
     Foo += 0.5*einsum('jkbc,bcik->ji',I.oovv,T2A)
     T2A = None
 
-    Fov = F.ov.copy()
+    Fov = F.ov.astype(T1.dtype)
     Fov += einsum('jkbc,ck->jb',I.oovv,T1old)
 
     T1 += fac*einsum('ab,bi->ai',Fvv,T1old)
@@ -183,14 +183,14 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T2B += einsum('ai,bj->abij',T1old,T1old)
     T2B -= einsum('bi,aj->abij',T1old,T1old)
 
-    Woooo = I.oooo.copy()
+    Woooo = I.oooo.astype(T2.dtype)
     Woooo += einsum('klic,cj->klij',I.ooov,T1old)
     Woooo -= einsum('kljc,ci->klij',I.ooov,T1old)
     Woooo += 0.25*einsum('klcd,cdij->klij',I.oovv,T2B)
     T2 += fac*0.5*einsum('klij,abkl->abij',Woooo,T2B)
     Woooo = None
 
-    Wvvvv = I.vvvv.copy()
+    Wvvvv = I.vvvv.astype(T2.dtype)
     Wvvvv -= einsum('akcd,bk->abcd',I.vovv,T1old)
     Wvvvv += einsum('bkcd,ak->abcd',I.vovv,T1old)
     Wvvvv += 0.25*einsum('klcd,abkl->abcd',I.oovv,T2B)
@@ -198,7 +198,8 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T2B = None
     Wvvvv = None
 
-    Wovvo = -I.vovo.transpose((1,0,2,3))
+    #Wovvo = -I.vovo.transpose((1,0,2,3))
+    Wovvo = -I.vovo.transpose((1,0,2,3)).astype(T2.dtype)
     Wovvo -= einsum('bkcd,dj->kbcj',I.vovv,T1old)
     Wovvo += einsum('kljc,bl->kbcj',I.ooov,T1old)
     temp = 0.5*T2old + einsum('dj,bl->dbjl',T1old,T1old)
@@ -246,28 +247,28 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2Aab = T2abold.copy()
     T2Aab += 0.5*einsum('ai,bj->abij',T1aold,T1bold)
 
-    Fvva = Faa.vv.copy()
+    Fvva = Faa.vv.astype(T1a.dtype)
     Fvva -= 0.5*einsum('jb,aj->ab',Faa.ov,T1aold)
     Fvva -= einsum('ajcb,cj->ab',Ia.vovv,T1aold)
     Fvva += einsum('ajbc,cj->ab',Iabab.vovv,T1bold)
     Fvva -= 0.5*einsum('jkbc,acjk->ab',Ia.oovv,T2Aaa)
     Fvva -= einsum('jkbc,acjk->ab',Iabab.oovv,T2Aab)
 
-    Fvvb = Fbb.vv.copy()
+    Fvvb = Fbb.vv.astype(T1b.dtype)
     Fvvb -= 0.5*einsum('jb,aj->ab',Fbb.ov,T1bold)
     Fvvb -= einsum('ajcb,cj->ab',Ib.vovv,T1bold)
     Fvvb += einsum('jacb,cj->ab',Iabab.ovvv,T1aold)
     Fvvb -= 0.5*einsum('jkbc,acjk->ab',Ib.oovv,T2Abb)
     Fvvb -= einsum('kjcb,cakj->ab',Iabab.oovv,T2Aab)
 
-    Fooa = Faa.oo.copy()
+    Fooa = Faa.oo.astype(T1a.dtype)
     Fooa += 0.5*einsum('jb,bi->ji',Faa.ov,T1aold)
     Fooa += einsum('jkib,bk->ji',Ia.ooov,T1aold)
     Fooa += einsum('jkib,bk->ji',Iabab.ooov,T1bold)
     Fooa += 0.5*einsum('jkbc,bcik->ji',Ia.oovv,T2Aaa)
     Fooa += einsum('jkbc,bcik->ji',Iabab.oovv,T2Aab)
 
-    Foob = Fbb.oo.copy()
+    Foob = Fbb.oo.astype(T1b.dtype)
     Foob += 0.5*einsum('jb,bi->ji',Fbb.ov,T1bold)
     Foob += einsum('jkib,bk->ji',Ib.ooov,T1bold)
     Foob += einsum('kjbi,bk->ji',Iabab.oovo,T1aold)
@@ -277,11 +278,11 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2Aab = None
     T2Abb = None
 
-    Fova = Faa.ov.copy()
+    Fova = Faa.ov.astype(T1a.dtype)
     Fova += einsum('jkbc,ck->jb',Ia.oovv,T1aold)
     Fova += einsum('jkbc,ck->jb',Iabab.oovv,T1bold)
 
-    Fovb = Fbb.ov.copy()
+    Fovb = Fbb.ov.astype(T1b.dtype)
     Fovb += einsum('jkbc,ck->jb',Ib.oovv,T1bold)
     Fovb += einsum('kjcb,ck->jb',Iabab.oovv,T1aold)
 
@@ -318,15 +319,15 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2Bab = T2abold.copy()
     T2Bab += einsum('ai,bj->abij',T1aold,T1bold)
 
-    Wo_aaaa = Ia.oooo.copy()
+    Wo_aaaa = Ia.oooo.astype(T2aa.dtype)
     Wo_aaaa += einsum('klic,cj->klij',Ia.ooov,T1aold)
     Wo_aaaa -= einsum('kljc,ci->klij',Ia.ooov,T1aold)
     Wo_aaaa += 0.25*einsum('klcd,cdij->klij',Ia.oovv,T2Baa)
-    Wo_bbbb = Ib.oooo.copy()
+    Wo_bbbb = Ib.oooo.astype(T2bb.dtype)
     Wo_bbbb += einsum('klic,cj->klij',Ib.ooov,T1bold)
     Wo_bbbb -= einsum('kljc,ci->klij',Ib.ooov,T1bold)
     Wo_bbbb += 0.25*einsum('klcd,cdij->klij',Ib.oovv,T2Bbb)
-    Wo_abab = Iabab.oooo.copy()
+    Wo_abab = Iabab.oooo.astype(T2ab.dtype)
     Wo_abab += einsum('klic,cj->klij',Iabab.ooov,T1bold)
     Wo_abab += einsum('klcj,ci->klij',Iabab.oovo,T1aold)
     Wo_abab += 0.5*einsum('klcd,cdij->klij',Iabab.oovv,T2Bab)
@@ -337,15 +338,15 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     Wo_bbbb = None
     Wo_abab = None
 
-    Wv_aaaa = Ia.vvvv.copy()
+    Wv_aaaa = Ia.vvvv.astype(T2aa.dtype)
     Wv_aaaa -= einsum('akcd,bk->abcd',Ia.vovv,T1aold)
     Wv_aaaa += einsum('bkcd,ak->abcd',Ia.vovv,T1aold)
     Wv_aaaa += 0.25*einsum('klcd,abkl->abcd',Ia.oovv,T2Baa)
-    Wv_bbbb = Ib.vvvv.copy()
+    Wv_bbbb = Ib.vvvv.astype(T2bb.dtype)
     Wv_bbbb -= einsum('akcd,bk->abcd',Ib.vovv,T1bold)
     Wv_bbbb += einsum('bkcd,ak->abcd',Ib.vovv,T1bold)
     Wv_bbbb += 0.25*einsum('klcd,abkl->abcd',Ib.oovv,T2Bbb)
-    Wv_abab = Iabab.vvvv.copy()
+    Wv_abab = Iabab.vvvv.astype(T2ab.dtype)
     Wv_abab -= einsum('akcd,bk->abcd',Iabab.vovv,T1bold)
     Wv_abab -= einsum('kbcd,ak->abcd',Iabab.ovvv,T1aold)
     Wv_abab += 0.5*einsum('klcd,abkl->abcd',Iabab.oovv,T2Bab)
@@ -378,36 +379,36 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     TTTbb = 0.5*T2bbold + einsum('dj,bl->dbjl',T1bold,T1bold)
     TTTab = 0.5*T2abold + einsum('dj,bl->dbjl',T1aold,T1bold)
 
-    W_ovvo = -Ia.vovo.transpose((1,0,2,3)).copy()
+    W_ovvo = -Ia.vovo.transpose((1,0,2,3)).astype(T2aa.dtype)
     W_ovvo -= einsum('bkcd,dj->kbcj',Ia.vovv,T1aold)
     W_ovvo += einsum('kljc,bl->kbcj',Ia.ooov,T1aold)
     W_ovvo -= einsum('klcd,dbjl->kbcj',Ia.oovv,TTTaa)
     W_ovvo += 0.5*einsum('klcd,bdjl->kbcj',Iabab.oovv,T2abold)
 
-    W_OVVO = -Ib.vovo.transpose((1,0,2,3)).copy()
+    W_OVVO = -Ib.vovo.transpose((1,0,2,3)).astype(T2bb.dtype)
     W_OVVO -= einsum('bkcd,dj->kbcj',Ib.vovv,T1bold)
     W_OVVO += einsum('kljc,bl->kbcj',Ib.ooov,T1bold)
     W_OVVO -= einsum('klcd,dbjl->kbcj',Ib.oovv,TTTbb)
     W_OVVO += 0.5*einsum('lkdc,dblj->kbcj',Iabab.oovv,T2abold)
 
-    W_oVvO = Iabab.ovvo.copy()
+    W_oVvO = Iabab.ovvo.astype(T2ab.dtype)
     W_oVvO += einsum('kbcd,dj->kbcj',Iabab.ovvv,T1bold)
     W_oVvO -= einsum('klcj,bl->kbcj',Iabab.oovo,T1bold)
     W_oVvO -= einsum('klcd,dbjl->kbcj',Iabab.oovv,TTTbb)
     W_oVvO += 0.5*einsum('klcd,dblj->kbcj',Ia.oovv,T2abold)
 
-    W_OvVo = Iabab.voov.transpose((1,0,3,2)).copy()
+    W_OvVo = Iabab.voov.transpose((1,0,3,2)).astype(T2ab.dtype)
     W_OvVo += einsum('bkdc,dj->kbcj',Iabab.vovv,T1aold)
     W_OvVo -= einsum('lkjc,bl->kbcj',Iabab.ooov,T1aold)
     W_OvVo -= einsum('lkdc,dbjl->kbcj',Iabab.oovv,TTTaa)
     W_OvVo += 0.5*einsum('klcd,bdjl->kbcj',Ib.oovv,T2abold)
 
-    W_oVVo = -Iabab.ovov.transpose((0,1,3,2)).copy()
+    W_oVVo = -Iabab.ovov.transpose((0,1,3,2)).astype(T2ab.dtype)
     W_oVVo -= einsum('kbdc,dj->kbcj',Iabab.ovvv,T1aold)
     W_oVVo += einsum('kljc,bl->kbcj',Iabab.ooov,T1bold)
     W_oVVo += einsum('kldc,dbjl->kbcj',Iabab.oovv,TTTab)
 
-    W_OvvO = -Iabab.vovo.transpose((1,0,2,3)).copy()
+    W_OvvO = -Iabab.vovo.transpose((1,0,2,3)).astype(T2ab.dtype)
     W_OvvO -= einsum('bkcd,dj->kbcj',Iabab.vovv,T1bold)
     W_OvvO += einsum('lkcj,bl->kbcj',Iabab.oovo,T1aold)
     W_OvvO += einsum('lkcd,bdlj->kbcj',Iabab.oovv,TTTab)
@@ -470,12 +471,12 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
 
 def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     # T1 equation
-    Fov = F.ov.copy()
-    Fvv = F.vv.copy()
+    Fov = F.ov.astype(T1.dtype)
+    Fvv = F.vv.astype(T1.dtype)
     Fvv -= 0.5*einsum('jb,aj->ab', F.ov, T1old)
     Iovvv = 2.0*I.ovvv - I.vovv.transpose((1,0,2,3))
     Fvv += einsum('jacb,cj->ab', Iovvv, T1old)
-    Foo = F.oo.copy()
+    Foo = F.oo.astype(T1.dtype)
     Foo += 0.5*einsum('jb,bi->ji', F.ov, T1old)
     Ioovo = 2.0*I.oovo - I.oovo.transpose((1,0,2,3))
     Foo += einsum('kjbi,bk->ji', Ioovo, T1old)
@@ -498,13 +499,13 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
 
     # T2 equation
     tau2 = T2old + einsum('ai,bj->abij', T1old, T1old)
-    Wo = I.oooo.copy()
+    Wo = I.oooo.astype(T2.dtype)
     tmp = einsum('klic,cj->klij', I.ooov, T1old)
     Wo += tmp + tmp.transpose((1,0,3,2))
     Wo += 0.5*einsum('klcd,cdij->klij', I.oovv, tau2)
     T2 += fac*einsum('klij,abkl->abij',Wo, tau2)
 
-    Wv = I.vvvv.copy()
+    Wv = I.vvvv.astype(T2.dtype)
     tmp = einsum('akcd,bk->abcd', I.vovv, T1old)
     Wv -= (tmp + tmp.transpose((1,0,3,2)))
     Wv += 0.5*einsum('klcd,abkl->abcd', I.oovv, tau2)
@@ -525,13 +526,13 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     W1 -= einsum('klcd,dbjl->kbcj',I.oovv - I.oovv.transpose((0,1,3,2)),TTT1)
     W1 += 0.5*einsum('klcd,bdjl->kbcj',I.oovv,T2old)
 
-    W2 = I.ovvo.copy()
+    W2 = I.ovvo.astype(T2.dtype)
     W2 += einsum('kbcd,dj->kbcj',I.ovvv,T1old)
     W2 -= einsum('klcj,bl->kbcj',I.oovo,T1old)
     W2 -= einsum('klcd,dbjl->kbcj',I.oovv,TTT1)
     W2 += 0.5*einsum('klcd,dblj->kbcj',I.oovv - I.oovv.transpose((0,1,3,2)), T2old)
 
-    W3 = -I.ovov.transpose((0,1,3,2)).copy()
+    W3 = -I.ovov.transpose((0,1,3,2)).astype(T2.dtype)
     W3 -= einsum('kbdc,dj->kbcj',I.ovvv,T1old)
     W3 += einsum('kljc,bl->kbcj',I.ooov,T1old)
     W3 += einsum('kldc,dbjl->kbcj',I.oovv,TTT2)

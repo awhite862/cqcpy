@@ -31,7 +31,7 @@ def vfermi_function(beta, epsilon, mu):
         return numpy.exp(x) / (numpy.exp(x) + 1.0)
 
 def ffv(beta, epsilon, mu):
-    """Return the complement of Fermi-Dirac distribution function 
+    """Return the complement of Fermi-Dirac distribution function
     for a vector of energies."""
     fvir = numpy.zeros(epsilon.shape)
     for i in range(epsilon.shape[0]):
@@ -40,7 +40,7 @@ def ffv(beta, epsilon, mu):
     return fvir
 
 def ff(beta, epsilon, mu):
-    """Return the Fermi-Dirac distribution function 
+    """Return the Fermi-Dirac distribution function
     for a vector of energies."""
     focc = numpy.zeros(epsilon.shape)
     for i in range(epsilon.shape[0]):
@@ -58,7 +58,7 @@ def grand_potential0(beta, epsilon, mu):
         #return 0.0
         return ((-numpy.exp(-x))/beta)
     else:
-        return numpy.log(fermi_function(beta, epsilon, mu))/beta + emm 
+        return numpy.log(fermi_function(beta, epsilon, mu))/beta + emm
 
 def dgrand_potential0(beta, epsilon, mu):
     """Return the derivative of the 0th order Grand potential."""
@@ -73,7 +73,7 @@ def dgrand_potential0(beta, epsilon, mu):
                 - emm*vfermi_function(beta, epsilon, mu)/beta
 
 def GP0(beta, epsilon, mu):
-    """Return a vector of the 0th order Grand potentials for a 
+    """Return a vector of the 0th order Grand potentials for a
     many-body system.
     """
     argA = numpy.zeros(epsilon.shape)
