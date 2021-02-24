@@ -66,6 +66,19 @@ def _D_D(T2, F, I, T2old, fac=1.0):
     T2 += fac*einsum('bkci,acjk->abij',I.vovo,T2old)
     T2 -= fac*einsum('akci,bcjk->abij',I.vovo,T2old)
 
+def _D_D_ladder(T2, F, I, T2old, fac=1.0):
+    # D[D]-C
+    T2 += fac*0.5*einsum('abcd,cdij->abij',I.vvvv,T2old)
+    # D[D]-D
+    T2 += fac*0.5*einsum('klij,abkl->abij',I.oooo,T2old)
+
+def _D_D_ring(T2, F, I, T2old, fac=1.0):
+    # D[D]-E
+    T2 -= fac*einsum('bkcj,acik->abij',I.vovo,T2old)
+    #T2 += fac*einsum('akcj,bcik->abij',I.vovo,T2old)
+    #T2 += fac*einsum('bkci,acjk->abij',I.vovo,T2old)
+    T2 -= fac*einsum('akci,bcjk->abij',I.vovo,T2old)
+
 def _D_SS(T2, F, I, T1old, fac=1.0):
     # D[SS]-A
     T2 += fac*0.5*einsum('abcd,ci,dj->abij',I.vvvv,T1old,T1old)
@@ -121,6 +134,14 @@ def _D_DD(T2, F, I, T2old, fac=1.0):
     # D[DD]-D
     T2 -= fac*0.5*einsum('klcd,cdki,ablj->abij',I.oovv,T2old,T2old)
     T2 += fac*0.5*einsum('klcd,cdkj,abli->abij',I.oovv,T2old,T2old)
+
+def _D_DD_ladder(T2, F, I, T2old, fac=1.0):
+    # D[DD]-A
+    T2 += fac*0.25*einsum('klcd,cdij,abkl->abij',I.oovv,T2old,T2old)
+
+def _D_DD_ring(T2, F, I, T2old, fac=1.0):
+    # D[DD]-B
+    T2 += fac*einsum('klcd,acik,dblj->abij',I.oovv,T2old,T2old)
 
 def _D_SSS(T2, F, I, T1old, fac=1.0):
     # D[SSS]-A
@@ -618,6 +639,24 @@ def ccd_simple(F, I, T2old):
 
     _D_D(T2, F, I, T2old)
     _D_DD(T2, F, I, T2old)
+
+    return T2
+
+def ccd_ladder_simple(I, T2old):
+    """Coupled cluster doubles (CCD) iteration."""
+    T2 = I.vvoo.copy()
+
+    _D_D_ladder(T2, I, T2old)
+    _D_DD_ladder(T2, I, T2old)
+
+    return T2
+
+def ccd_ring_simple(I, T2old):
+    """Coupled cluster doubles (CCD) iteration."""
+    T2 = I.vvoo.copy()
+
+    _D_D_ring(T2, I, T2old)
+    _D_DD_ring(T2, I, T2old)
 
     return T2
 
