@@ -46,6 +46,22 @@ class TamplEquationsTest(unittest.TestCase):
         err = "Error in CCD T2"
         self.assertTrue(s,err)
 
+    def test_ccd_stanton(self):
+        no = self.no
+        nv = self.nv
+        T1old,T2old = test_utils.make_random_T(no,nv)
+        F,I = test_utils.make_random_integrals(no,nv)
+        T1old = numpy.zeros((nv,no))
+
+        T2 = cc_equations.ccd_simple(F, I, T2old)
+        #T1sd,T2sd = cc_equations.ccsd_simple(F, I, T1old, T2old)
+        T2sd = cc_equations.ccd_stanton(F, I, T2old)
+
+        D = numpy.linalg.norm(T2 - T2sd)
+        s = D < self.thresh
+        err = "Error in CCD T2"
+        self.assertTrue(s,err)
+
     def test_ucc_energy(self):
         noa = self.no
         nob = self.no

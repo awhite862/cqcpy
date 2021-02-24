@@ -227,6 +227,44 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T2 -= fac*temp_ij.transpose((0,1,3,2))
     temp_ij = None
 
+def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
+
+    Fvv = F.vv.astype(T2.dtype)
+    Fvv -= 0.5*einsum('jkbc,acjk->ab',I.oovv,T2old)
+
+    Foo = F.oo.astype(T2.dtype)
+    Foo += 0.5*einsum('jkbc,bcik->ji',I.oovv,T2old)
+
+    Woooo = I.oooo.astype(T2.dtype)
+    Woooo += 0.25*einsum('klcd,cdij->klij',I.oovv,T2old)
+    T2 += fac*0.5*einsum('klij,abkl->abij',Woooo,T2old)
+    Woooo = None
+
+    Wvvvv = I.vvvv.astype(T2.dtype)
+    Wvvvv += 0.25*einsum('klcd,abkl->abcd',I.oovv,T2old)
+    T2 += fac*0.5*einsum('abcd,cdij->abij',Wvvvv,T2old)
+    Wvvvv = None
+
+    Wovvo = -I.vovo.transpose((1,0,2,3)).astype(T2.dtype)
+    Wovvo -= 0.5*einsum('klcd,dbjl->kbcj',I.oovv,T2old)
+    temp = einsum('kbcj,acik->abij',Wovvo,T2old)
+    T2 += fac*temp
+    T2 -= fac*temp.transpose((0,1,3,2))
+    T2 -= fac*temp.transpose((1,0,2,3))
+    T2 += fac*temp.transpose((1,0,3,2))
+    temp = None
+    Wovvo = None
+
+    temp_ab = einsum('bc,acij->abij',Fvv,T2old)
+    T2 += fac*temp_ab
+    T2 -= fac*temp_ab.transpose((1,0,2,3))
+    temp_ab = None
+
+    temp_ij = -einsum('kj,abik->abij',Foo,T2old)
+    T2 += fac*temp_ij
+    T2 -= fac*temp_ij.transpose((0,1,3,2))
+    temp_ij = None
+
 def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old, fac=1.0):
 
     # unpack
@@ -635,6 +673,16 @@ def rccsd_stanton(F, I, T1old, T2old):
     _r_Stanton(T1,T2,F,I,T1old,T2old)
 
     return T1,T2
+
+def ccd_stanton(F, I, T2old):
+    """Coupled cluster singles and doubles (CCSD) iteration
+    using Stanton-Gauss intermediates.
+    """
+    T2 = I.vvoo.copy()
+
+    _Stanton_ccd(T2, F, I, T2old)
+
+    return T2
 
 def _LS_TS(L1, I, T1old, fac=1.0):
     L1 += fac*einsum('jiba,bj->ia',I.oovv,T1old)

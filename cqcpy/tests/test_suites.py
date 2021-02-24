@@ -20,6 +20,7 @@ def full_suite():
 
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccsd_stanton"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccd"))
+    suite.addTest(test_cc_ampl.TamplEquationsTest("test_ccd_stanton"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_ucc_energy"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_uccsd"))
     suite.addTest(test_cc_ampl.TamplEquationsTest("test_rcc_energy"))
