@@ -66,7 +66,7 @@ def _D_D(T2, F, I, T2old, fac=1.0):
     T2 += fac*einsum('bkci,acjk->abij',I.vovo,T2old)
     T2 -= fac*einsum('akci,bcjk->abij',I.vovo,T2old)
 
-def _D_D_ladder(T2, F, I, T2old, fac=1.0):
+def _D_D_ladder(T2, I, T2old, fac=1.0):
     # D[D]-C
     T2 += fac*0.5*einsum('abcd,cdij->abij',I.vvvv,T2old)
     # D[D]-D
@@ -135,7 +135,7 @@ def _D_DD(T2, F, I, T2old, fac=1.0):
     T2 -= fac*0.5*einsum('klcd,cdki,ablj->abij',I.oovv,T2old,T2old)
     T2 += fac*0.5*einsum('klcd,cdkj,abli->abij',I.oovv,T2old,T2old)
 
-def _D_DD_ladder(T2, F, I, T2old, fac=1.0):
+def _D_DD_ladder(T2, I, T2old, fac=1.0):
     # D[DD]-A
     T2 += fac*0.25*einsum('klcd,cdij,abkl->abij',I.oovv,T2old,T2old)
 
@@ -897,6 +897,12 @@ def _LD_LD(L2, F, I, L2old, fac=1.0):
     L2 += fac*einsum('cjak,ikbc->ijab',I.vovo,L2old)
     L2 -= fac*einsum('ciak,jkbc->ijab',I.vovo,L2old)
 
+def _LD_LD_ladder(L2, I, L2old, fac=1.0):
+    # C
+    L2 += 0.5*fac*einsum('cdab,ijcd->ijab',I.vvvv,L2old)
+    # D
+    L2 += 0.5*fac*einsum('ijkl,klab->ijab',I.oooo,L2old)
+
 def _LD_LDTS(L2, F, I, L2old, T1old, fac=1.0):
     # A
     L2 -= fac*einsum('ikab,jc,ck->ijab',L2old,F.ov,T1old)
@@ -945,6 +951,12 @@ def _LD_LDTD(L2, I, L2old, T2old, fac=1.0):
     # E
     L2 -= 0.5*fac*einsum('ljab,cdkl,kicd->ijab',I.oovv,T2old,L2old)
     L2 += 0.5*fac*einsum('liab,cdkl,kjcd->ijab',I.oovv,T2old,L2old)
+    # F
+    L2 += 0.25*fac*einsum('ijcd,cdkl,klab->ijab',I.oovv,T2old,L2old)
+    # G
+    L2 += 0.25*fac*einsum('klab,cdkl,ijcd->ijab',I.oovv,T2old,L2old)
+
+def _LD_LDTD_ladder(L2, I, L2old, T2old, fac=1.0):
     # F
     L2 += 0.25*fac*einsum('ijcd,cdkl,klab->ijab',I.oovv,T2old,L2old)
     # G
