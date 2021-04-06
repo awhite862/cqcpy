@@ -1,0 +1,4 @@
+[run]
+branch = True
+source = cqcpy
+omit = cqcpy/tests/*.py
