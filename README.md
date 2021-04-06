@@ -13,3 +13,9 @@ and testing of quantum chemistry code. They are not intended to be computational
 + convenience functions for getting integrals from pyscf in various formats
 + classes/functions for storing and transforming some commonly found tensor structures
 + functions to generate random tensors useful for various tests
+
+## Tests
+Tests can be run in any of the following ways:
+  - Individually from the 'cqcpy/tests' subdirectory 
+  - All at once by running 'cqcpy/tests/test_suites.py'
+  - All at once by running 'python -m unittest test.py'
