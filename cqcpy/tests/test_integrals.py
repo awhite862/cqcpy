@@ -102,8 +102,8 @@ class IntegralsTest(unittest.TestCase):
         pad[:na] = numpy.ones(na)
         pbd[:nb] = numpy.ones(nb)
         pmoa = numpy.diag(pad)
-        pmob = numpy.diag(pbd) 
-            
+        pmob = numpy.diag(pbd)
+
         p = utils.block_diag(pmoa,pmob)
         eri = integrals.get_physu_all(mf.mol, moa, mob, anti=True)
         JK = numpy.einsum('pqrs,qs->pr',eri,p)
@@ -129,8 +129,8 @@ class IntegralsTest(unittest.TestCase):
         pad[:na] = numpy.ones(na)
         pbd[:nb] = numpy.ones(nb)
         pmoa = numpy.diag(pad)
-        pmob = numpy.diag(pbd) 
-            
+        pmob = numpy.diag(pbd)
+
         p = utils.block_diag(pmoa,pmob)
         eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
         JK = numpy.einsum('pqrs,qs->pr',eri,p)
@@ -156,8 +156,8 @@ class IntegralsTest(unittest.TestCase):
         pad[:na] = numpy.ones(na)
         pbd[:nb] = numpy.ones(nb)
         pmoa = numpy.diag(pad)
-        pmob = numpy.diag(pbd) 
-            
+        pmob = numpy.diag(pbd)
+
         p = utils.block_diag(pmoa,pmob)
         eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
         JK = numpy.einsum('pqrs,sq->pr',eri,p)

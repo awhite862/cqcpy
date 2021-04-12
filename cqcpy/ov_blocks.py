@@ -59,7 +59,7 @@ class two_e_blocks_full(object):
         self.vovo = vovo
         self.voov = voov
         self.ovvo = ovvo
-        self.ovov = ovov 
+        self.ovov = ovov
         self.oovv = oovv
         self.ooov = ooov
         self.oovo = oovo
@@ -67,7 +67,7 @@ class two_e_blocks_full(object):
         self.vooo = vooo
         self.oooo = oooo
 
-def make_two_e_blocks_full(Itot, 
+def make_two_e_blocks_full(Itot,
         n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     n1,n2,n3,n4 = Itot.shape
     assert(n1==n1o + n1v)

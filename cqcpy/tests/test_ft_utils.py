@@ -6,7 +6,7 @@ from cqcpy import ft_utils
 class FTUtilsTest(unittest.TestCase):
     def setUp(self):
         self.betas = [0.01, 0.1, 1.0, 10.0]
-        self.es = [-10.0, -1.0, 0.0, 1.0, 10.0] 
+        self.es = [-10.0, -1.0, 0.0, 1.0, 10.0]
         self.Fs = [[
                 0.524979187478939986,
                 0.502499979166874998,

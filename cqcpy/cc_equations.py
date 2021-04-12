@@ -2246,7 +2246,7 @@ def rccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old):
     _r_LS_TS(L1,I,T1old)
     _rccsd_Lambda_opt(L1, L2, F, I, L1old ,L2old, T1old, T2old)
 
-    return L1,L2 
+    return L1,L2
 
 def ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old):
     """Coupled cluster singles and doubles (CCSD) Lambda iteration."""

@@ -44,10 +44,10 @@ def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     b2 = p2.shape[1]
     b3 = p3.shape[1]
     b4 = p4.shape[1]
-    n1 = a1 + b1 
-    n2 = a2 + b2 
-    n3 = a3 + b3 
-    n4 = a4 + b4 
+    n1 = a1 + b1
+    n2 = a2 + b2
+    n3 = a3 + b3
+    n4 = a4 + b4
     I = numpy.zeros((n1,n2,n3,n4),dtype=dtype)
     I[:a1,:a2,:a3,:a4] = Ia
     I[a1:,a2:,a3:,a4:] = Ib
@@ -148,10 +148,10 @@ def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
     b2 = p2.shape[1]
     b3 = p3.shape[1]
     b4 = p4.shape[1]
-    n1 = a1 + b1 
-    n2 = a2 + b2 
-    n3 = a3 + b3 
-    n4 = a4 + b4 
+    n1 = a1 + b1
+    n2 = a2 + b2
+    n3 = a3 + b3
+    n4 = a4 + b4
     dtype = o1.dtype
     I = numpy.zeros((n1,n2,n3,n4),dtype=dtype)
     I[:a1,:a2,:a3,:a4] = Ia
@@ -211,7 +211,7 @@ def get_physu_all_gen(mf,anti=False):
         ktemp = mf.kpt
         pbc = True
     except AttributeError:
-        pbc = False 
+        pbc = False
 
     if pbc:
         if len(mf.mo_occ.shape) == 1:
@@ -243,8 +243,8 @@ def get_phys_gen(mf,mo1,mo2,mo3,mo4,anti=False):
         ktemp = mf.kpt
         pbc = True
     except AttributeError:
-        pbc = False 
-    
+        pbc = False
+
     if pbc:
         return get_phys_sol(mf,mo1,mo2,mo3,mo4,anti=anti)
     else:
@@ -294,7 +294,7 @@ class eri_blocks(object):
             ktemp = mf.kpt
             pbc = True
         except AttributeError:
-            pbc = False 
+            pbc = False
 
         if len(mo_occ.shape) == 1:
             o = mf.mo_coeff[:,mo_occ>0]

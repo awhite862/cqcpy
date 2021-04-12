@@ -41,7 +41,7 @@ class SpinUtilsTest(unittest.TestCase):
     def test_I_sym(self):
         noa = 3
         nob = 2
-        nva = 2 
+        nva = 2
         nvb = 3
         na = noa + nva
         nb = nob + nvb
@@ -78,7 +78,7 @@ class SpinUtilsTest(unittest.TestCase):
         from cqcpy import integrals
         noa = 3
         nob = 2
-        nva = 2 
+        nva = 2
         nvb = 3
         na = noa + nva
         nb = nob + nvb
@@ -93,7 +93,7 @@ class SpinUtilsTest(unittest.TestCase):
 
         I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
         Ia,Ib,Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
-        
+
         test = Ia.vvvv - Ia_ref.vvvv
         s = numpy.linalg.norm(test) < self.thresh
         err = "error in Ia vvvv integrals"
@@ -345,11 +345,11 @@ class SpinUtilsTest(unittest.TestCase):
     def test_T(self):
         noa = 3
         nob = 2
-        nva = 2 
+        nva = 2
         nvb = 3
         no = noa + nob
         nv = nva + nvb
-        T1ref,T2ref = test_utils.make_random_T(no,nv) 
+        T1ref,T2ref = test_utils.make_random_T(no,nv)
         Taa,Tab,Tbb = spin_utils.T2_to_spatial(T2ref, noa, nva, nob, nvb)
         Ta,Tb = spin_utils.T1_to_spatial(T1ref,noa,nva,nob,nvb)
         T2out = spin_utils.T2_to_spin(Taa,Tab,Tbb,noa,nva,nob,nvb)

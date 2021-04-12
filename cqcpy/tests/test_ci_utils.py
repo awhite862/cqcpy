@@ -29,25 +29,25 @@ class CIUtilsTest(unittest.TestCase):
         occ = [1 if i < na else 0 for i in range(nmo)]
         ref = ci_utils.Dstring(nmo,occ)
         basis = []
-        
+
         # scf ground state
         basis.append((ref,ref))
-        
+
         # singly excited states
         for a in sa:
             basis.append((a,ref))
         for b in sb:
             basis.append((ref,b))
-        
+
         # doubly excited states
-        for a in  da:
+        for a in da:
             basis.append((a,ref))
-        for b in  db:
+        for b in db:
             basis.append((ref,b))
         for a in sa:
             for b in sb:
                 basis.append((a,b))
-        
+
         nd = len(basis)
         vec = numpy.random.random(nd)
         H = numpy.zeros((nd,nd))
@@ -55,7 +55,7 @@ class CIUtilsTest(unittest.TestCase):
             for j,k in enumerate(basis):
                 H[i,j] = ci_utils.ci_matrixel(b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
         ref = numpy.einsum('ij,j->i',H,vec)
-        out = ci_utils.H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab) 
+        out = ci_utils.H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab)
         diff = numpy.linalg.norm(out - ref)/numpy.linalg.norm(ref)
         self.assertTrue(diff < thresh,"Difference: {}".format(diff))
 

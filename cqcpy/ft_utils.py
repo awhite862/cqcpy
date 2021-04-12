@@ -83,7 +83,7 @@ def GP0(beta, epsilon, mu):
     return argA
 
 def uGP0(beta, ea, eb, mu):
-    """Return a vector of the 0th order Grand potentials for a 
+    """Return a vector of the 0th order Grand potentials for a
     many-body system.
     """
     argA = numpy.zeros(ea.shape)
