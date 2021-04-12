@@ -15,7 +15,6 @@ class IntegralsTest(unittest.TestCase):
         self.mol = mol
         self.mf = mf
 
-        from cqcpy import integrals
         import pyscf.pbc.gto as pbc_gto
         import pyscf.pbc.scf as pbc_scf
         cell = pbc_gto.Cell()

@@ -1,6 +1,5 @@
 import unittest
 import numpy
-from cqcpy import test_utils
 from cqcpy import ft_utils
 
 class FTUtilsTest(unittest.TestCase):

@@ -1,7 +1,6 @@
 import unittest
 import numpy
 
-from cqcpy import test_utils
 from cqcpy import ci_utils
 
 class CIUtilsTest(unittest.TestCase):

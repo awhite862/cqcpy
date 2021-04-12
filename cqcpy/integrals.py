@@ -1,5 +1,4 @@
 import numpy
-from pyscf import gto, scf
 import pyscf.ao2mo as mol_ao2mo
 
 def get_chem(mol,o1,o2,o3,o4,anti=False):

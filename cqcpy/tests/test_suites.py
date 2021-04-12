@@ -1,4 +1,3 @@
-import sys
 import unittest
 from cqcpy.tests import test_cc_ampl
 from cqcpy.tests import test_cc_rdm

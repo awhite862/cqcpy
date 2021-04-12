@@ -2,7 +2,6 @@ import unittest
 import numpy
 
 from cqcpy import test_utils
-from cqcpy.ov_blocks import make_two_e_blocks_full
 import cqcpy.spin_utils as spin_utils
 
 
@@ -75,7 +74,7 @@ class SpinUtilsTest(unittest.TestCase):
         self.assertTrue(s,err)
 
     def test_I(self):
-        from cqcpy import integrals
+        #from cqcpy import integrals
         noa = 3
         nob = 2
         nva = 2
@@ -265,7 +264,7 @@ class SpinUtilsTest(unittest.TestCase):
         self.assertTrue(s,err)
 
     def test_Be_plus(self):
-        from pyscf import gto, scf, cc
+        from pyscf import gto, scf
         from cqcpy import integrals
         mol = gto.M(
             verbose = 0,
