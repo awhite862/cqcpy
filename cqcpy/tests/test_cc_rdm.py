@@ -271,13 +271,6 @@ class CCRDMTest(unittest.TestCase):
         no = 3
         nv = 5
         thresh = 1e-12
-        n = no + nv
-        F = test_utils.make_random_F(no, nv)
-        Itot = numpy.random.random((n,n,n,n))
-        Itot = Itot + Itot.transpose((1,0,3,2))
-        Ianti = Itot - Itot.transpose((0,1,3,2))
-        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
-        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
 
         T1 = numpy.random.random((nv,no))
         T2 = numpy.random.random((nv,nv,no,no))
@@ -320,13 +313,6 @@ class CCRDMTest(unittest.TestCase):
         no = 3
         nv = 5
         thresh = 1e-12
-        n = no + nv
-        F = test_utils.make_random_F(no, nv)
-        Itot = numpy.random.random((n,n,n,n))
-        Itot = Itot + Itot.transpose((1,0,3,2))
-        Ianti = Itot - Itot.transpose((0,1,3,2))
-        I = ov_blocks.make_two_e_blocks_full(Itot,no,nv,no,nv,no,nv,no,nv)
-        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
 
         T1 = numpy.random.random((nv,no))
         T2 = numpy.random.random((nv,nv,no,no))
@@ -343,8 +329,6 @@ class CCRDMTest(unittest.TestCase):
         L2aa = L2 - L2.transpose((0,1,3,2))
 
         # make unrestricted 2-rdm
-        Pijab_u = L2aa.copy()
-        PIJAB_u = L2aa.copy()
         PiJaB_u = L2.copy()
 
         Pciab_u, PCIAB_u, PcIaB_u, PCiAb_u = cc_equations.uccsd_2rdm_ciab(

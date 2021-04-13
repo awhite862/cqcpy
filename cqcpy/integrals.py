@@ -187,7 +187,6 @@ def get_chemu_all_sol(mf,oa,ob,anti=False):
         mf.kpt, compact=False).reshape(nb,nb,nb,nb)
     Iab = mf.with_df.ao2mo((oa,oa,ob,ob),
         mf.kpt, compact=False).reshape(na,na,nb,nb)
-    dtype = oa.dtype
     Id = numpy.zeros((n,n,n,n),dtype=oa.dtype)
     Id[:na,:na,:na,:na] = Ia
     Id[na:,na:,na:,na:] = Ib
@@ -286,7 +285,6 @@ class eri_blocks(object):
             self.has_ooov = True
         if code == 9 or code == 0:
             self.has_oooo = True
-        mo_coeff = mf.mo_coeff
         mo_occ = mf.mo_occ
         pbc = False
         try:

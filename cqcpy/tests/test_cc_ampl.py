@@ -51,7 +51,6 @@ class TamplEquationsTest(unittest.TestCase):
         nv = self.nv
         T1old,T2old = test_utils.make_random_T(no,nv)
         F,I = test_utils.make_random_integrals(no,nv)
-        T1old = numpy.zeros((nv,no))
 
         T2 = cc_equations.ccd_simple(F, I, T2old)
         T2sd = cc_equations.ccd_stanton(F, I, T2old)
@@ -66,10 +65,6 @@ class TamplEquationsTest(unittest.TestCase):
         nob = self.no
         nva = self.nv
         nvb = self.nv
-        na = noa + nva
-        nb = nob + nvb
-        no = noa + nob
-        nv = nva + nvb
         Faa = test_utils.make_random_F(noa, nva)
         Fbb = test_utils.make_random_F(nob, nvb)
 
@@ -100,10 +95,6 @@ class TamplEquationsTest(unittest.TestCase):
         nob = self.no
         nva = self.nv
         nvb = self.nv
-        na = noa + nva
-        nb = nob + nvb
-        no = noa + nob
-        nv = nva + nvb
         Faa = test_utils.make_random_F(noa, nva)
         Fbb = test_utils.make_random_F(nob, nvb)
 
@@ -155,7 +146,6 @@ class TamplEquationsTest(unittest.TestCase):
         T1 = numpy.random.random((nv,no))
         T2 = numpy.random.random((nv,nv,no,no))
         T2 = T2 + T2.transpose((1,0,3,2))
-        T1a = T1b = T1
         T2aa = T2 - T2.transpose((0,1,3,2))
 
         E_ref = cc_energy.ucc_energy((T1,T1),(T2aa,T2,T2aa),F.ov,F.ov,Ianti,Ianti,I.oovv)

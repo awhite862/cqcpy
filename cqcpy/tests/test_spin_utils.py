@@ -42,10 +42,6 @@ class SpinUtilsTest(unittest.TestCase):
         nob = 2
         nva = 2
         nvb = 3
-        na = noa + nva
-        nb = nob + nvb
-        no = noa + nob
-        nv = nva + nvb
 
         # random integrals over a,b spatial orbitals
         I_aaaa = test_utils.make_random_Ifull(noa,nva)
@@ -78,10 +74,6 @@ class SpinUtilsTest(unittest.TestCase):
         nob = 2
         nva = 2
         nvb = 3
-        na = noa + nva
-        nb = nob + nvb
-        no = noa + nob
-        nv = nva + nvb
 
         # random integrals over a,b spatial orbitals
         Ia_ref = test_utils.make_random_I(noa,nva)
@@ -273,7 +265,6 @@ class SpinUtilsTest(unittest.TestCase):
         mf = scf.UHF(mol)
         mf.conv_tol = 1e-13
         Escf = mf.scf()
-        mo_coeff = mf.mo_coeff
         mo_occ = mf.mo_occ
         mo_occa = mo_occ[0]
         mo_occb = mo_occ[1]

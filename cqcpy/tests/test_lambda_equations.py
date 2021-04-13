@@ -90,10 +90,6 @@ class LambdaEquationsTest(unittest.TestCase):
         nob = self.no
         nva = self.nv
         nvb = self.nv
-        na = noa + nva
-        nb = nob + nvb
-        no = noa + nob
-        nv = nva + nvb
         Fa = test_utils.make_random_F(noa, nva)
         Fb = test_utils.make_random_F(nob, nvb)
 
@@ -161,7 +157,6 @@ class LambdaEquationsTest(unittest.TestCase):
         T1a = T1b = T1
         T2aa = T2 - T2.transpose((0,1,3,2))
 
-        L1a = L1b = L1
         L2aa = L2 - L2.transpose((0,1,3,2))
 
         # Update with UCCSD

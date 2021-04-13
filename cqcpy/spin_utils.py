@@ -124,10 +124,6 @@ def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
     return I
 
 def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
-    na = noa + nva
-    nb = nob + nvb
-    no = noa + nob
-    nv = nva + nvb
 
     # vvvv
     aaaa = I_aaaa.vvvv - I_aaaa.vvvv.transpose((0,1,3,2))
@@ -223,10 +219,6 @@ def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
             vovo=Ivovo,oovv=Ioovv,vooo=Ivooo,ooov=Iooov,oooo=Ioooo)
 
 def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
-    na = noa + nva
-    nb = nob + nvb
-    no = noa + nob
-    nv = nva + nvb
 
     # vvvv
     aaaa = I_aaaa.vvvv

@@ -93,7 +93,7 @@ def make_random_Ifull_gen(n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     n2 = n2o + n2v
     n3 = n3o + n3v
     n4 = n4o + n4v
-    Itot = numpy.random.random((n1,n1,n3,n4))
+    Itot = numpy.random.random((n1,n2,n3,n4))
     return make_two_e_blocks_full(Itot,n1o,n1v,n2o,n2v,n3o,n3v,n4o,n4v)
 
 def make_random_integrals(no, nv):

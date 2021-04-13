@@ -67,7 +67,6 @@ def s_strings(n, nocc, occ=None):
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
-    nvir = n - nocc
     dlist = []
     for i in iocc:
         for a in ivir:
@@ -81,7 +80,6 @@ def d_strings(n, nocc, occ=None):
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
-    nvir = n - nocc
     dlist = []
     for i in iocc:
         for a in ivir:
@@ -100,7 +98,6 @@ def t_strings(n, nocc, occ=None):
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
-    nvir = n - nocc
     dlist = []
     for i in iocc:
         for a in ivir:
@@ -124,7 +121,6 @@ def q_strings(n, nocc, occ=None):
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
     ref = Dstring(n,occ)
-    nvir = n - nocc
     dlist = []
     for i in occ:
         for a in ivir:

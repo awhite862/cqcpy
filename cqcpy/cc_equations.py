@@ -292,8 +292,6 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
 
     nva,noa = T1a.shape
     nvb,nob = T1b.shape
-    no = noa + nob
-    nv = nva + nvb
 
     T2Aaa = T2aaold.copy()
     T2Aaa += 0.5*einsum('ai,bj->abij',T1aold,T1aold)
@@ -1964,7 +1962,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     IToovvs1 += einsum('ikac,bcjk->ijab',I.oovv, T2anti)
     IToovvs1 -= einsum('ciba,bj->ijac', IvOvVs, T1old)
     L1 += fac*einsum('jb,ijab->ia', L1old, IToovvs1)
-    IToOvVs1 = None
+    IToovvs1 = None
 
     ## VOOO
     ITvooos = einsum('cibk,bj->cijk', I.vovo - I.voov.transpose((0,1,3,2)), T1old)
@@ -3004,9 +3002,6 @@ def rccsd_2rdm_bcai(T1, T2, L1, L2):
     LTtempab1 = einsum('jkad,dcki->jcai',L2 - L2.transpose((0,1,3,2)),T2)
     LTtempab1 += einsum('jkad,cdik->jcai',L2,T2 - T2.transpose((0,1,3,2)))
     LTtempab2 = einsum('kjad,cdki->jcai',L2,T2)
-    LTtempab3 = einsum('kjda,cdik->jcai',L2,T2 - T2.transpose((0,1,3,2)))
-    LTtempab3 += einsum('jkad,cdik->jcai',L2 - L2.transpose((0,1,3,2)),T2)
-    LTtempab4 = einsum('jkda,dcik->jcai',L2,T2)
 
     Pbcai += einsum('jCaI,bj->bCaI',LTtempab1,T1)
     Pbcai -= einsum('JbaI,CJ->bCaI',LTtempab2,T1)
@@ -3130,9 +3125,6 @@ def rccsd_2rdm_abij(T1, T2, L1, L2):
 
 def ccsd_pt_simple(F,I,eo,ev,T1,T2):
     raise Exception("ccsd(T) is not implemented")
-    no = eo.shape[0]
-    nv = ev.shape[0]
-    d =(no*nv)**3
     T3 = numpy.einsum('adij,bcdk->abcijk',T2,I.vvvo)
     T3 -= T3.transpose((0,1,2,3,5,4))
     T3 -= T3.transpose((0,1,2,5,4,3))
