@@ -54,7 +54,7 @@ def full_suite():
     suite.addTest(test_test.TestTest("test_Lsym"))
     suite.addTest(test_test.TestTest("test_ft_int_sym"))
     suite.addTest(test_test.TestTest("test_ft_Tsym"))
- 
+
     if not with_pyscf:
         print("WARNING: PySCF not found, skipping some tests")
     else:

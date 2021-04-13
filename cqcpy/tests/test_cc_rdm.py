@@ -172,21 +172,21 @@ class CCRDMTest(unittest.TestCase):
         PiJaB_u = L2ab.copy()
 
         Pciab_u, PCIAB_u, PcIaB_u, PCiAb_u = cc_equations.uccsd_2rdm_ciab(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pjkai_u, PJKAI_u, PjKaI_u, PJkAi_u = cc_equations.uccsd_2rdm_jkai(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pbcai_u, PBCAI_u, PbCaI_u, PBcAi_u = cc_equations.uccsd_2rdm_bcai(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pkaij_u, PKAIJ_u, PkAiJ_u, PKaIj_u = cc_equations.uccsd_2rdm_kaij(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
         Pabij_u, PABIJ_u, PaBiJ_u = cc_equations.uccsd_2rdm_abij(
-                T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
+            T1a,T1b,T2aa,T2ab,T2bb,L1a,L1b,L2aa,L2ab,L2bb)
 
         # ijab
         ref = numpy.einsum('ijab,abij->',Pijab, Atot.vvoo)
@@ -348,21 +348,21 @@ class CCRDMTest(unittest.TestCase):
         PiJaB_u = L2.copy()
 
         Pciab_u, PCIAB_u, PcIaB_u, PCiAb_u = cc_equations.uccsd_2rdm_ciab(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pjkai_u, PJKAI_u, PjKaI_u, PJkAi_u = cc_equations.uccsd_2rdm_jkai(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pbcai_u, PBCAI_u, PbCaI_u, PBcAi_u = cc_equations.uccsd_2rdm_bcai(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pkaij_u, PKAIJ_u, PkAiJ_u, PKaIj_u = cc_equations.uccsd_2rdm_kaij(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
         Pabij_u, PABIJ_u, PaBiJ_u = cc_equations.uccsd_2rdm_abij(
-                T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
+            T1a,T1b,T2aa,T2,T2aa,L1a,L1b,L2aa,L2,L2aa)
 
         # make restricted 2-rdm
         Pijab = L2.copy()

@@ -188,7 +188,7 @@ def get_chemu_all_sol(mf,oa,ob,anti=False):
     Iab = mf.with_df.ao2mo((oa,oa,ob,ob),
         mf.kpt, compact=False).reshape(na,na,nb,nb)
     dtype = oa.dtype
-    Id = numpy.zeros((n,n,n,n),dtype = oa.dtype)
+    Id = numpy.zeros((n,n,n,n),dtype=oa.dtype)
     Id[:na,:na,:na,:na] = Ia
     Id[na:,na:,na:,na:] = Ib
     Id[:na,:na,na:,na:] = Iab

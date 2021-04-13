@@ -86,7 +86,7 @@ class TestTest(unittest.TestCase):
         no = 3
         nv = 4
         T1,T2 = test_utils.make_random_T(no,nv)
-        
+
         test = T2 + T2.transpose((0,1,3,2))
         s1 = numpy.linalg.norm(test) < self.thresh
         test = T2 + T2.transpose((1,0,2,3))
@@ -100,7 +100,7 @@ class TestTest(unittest.TestCase):
         no = 3
         nv = 4
         L1,L2 = test_utils.make_random_L(no,nv)
-        
+
         test = L2 + L2.transpose((0,1,3,2))
         s1 = numpy.linalg.norm(test) < self.thresh
         test = L2 + L2.transpose((1,0,2,3))
@@ -109,7 +109,7 @@ class TestTest(unittest.TestCase):
         s3 = numpy.linalg.norm(test) < self.thresh
         err = "Bad symmetry in T2"
         self.assertTrue(s1 and s2 and s3,err)
-        
+
     def test_ft_int_sym(self):
         F,I = test_utils.make_random_ft_integrals(5)
         test = I + I.transpose((0,1,3,2))

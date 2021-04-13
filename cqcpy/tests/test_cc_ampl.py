@@ -54,7 +54,6 @@ class TamplEquationsTest(unittest.TestCase):
         T1old = numpy.zeros((nv,no))
 
         T2 = cc_equations.ccd_simple(F, I, T2old)
-        #T1sd,T2sd = cc_equations.ccsd_simple(F, I, T1old, T2old)
         T2sd = cc_equations.ccd_stanton(F, I, T2old)
 
         D = numpy.linalg.norm(T2 - T2sd)
@@ -78,7 +77,7 @@ class TamplEquationsTest(unittest.TestCase):
         Ia = test_utils.make_random_I_anti(noa,nva)
         Ib = test_utils.make_random_I_anti(nob,nvb)
         Iabab = test_utils.make_random_Ifull_gen(
-                noa,nva,nob,nvb,noa,nva,nob,nvb)
+            noa,nva,nob,nvb,noa,nva,nob,nvb)
 
         # Full antisymmetric spin-orbital tensor
         I = spin_utils.int_to_spin2(Ia, Ib, Iabab, noa, nva, nob, nvb)
@@ -112,7 +111,7 @@ class TamplEquationsTest(unittest.TestCase):
         Ia = test_utils.make_random_I_anti(noa,nva)
         Ib = test_utils.make_random_I_anti(nob,nvb)
         I_abab = test_utils.make_random_Ifull_gen(
-                noa,nva,nob,nvb,noa,nva,nob,nvb)
+            noa,nva,nob,nvb,noa,nva,nob,nvb)
 
         # Full antisymmetric spin-orbital tensor
         I = spin_utils.int_to_spin2(Ia, Ib, I_abab, noa, nva, nob, nvb)

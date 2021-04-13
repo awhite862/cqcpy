@@ -51,7 +51,7 @@ class SpinUtilsTest(unittest.TestCase):
         I_aaaa = test_utils.make_random_Ifull(noa,nva)
         I_bbbb = test_utils.make_random_Ifull(nob,nvb)
         I_abab = test_utils.make_random_Ifull_gen(
-                noa,nva,nob,nvb,noa,nva,nob,nvb)
+            noa,nva,nob,nvb,noa,nva,nob,nvb)
 
         I = spin_utils.int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb)
 
@@ -74,7 +74,6 @@ class SpinUtilsTest(unittest.TestCase):
         self.assertTrue(s,err)
 
     def test_I(self):
-        #from cqcpy import integrals
         noa = 3
         nob = 2
         nva = 2
@@ -88,7 +87,7 @@ class SpinUtilsTest(unittest.TestCase):
         Ia_ref = test_utils.make_random_I(noa,nva)
         Ib_ref = test_utils.make_random_I(nob,nvb)
         Iabab_ref = test_utils.make_random_Ifull_gen(
-                noa,nva,nob,nvb,noa,nva,nob,nvb)
+            noa,nva,nob,nvb,noa,nva,nob,nvb)
 
         I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
         Ia,Ib,Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
@@ -267,10 +266,10 @@ class SpinUtilsTest(unittest.TestCase):
         from pyscf import gto, scf
         from cqcpy import integrals
         mol = gto.M(
-            verbose = 0,
-            atom = 'Be 0 0 0',
-            basis = 'sto-3G',
-            spin = 1, charge = 1)
+            verbose=0,
+            atom='Be 0 0 0',
+            basis='sto-3G',
+            spin=1, charge=1)
         mf = scf.UHF(mol)
         mf.conv_tol = 1e-13
         Escf = mf.scf()

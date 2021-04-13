@@ -70,7 +70,7 @@ def dgrand_potential0(beta, epsilon, mu):
         return emm*fermi_function(beta, epsilon, mu)/beta + numpy.exp(-x)/(beta*beta)
     else:
         return -numpy.log(fermi_function(beta, epsilon, mu))/(beta*beta)\
-                - emm*vfermi_function(beta, epsilon, mu)/beta
+            - emm*vfermi_function(beta, epsilon, mu)/beta
 
 def GP0(beta, epsilon, mu):
     """Return a vector of the 0th order Grand potentials for a

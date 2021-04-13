@@ -347,7 +347,7 @@ def int_to_spatial(I, noa, nob, nva, nvb):
     Ib = two_e_blocks(vvvv=vvvv,
             vvvo=vvvo,vovv=vovv,vvoo=vvoo,vovo=vovo,
             oovv=oovv,vooo=vooo,ooov=ooov,oooo=oooo)
-    
+
     vvvv = I.vvvv[:nva,nva:,:nva,nva:]
     vvvo = I.vvvo[:nva,nva:,:nva,noa:]
     vvov = -I.vvvo[:nva,nva:,nva:,:noa].transpose((0,1,3,2))

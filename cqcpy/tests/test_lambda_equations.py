@@ -101,7 +101,7 @@ class LambdaEquationsTest(unittest.TestCase):
         Ia = test_utils.make_random_I_anti(noa,nva)
         Ib = test_utils.make_random_I_anti(nob,nvb)
         Iabab = test_utils.make_random_Ifull_gen(
-                noa,nva,nob,nvb,noa,nva,nob,nvb)
+            noa,nva,nob,nvb,noa,nva,nob,nvb)
 
         # Full antisymmetric spin-orbital tensor
         I = spin_utils.int_to_spin2(Ia, Ib, Iabab, noa, nva, nob, nvb)
@@ -123,9 +123,9 @@ class LambdaEquationsTest(unittest.TestCase):
         L1_ref,L2_ref = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1, T2)
 
         # Get updated Lambda using unrestricted code
-        M1,M2 = cc_equations.uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab, (L1aold,L1bold),
-                (L2aaold, L2abold, L2bbold), (T1a,T1b),(T2aa, T2ab, T2bb))
- 
+        M1,M2 = cc_equations.uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab,
+            (L1aold,L1bold), (L2aaold, L2abold, L2bbold), (T1a,T1b),(T2aa, T2ab, T2bb))
+
         L1a,L1b = M1
         L2aa,L2ab,L2bb = M2
         L1 = spin_utils.T1_to_spin(L1a, L1b, nva, noa, nvb, nob)

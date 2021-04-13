@@ -5,10 +5,10 @@ class IntegralsTest(unittest.TestCase):
     def setUp(self):
         from pyscf import gto, scf
         mol = gto.M(
-            verbose = 0,
-            atom = 'Be 0 0 0',
-            basis = 'sto-3G',
-            spin = 1, charge = 1)
+            verbose=0,
+            atom='Be 0 0 0',
+            basis='sto-3G',
+            spin=1, charge=1)
         mf = scf.UHF(mol)
         mf.conv_tol = 1e-13
         Escf = mf.scf()

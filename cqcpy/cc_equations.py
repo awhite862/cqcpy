@@ -75,8 +75,6 @@ def _D_D_ladder(T2, I, T2old, fac=1.0):
 def _D_D_ring(T2, F, I, T2old, fac=1.0):
     # D[D]-E
     T2 -= fac*einsum('bkcj,acik->abij',I.vovo,T2old)
-    #T2 += fac*einsum('akcj,bcik->abij',I.vovo,T2old)
-    #T2 += fac*einsum('bkci,acjk->abij',I.vovo,T2old)
     T2 -= fac*einsum('akci,bcjk->abij',I.vovo,T2old)
 
 def _D_SS(T2, F, I, T1old, fac=1.0):
