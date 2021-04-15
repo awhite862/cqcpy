@@ -1,39 +1,39 @@
 import numpy
 
 class Dstring(object):
-    def __init__(self,n,occ):
+    def __init__(self, n, occ):
         self.occ = numpy.asarray(occ)
         assert(n == self.occ.shape[0])
         self.n = n
 
-    def excite(self,i,a):
+    def excite(self, i, a):
         if self.occ[i] != 1:
             return (None,None)
         if self.occ[a] != 0:
             return (None,None)
 
         if i == a:
-            return (1.0,Dstring(self.n,self.occ))
+            return (1.0, Dstring(self.n,self.occ))
         elif i < a:
             occnew = self.occ.copy()
             occnew[i] = 0
             occnew[a] = 1
             otemp = self.occ[i+1:a]
-            sign = 1 if otemp.sum()%2 == 0 else -1
-            return (sign,Dstring(self.n,occnew))
+            sign = 1 if otemp.sum() % 2 == 0 else -1
+            return (sign, Dstring(self.n,occnew))
         elif i > a:
             occnew = self.occ.copy()
             occnew[i] = 0
             occnew[a] = 1
             otemp = self.occ[a+1:i]
-            sign = 1 if otemp.sum()%2 == 0 else -1
-            return (sign,Dstring(self.n,occnew))
+            sign = 1 if otemp.sum() % 2 == 0 else -1
+            return (sign, Dstring(self.n,occnew))
 
     def __eq__(self, other):
         return numpy.array_equal(self.occ, other.occ) and self.n == other.n
 
 class Pstring(object):
-    def __init__(self,n,occ):
+    def __init__(self, n, occ):
         self.occ = numpy.asarray(occ)
         assert(n == self.occ.shape[0])
         self.n = n
@@ -378,7 +378,7 @@ def vcisd_basis(nmode):
         basis.append(d)
     return basis
 
-def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
+def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
     nmo = no + nv
     if order < 1:
         raise Exception("Unrecognized CI expansion order: {}".format(order))
@@ -549,7 +549,7 @@ def gmakeCfromT(no,nv,T1,T2,order=2,occ=None):
                                             C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]*T1[idd,il]/24.0
     return C
 
-def makeCfromT(noa,nva,nob,nvb,T1a,T1b,T2aa,T2ab,T2bb,order=2):
+def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
     na = noa + nva
     nb = nob + nvb
     assert(na == nb)
@@ -1239,7 +1239,7 @@ def gci_matrixel(bra, ket, h, I, const):
         b = bra.occ.copy()
         i1 = min(o,v)
         i2 = max(o,v)
-        sign = 1.0 if b[i1+1:i2].sum()%2 == 0 else -1.0
+        sign = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         Hel += h[v,o]
         Hel += numpy.einsum('ii,i->',I[v,:,o,:],p)
@@ -1253,8 +1253,8 @@ def gci_matrixel(bra, ket, h, I, const):
         b = bra.occ.copy()
         i1,i2 = min(o1,v1),max(o1,v1)
         j1,j2 = min(o2,v2),max(o2,v2)
-        sign1 = 1.0 if b[i1+1:i2].sum()%2 == 0 else -1.0
-        sign2 = 1.0 if b[j1+1:j2].sum()%2 == 0 else -1.0
+        sign1 = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
+        sign2 = 1.0 if b[j1+1:j2].sum() % 2 == 0 else -1.0
         sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
         Hel = I[v1,v2,o1,o2] - I[v1,v2,o2,o1]
@@ -1298,7 +1298,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         ba = braa.occ.copy()
         i1 = min(o,v)
         i2 = max(o,v)
-        sign = 1.0 if ba[i1+1:i2].sum()%2 == 0 else -1.0
+        sign = 1.0 if ba[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         # from Ha
         Hel += ha[v,o]
@@ -1316,7 +1316,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         bb = brab.occ.copy()
         i1 = min(o,v)
         i2 = max(o,v)
-        sign = 1.0 if bb[i1+1:i2].sum()%2 == 0 else -1.0
+        sign = 1.0 if bb[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         # from Hb
         Hel += hb[v,o]
@@ -1337,8 +1337,8 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         i2a = max(oa,va)
         i1b = min(ob,vb)
         i2b = max(ob,vb)
-        signa = 1.0 if ba[i1a+1:i2a].sum()%2 == 0 else -1.0
-        signb = 1.0 if bb[i1b+1:i2b].sum()%2 == 0 else -1.0
+        signa = 1.0 if ba[i1a+1:i2a].sum() % 2 == 0 else -1.0
+        signb = 1.0 if bb[i1b+1:i2b].sum() % 2 == 0 else -1.0
         # from Hab
         Hel = Iabab[va,vb,oa,ob]
         return signa*signb*Hel
@@ -1351,8 +1351,8 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         ba = braa.occ.copy()
         i1,i2 = min(o1,v1),max(o1,v1)
         j1,j2 = min(o2,v2),max(o2,v2)
-        sign1 = 1.0 if ba[i1+1:i2].sum()%2 == 0 else -1.0
-        sign2 = 1.0 if ba[j1+1:j2].sum()%2 == 0 else -1.0
+        sign1 = 1.0 if ba[i1+1:i2].sum() % 2 == 0 else -1.0
+        sign2 = 1.0 if ba[j1+1:j2].sum() % 2 == 0 else -1.0
         sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
         Hel = Ia[v1,v2,o1,o2] - Ia[v1,v2,o2,o1]
@@ -1366,8 +1366,8 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         bb = brab.occ.copy()
         i1,i2 = min(o1,v1),max(o1,v1)
         j1,j2 = min(o2,v2),max(o2,v2)
-        sign1 = 1.0 if bb[i1+1:i2].sum()%2 == 0 else -1.0
-        sign2 = 1.0 if bb[j1+1:j2].sum()%2 == 0 else -1.0
+        sign1 = 1.0 if bb[i1+1:i2].sum() % 2 == 0 else -1.0
+        sign2 = 1.0 if bb[j1+1:j2].sum() % 2 == 0 else -1.0
         sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Hb
         Hel = Ib[v1,v2,o1,o2] - Ib[v1,v2,o2,o1]

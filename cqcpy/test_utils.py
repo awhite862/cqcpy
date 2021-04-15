@@ -148,7 +148,7 @@ def make_random_ft_integrals(n):
 
     return F,I
 
-def make_random_ft_T(ng,n):
+def make_random_ft_T(ng, n):
     # Note this also can be used for Lambdas
     T1 = numpy.random.random((ng,n,n))
     T2 = numpy.random.random((ng,n,n,n,n))
@@ -158,14 +158,14 @@ def make_random_ft_T(ng,n):
 
     return T1,T2
 
-def make_random_ft_T1_spatial(ng,na,nb):
+def make_random_ft_T1_spatial(ng, na, nb):
     # Note this also can be used for Lambdas
     T1a = numpy.random.random((ng,na,na))
     T1b = numpy.random.random((ng,nb,nb))
 
     return T1a,T1b
 
-def make_random_ft_T2_spatial(ng,na,nb):
+def make_random_ft_T2_spatial(ng, na, nb):
     T2aa = numpy.random.random((ng,na,na,na,na))
     T2aa -= T2aa.transpose((0,1,2,4,3))
     T2aa -= T2aa.transpose((0,2,1,3,4))
@@ -191,7 +191,7 @@ def make_random_ft_D1(n):
 
     return D1
 
-def make_random_ft_D2(n1,n2):
+def make_random_ft_D2(n1, n2):
     e1 = numpy.random.random((n1))
     e2 = numpy.random.random((n2))
     D2 = e1[:,None,None,None] + e2[None,:,None,None] \

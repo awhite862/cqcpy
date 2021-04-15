@@ -4,7 +4,6 @@ import numpy
 from cqcpy import test_utils
 import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_equations as cc_equations
-import cqcpy.ov_blocks as ov_blocks
 
 class CCRDMTest(unittest.TestCase):
     def setUp(self):

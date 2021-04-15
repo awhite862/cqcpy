@@ -1,7 +1,7 @@
 import numpy
 import pyscf.ao2mo as mol_ao2mo
 
-def get_chem(mol,o1,o2,o3,o4,anti=False):
+def get_chem(mol, o1, o2, o3, o4, anti=False):
     """Get ERIs in chemist's notation for given orbital Coeffs."""
     n1 = o1.shape[1]
     n2 = o2.shape[1]
@@ -14,19 +14,19 @@ def get_chem(mol,o1,o2,o3,o4,anti=False):
     else:
         return Id
 
-def get_chem_anti(mol,o1,o2,o3,o4):
+def get_chem_anti(mol, o1, o2, o3, o4):
     """Get antisymmetrized ERIs in chemist's notation for given orbital Coeffs."""
     return get_chem(mol,o1,o1,o3,o4,anti=True)
 
-def get_phys(mol,o1,o2,o3,o4,anti=False):
+def get_phys(mol, o1, o2, o3, o4, anti=False):
     """Get ERIs in physicist's notation for given orbital Coeffs."""
     return get_chem(mol,o1,o3,o2,o4,anti=anti).transpose((0,2,1,3))
 
-def get_phys_anti(mol,o1,o2,o3,o4):
+def get_phys_anti(mol, o1, o2, o3, o4):
     """Get antisymmetrized ERIs in physicist's notation for given orbital Coeffs."""
     return get_phys(mol,o1,o2,o3,o4,anti=True)
 
-def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
+def get_chemu(mol, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
     """Get unrestricted, ERIs in chemist's
     notation for given alphd and beta orbital Coeffs.
     """
@@ -59,13 +59,13 @@ def get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
         I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
     return I
 
-def get_chem_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4):
+def get_chem_antiu(mol, o1, o2, o3, o4, p1, p2, p3, p4):
     """Get unrestricted, ERIs in chemist's
     notation for given alphd and beta orbital Coeffs.
     """
     return get_chemu(mol,o1,o2,o3,o4,p1,p2,p3,p4,anti=True)
 
-def get_chemu_all(mol,oa,ob,anti=False):
+def get_chemu_all(mol, oa, ob, anti=False):
     """Get unrestricted ERIs in chemist's
     notation for given orbital Coeffs.
     """
@@ -89,33 +89,33 @@ def get_chemu_all(mol,oa,ob,anti=False):
     else:
         return Id
 
-def get_chem_antiu_all(mol,oa,ob):
+def get_chem_antiu_all(mol, oa, ob):
     """Get unrestricted, antisymmetrized ERIs in chemist's
     notation for given orbital Coeffs.
     """
     return get_chemu_all(mol,oa,ob,anti=True)
 
-def get_physu_all(mol,oa,ob,anti=False):
+def get_physu_all(mol, oa, ob, anti=False):
     """Get unrestricted ERIs in physicist's
     notation for given orbital Coeffs.
     """
-    I = get_chemu_all(mol,oa,ob,anti=anti)
+    I = get_chemu_all(mol, oa, ob, anti=anti)
     return I.transpose(0,2,1,3)
 
-def get_phys_antiu_all(mol,oa,ob):
+def get_phys_antiu_all(mol, oa, ob):
     """Get unrestricted, antisymmetrized ERIs in physicist's
     notation for given orbital Coeffs.
     """
     return get_physu_all(mol,oa,ob,anti=True)
 
-def get_phys_antiu(mol,o1,o2,o3,o4,p1,p2,p3,p4):
+def get_phys_antiu(mol, o1, o2, o3, o4, p1, p2, p3, p4):
     """Get unrestricted, antisymmetrized ERIs in physicist's
     notation for given orbital Coeffs.
     """
     I = get_chem_antiu(mol,o1,o3,o2,o4,p1,p3,p2,p4)
     return I.transpose(0,2,1,3)
 
-def get_chem_sol(mf,o1,o2,o3,o4,anti=False):
+def get_chem_sol(mf, o1, o2, o3, o4, anti=False):
     """Get ERIs in chemist's notation for given orbital Coeffs."""
     n1 = o1.shape[1]
     n2 = o2.shape[1]
@@ -128,10 +128,10 @@ def get_chem_sol(mf,o1,o2,o3,o4,anti=False):
     else:
         return Id
 
-def get_phys_sol(mf,o1,o2,o3,o4,anti=False):
+def get_phys_sol(mf, o1, o2, o3, o4, anti=False):
     return get_chem_sol(mf,o1,o3,o2,o4,anti=anti).transpose((0,2,1,3))
 
-def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
+def get_chemu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
     """Get unrestricted ERIs in chemist's
     notation for given orbital Coeffs.
     """
@@ -164,17 +164,17 @@ def get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=False):
         I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
     return I
 
-def get_chem_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4):
+def get_chem_antiu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4):
     return get_chemu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4,anti=True)
 
-def get_phys_antiu_sol(mf,o1,o2,o3,o4,p1,p2,p3,p4):
+def get_phys_antiu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4):
     """Get unrestricted, antisymmetrized ERIs in physicist's
     notation for given orbital Coeffs.
     """
     I = get_chem_antiu_sol(mf,o1,o3,o2,o4,p1,p3,p2,p4)
     return I.transpose(0,2,1,3)
 
-def get_chemu_all_sol(mf,oa,ob,anti=False):
+def get_chemu_all_sol(mf, oa, ob, anti=False):
     """Get unrestricted ERIs in chemist's
     notation for given orbital Coeffs.
     """
@@ -197,10 +197,10 @@ def get_chemu_all_sol(mf,oa,ob,anti=False):
     else:
         return Id
 
-def get_physu_all_sol(mf,oa,ob,anti=False):
+def get_physu_all_sol(mf, oa, ob, anti=False):
     return get_chemu_all_sol(mf,oa,ob,anti=anti).transpose((0,2,1,3))
 
-def get_physu_all_gen(mf,anti=False):
+def get_physu_all_gen(mf, anti=False):
     """Get unrestricted, ERIs in physicist's
     notation for given scf reference.
     """
@@ -235,7 +235,7 @@ def get_phys_antiu_all_gen(mf):
     """
     return get_physu_all_gen(mf,anti=True)
 
-def get_phys_gen(mf,mo1,mo2,mo3,mo4,anti=False):
+def get_phys_gen(mf, mo1, mo2, mo3, mo4, anti=False):
     pbc = False
     try:
         ktemp = mf.kpt

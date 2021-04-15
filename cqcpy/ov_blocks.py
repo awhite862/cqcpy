@@ -1,13 +1,13 @@
 class one_e_blocks(object):
-    def __init__(self,oo,ov,vo,vv):
+    def __init__(self, oo, ov, vo, vv):
         self.oo = oo
         self.ov = ov
         self.vo = vo
         self.vv = vv
 
 class two_e_blocks(object):
-    def __init__(self,vvvv=None,vvvo=None,vovv=None,vvoo=None,
-            vovo=None,oovv=None,vooo=None,ooov=None,oooo=None):
+    def __init__(self, vvvv=None, vvvo=None, vovv=None, vvoo=None,
+            vovo=None, oovv=None, vooo=None, ooov=None, oooo=None):
         self.vvvv = vvvv
         self.vvvo = vvvo
         self.vovv = vovv
@@ -20,7 +20,7 @@ class two_e_blocks(object):
 
 def make_two_e_blocks(Itot,
         n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
-    n1,n2,n3,n4 = Itot.shape
+    n1, n2, n3, n4 = Itot.shape
     assert(n1==n1o + n1v)
     assert(n2==n2o + n2v)
     assert(n3==n3o + n3v)
@@ -41,14 +41,14 @@ def make_two_e_blocks(Itot,
             ooov=Iooov,oooo=Ioooo)
 
 class two_e_blocks_full(object):
-    def __init__(self,vvvv=None,
-            vvvo=None,vvov=None,
-            vovv=None,ovvv=None,
-            vvoo=None,vovo=None,
-            ovvo=None,voov=None,
-            ovov=None,oovv=None,
-            vooo=None,ovoo=None,
-            oovo=None,ooov=None,
+    def __init__(self, vvvv=None,
+            vvvo=None, vvov=None,
+            vovv=None, ovvv=None,
+            vvoo=None, vovo=None,
+            ovvo=None, voov=None,
+            ovov=None, oovv=None,
+            vooo=None, ovoo=None,
+            oovo=None, ooov=None,
             oooo=None):
         self.vvvv = vvvv
         self.vvvo = vvvo
@@ -69,7 +69,7 @@ class two_e_blocks_full(object):
 
 def make_two_e_blocks_full(Itot,
         n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
-    n1,n2,n3,n4 = Itot.shape
+    n1, n2, n3, n4 = Itot.shape
     assert(n1==n1o + n1v)
     assert(n2==n2o + n2v)
     assert(n3==n3o + n3v)
@@ -91,11 +91,11 @@ def make_two_e_blocks_full(Itot,
     Iooov = Itot[:n1o,:n2o,:n3o,n4o:]
     Ioooo = Itot[:n1o,:n2o,:n3o,:n4o]
     return two_e_blocks_full(vvvv=Ivvvv,
-            vvvo=Ivvvo,vvov=Ivvov,
-            vovv=Ivovv,ovvv=Iovvv,
-            vvoo=Ivvoo,vovo=Ivovo,
-            ovov=Iovov,voov=Ivoov,
-            ovvo=Iovvo,oovv=Ioovv,
-            vooo=Ivooo,ovoo=Iovoo,
-            oovo=Ioovo,ooov=Iooov,
+            vvvo=Ivvvo, vvov=Ivvov,
+            vovv=Ivovv, ovvv=Iovvv,
+            vvoo=Ivvoo, vovo=Ivovo,
+            ovov=Iovov, voov=Ivoov,
+            ovvo=Iovvo, oovv=Ioovv,
+            vooo=Ivooo, ovoo=Iovoo,
+            oovo=Ioovo, ooov=Iooov,
             oooo=Ioooo)
