@@ -93,8 +93,8 @@ class IntegralsTest(unittest.TestCase):
         vb = f[1] - h1
         moa = mf.mo_coeff[0]
         mob = mf.mo_coeff[1]
-        vmoa = numpy.einsum('mp,mn,nq->pq',numpy.conj(moa),va,moa)
-        vmob = numpy.einsum('mp,mn,nq->pq',numpy.conj(mob),vb,mob)
+        vmoa = numpy.einsum('mp,mn,nq->pq', numpy.conj(moa), va, moa)
+        vmob = numpy.einsum('mp,mn,nq->pq', numpy.conj(mob), vb, mob)
 
         na = mf.mol.nelectron // 2 + mf.mol.spin
         nb = mf.mol.nelectron - na
@@ -106,10 +106,10 @@ class IntegralsTest(unittest.TestCase):
         pmoa = numpy.diag(pad)
         pmob = numpy.diag(pbd)
 
-        p = utils.block_diag(pmoa,pmob)
+        p = utils.block_diag(pmoa, pmob)
         eri = integrals.get_physu_all(mf.mol, moa, mob, anti=True)
-        JK = numpy.einsum('pqrs,qs->pr',eri,p)
-        vtot = utils.block_diag(vmoa,vmob)
+        JK = numpy.einsum('pqrs,qs->pr', eri, p)
+        vtot = utils.block_diag(vmoa, vmob)
         diff = numpy.linalg.norm(vtot - JK)
         self.assertTrue(diff < 1e-12)
 
@@ -121,7 +121,7 @@ class IntegralsTest(unittest.TestCase):
         h1 = mf.get_hcore(mf.cell)
         v = f - h1
         mo = mf.mo_coeff
-        vmo = numpy.einsum('mp,mn,nq->pq',numpy.conj(mo),v,mo)
+        vmo = numpy.einsum('mp,mn,nq->pq', numpy.conj(mo), v, mo)
 
         na = mf.mol.nelectron // 2 + mf.mol.spin
         nb = mf.mol.nelectron - na
@@ -133,10 +133,10 @@ class IntegralsTest(unittest.TestCase):
         pmoa = numpy.diag(pad)
         pmob = numpy.diag(pbd)
 
-        p = utils.block_diag(pmoa,pmob)
+        p = utils.block_diag(pmoa, pmob)
         eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
-        JK = numpy.einsum('pqrs,qs->pr',eri,p)
-        vtot = utils.block_diag(vmo,vmo)
+        JK = numpy.einsum('pqrs,qs->pr', eri, p)
+        vtot = utils.block_diag(vmo, vmo)
         diff = numpy.linalg.norm(vtot - JK)
         self.assertTrue(diff < 1e-12)
 
@@ -148,7 +148,7 @@ class IntegralsTest(unittest.TestCase):
         h1 = mf.get_hcore(mf.cell)
         v = f - h1
         mo = mf.mo_coeff
-        vmo = numpy.einsum('mp,mn,nq->pq',numpy.conj(mo),v,mo)
+        vmo = numpy.einsum('mp,mn,nq->pq', numpy.conj(mo), v, mo)
 
         na = mf.mol.nelectron // 2 + mf.mol.spin
         nb = mf.mol.nelectron - na
@@ -160,10 +160,10 @@ class IntegralsTest(unittest.TestCase):
         pmoa = numpy.diag(pad)
         pmob = numpy.diag(pbd)
 
-        p = utils.block_diag(pmoa,pmob)
+        p = utils.block_diag(pmoa, pmob)
         eri = integrals.get_physu_all_sol(mf, mo, mo, anti=True)
-        JK = numpy.einsum('pqrs,sq->pr',eri,p)
-        vtot = utils.block_diag(vmo,vmo)
+        JK = numpy.einsum('pqrs,sq->pr', eri, p)
+        vtot = utils.block_diag(vmo, vmo)
         diff = numpy.linalg.norm(vtot - JK)
         self.assertTrue(diff < 1e-12)
 

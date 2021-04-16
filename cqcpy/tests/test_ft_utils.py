@@ -39,43 +39,43 @@ class FTUtilsTest(unittest.TestCase):
         tol = 1e-14
         for i,b in enumerate(self.betas):
             for j,e in enumerate(self.es):
-                val = ft_utils.fermi_function(b,e,0.0)
+                val = ft_utils.fermi_function(b, e, 0.0)
                 ref = self.Fs[i][j]
                 fail = abs(val - ref)/abs(ref) > tol
-                self.assertFalse(fail,"Value: {}  Ref: {}".format(val,ref))
+                self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
         for i,b in enumerate(self.betas):
             for j,e in enumerate(self.es):
-                val = ft_utils.fermi_function(b,e + 0.1,0.1)
+                val = ft_utils.fermi_function(b, e + 0.1, 0.1)
                 ref = self.Fs[i][j]
                 fail = abs(val - ref)/abs(ref) > tol
-                self.assertFalse(fail,"Value: {}  Ref: {}".format(val,ref))
+                self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
 
     def test_vfermi(self):
         tol = 1e-14
         for i,b in enumerate(self.betas):
             for j,e in enumerate(self.es):
-                val = ft_utils.vfermi_function(b,e,0.0)
+                val = ft_utils.vfermi_function(b, e, 0.0)
                 ref = self.Fs[i][4 - j]
                 fail = abs(val - ref)/abs(ref) > tol
-                self.assertFalse(fail,"Value: {}  Ref: {}".format(val,ref))
+                self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
         for i,b in enumerate(self.betas):
             for j,e in enumerate(self.es):
-                val = ft_utils.vfermi_function(b,e + 0.1,0.1)
+                val = ft_utils.vfermi_function(b, e + 0.1, 0.1)
                 ref = self.Fs[i][4 - j]
                 fail = abs(val - ref)/abs(ref) > tol
-                self.assertFalse(fail,"Value: {}  Ref: {}".format(val,ref))
+                self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
 
     def test_dfermi(self):
         beta = 2.0
         e = 1.0
         mu = 0.7
         delta = 1e-4
-        fo = ft_utils.fermi_function(beta,e,mu)
-        fv = ft_utils.vfermi_function(beta,e,mu)
-        fof = numpy.sqrt(ft_utils.fermi_function(beta + delta,e,mu))
-        fob = numpy.sqrt(ft_utils.fermi_function(beta - delta,e,mu))
-        fvf = numpy.sqrt(ft_utils.vfermi_function(beta + delta,e,mu))
-        fvb = numpy.sqrt(ft_utils.vfermi_function(beta - delta,e,mu))
+        fo = ft_utils.fermi_function(beta, e, mu)
+        fv = ft_utils.vfermi_function(beta, e, mu)
+        fof = numpy.sqrt(ft_utils.fermi_function(beta + delta, e, mu))
+        fob = numpy.sqrt(ft_utils.fermi_function(beta - delta, e, mu))
+        fvf = numpy.sqrt(ft_utils.vfermi_function(beta + delta, e, mu))
+        fvb = numpy.sqrt(ft_utils.vfermi_function(beta - delta, e, mu))
         dfo_fd = (fof - fob)/(2.0*delta)
         dfv_fd = (fvf - fvb)/(2.0*delta)
         dx = (e - mu)

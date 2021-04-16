@@ -27,7 +27,7 @@ class CIUtilsTest(unittest.TestCase):
         da = ci_utils.d_strings(nmo, na)
         db = ci_utils.d_strings(nmo, nb)
         occ = [1 if i < na else 0 for i in range(nmo)]
-        ref = ci_utils.Dstring(nmo,occ)
+        ref = ci_utils.Dstring(nmo, occ)
         basis = []
 
         # scf ground state
@@ -54,11 +54,11 @@ class CIUtilsTest(unittest.TestCase):
         for i,b in enumerate(basis):
             for j,k in enumerate(basis):
                 H[i,j] = ci_utils.ci_matrixel(
-                    b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
-        ref = numpy.einsum('ij,j->i',H,vec)
+                    b[0], b[1], k[0], k[1], ha, hb, Ia, Ib, Iabab, 0.0)
+        ref = numpy.einsum('ij,j->i', H, vec)
         out = ci_utils.H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab)
         diff = numpy.linalg.norm(out - ref)/numpy.linalg.norm(ref)
-        self.assertTrue(diff < thresh,"Difference: {}".format(diff))
+        self.assertTrue(diff < thresh, "Difference: {}".format(diff))
 
 
 if __name__ == '__main__':
