@@ -2,6 +2,7 @@ import unittest
 import numpy
 from cqcpy import ft_utils
 
+
 class FTUtilsTest(unittest.TestCase):
     def setUp(self):
         self.betas = [0.01, 0.1, 1.0, 10.0]
@@ -84,6 +85,7 @@ class FTUtilsTest(unittest.TestCase):
         diffv = abs(dfv - dfv_fd)
         self.assertTrue(diffo < 1e-8)
         self.assertTrue(diffv < 1e-8)
+
 
 if __name__ == '__main__':
     unittest.main()

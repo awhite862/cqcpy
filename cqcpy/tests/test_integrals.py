@@ -1,6 +1,7 @@
 import unittest
 import numpy
 
+
 class IntegralsTest(unittest.TestCase):
     def setUp(self):
         from pyscf import gto, scf
@@ -11,14 +12,14 @@ class IntegralsTest(unittest.TestCase):
             spin=1, charge=1)
         mf = scf.UHF(mol)
         mf.conv_tol = 1e-13
-        Escf = mf.scf()
+        mf.scf()
         self.mol = mol
         self.mf = mf
 
         import pyscf.pbc.gto as pbc_gto
         import pyscf.pbc.scf as pbc_scf
         cell = pbc_gto.Cell()
-        cell.atom='''
+        cell.atom = '''
         C 0.000000000000   0.000000000000   0.000000000000
         C 1.685068664391   1.685068664391   1.685068664391
         '''
@@ -32,10 +33,10 @@ class IntegralsTest(unittest.TestCase):
         cell.verbose = 0
         cell.build()
         pbc_mf = pbc_scf.RHF(cell, exxdiv=None)
-        ehf = pbc_mf.kernel()
+        pbc_mf.kernel()
         kpt = cell.make_kpts((1,1,1), scaled_center=(0,0,1./3.))
         pbc_mf2 = pbc_scf.RHF(cell, kpt=kpt, exxdiv=None)
-        ehf2 = pbc_mf2.kernel()
+        pbc_mf2.kernel()
         self.pbc_mf = pbc_mf
         self.pbc_mf2 = pbc_mf2
         self.cell = cell
@@ -75,8 +76,10 @@ class IntegralsTest(unittest.TestCase):
         mo3 = mo_coeff[:,2].reshape((nao,1))
         mo4 = mo_coeff[:,3].reshape((nao,1))
 
-        ref = integrals.get_chem_sol(self.pbc_mf, mo1, mo3, mo2, mo4, anti=True).transpose((0,2,1,3))
-        out = integrals.get_phys_sol(self.pbc_mf, mo1, mo2, mo3, mo4, anti=True)
+        ref = integrals.get_chem_sol(
+            self.pbc_mf, mo1, mo3, mo2, mo4, anti=True).transpose((0,2,1,3))
+        out = integrals.get_phys_sol(
+            self.pbc_mf, mo1, mo2, mo3, mo4, anti=True)
         diff = abs(ref[0,0,0,0] - out[0,0,0,0])
         self.assertTrue(diff < 1e-12)
 
@@ -171,8 +174,8 @@ class IntegralsTest(unittest.TestCase):
         cc = pbc_cc.CCSD(mf)
         eris = cc.ao2mo()
         mo = mf.mo_coeff
-        o = mo[:,mf.mo_occ>0]
-        v = mo[:,mf.mo_occ==0]
+        o = mo[:,mf.mo_occ > 0]
+        v = mo[:,mf.mo_occ == 0]
 
         oooo = eris.oooo
         Ioooo = integrals.get_chem_sol(mf, o, o, o, o)
@@ -183,6 +186,7 @@ class IntegralsTest(unittest.TestCase):
         Ioovv = integrals.get_chem_sol(mf, o, o, v, v)
         diff = numpy.linalg.norm(oovv - Ioovv)
         self.assertTrue(diff < 1e-12)
+
 
 if __name__ == '__main__':
     unittest.main()

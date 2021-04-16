@@ -264,16 +264,16 @@ class SpinUtilsTest(unittest.TestCase):
             spin=1, charge=1)
         mf = scf.UHF(mol)
         mf.conv_tol = 1e-13
-        Escf = mf.scf()
+        mf.scf()
         mo_occ = mf.mo_occ
         mo_occa = mo_occ[0]
         mo_occb = mo_occ[1]
         moa = mf.mo_coeff[0]
         mob = mf.mo_coeff[1]
-        oa = (mf.mo_coeff[0])[:,mo_occa>0]
-        va = (mf.mo_coeff[0])[:,mo_occa==0]
-        ob = (mf.mo_coeff[1])[:,mo_occb>0]
-        vb = (mf.mo_coeff[1])[:,mo_occb==0]
+        oa = (mf.mo_coeff[0])[:,mo_occa > 0]
+        va = (mf.mo_coeff[0])[:,mo_occa == 0]
+        ob = (mf.mo_coeff[1])[:,mo_occb > 0]
+        vb = (mf.mo_coeff[1])[:,mo_occb == 0]
         noa = oa.shape[1]
         nva = va.shape[1]
         nob = ob.shape[1]
@@ -351,6 +351,7 @@ class SpinUtilsTest(unittest.TestCase):
         s = numpy.linalg.norm(z < self.thresh)
         err = "Error in T1"
         self.assertTrue(s,err)
+
 
 if __name__ == '__main__':
     unittest.main()

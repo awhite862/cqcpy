@@ -2,6 +2,7 @@ import unittest
 import numpy
 from cqcpy import test_utils
 
+
 class TestTest(unittest.TestCase):
     def setUp(self):
         self.thresh = 1e-14
@@ -136,6 +137,7 @@ class TestTest(unittest.TestCase):
         sym3 = numpy.linalg.norm(test) < self.thresh
         err = "Bad symmetry in FT I"
         self.assertTrue(sym1 and sym2 and sym3,err)
+
 
 if __name__ == '__main__':
     unittest.main()

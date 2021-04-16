@@ -5,6 +5,7 @@ from cqcpy import test_utils
 import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_equations as cc_equations
 
+
 class CCRDMTest(unittest.TestCase):
     def setUp(self):
         pass
@@ -399,6 +400,7 @@ class CCRDMTest(unittest.TestCase):
         # abij
         diff = numpy.linalg.norm(Pabij - PaBiJ_u)/numpy.sqrt(PaBiJ_u.size)
         self.assertTrue(diff < thresh,"Error in Pabij: {}".format(diff))
+
 
 if __name__ == '__main__':
     unittest.main()

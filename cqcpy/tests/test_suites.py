@@ -8,6 +8,7 @@ from cqcpy.tests import test_lambda_equations
 from cqcpy.tests import test_spin_utils
 from cqcpy.tests import test_test
 
+
 def full_suite():
     try:
         import pyscf
@@ -70,6 +71,7 @@ def full_suite():
         suite.addTest(test_integrals.IntegralsTest("test_eri_sol_k"))
 
     return suite
+
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

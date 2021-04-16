@@ -7,6 +7,7 @@ import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_energy as cc_energy
 import cqcpy.cc_equations as cc_equations
 
+
 class TamplEquationsTest(unittest.TestCase):
     def setUp(self):
         self.thresh = 1e-12
@@ -85,7 +86,8 @@ class TamplEquationsTest(unittest.TestCase):
         T2 = spin_utils.T2_to_spin(T2aa,T2ab,T2bb,noa,nva,nob,nvb)
 
         E_ref = cc_energy.cc_energy(T1,T2,F.ov,I.oovv)
-        E_out = cc_energy.ucc_energy((T1a,T1b),(T2aa,T2ab,T2bb),Faa.ov,Fbb.ov,Ia.oovv,Ib.oovv,Iabab.oovv)
+        E_out = cc_energy.ucc_energy(
+            (T1a,T1b),(T2aa,T2ab,T2bb),Faa.ov,Fbb.ov,Ia.oovv,Ib.oovv,Iabab.oovv)
         s = abs(E_ref - E_out) < self.thresh
         err = "Error in ucc_energy"
         self.assertTrue(s,err)
@@ -118,8 +120,9 @@ class TamplEquationsTest(unittest.TestCase):
         S1ref,S2ref = cc_equations.ccsd_stanton(F, I, T1, T2)
 
         # Update with UCCSD
-        S1,S2 = cc_equations.uccsd_stanton(Faa, Fbb, Ia, Ib, I_abab,
-                (T1a,T1b), (T2aa,T2ab,T2bb))
+        S1,S2 = cc_equations.uccsd_stanton(
+            Faa, Fbb, Ia, Ib, I_abab,
+            (T1a,T1b), (T2aa,T2ab,T2bb))
         S1a,S1b = S1
         S2aa,S2ab,S2bb = S2
         S1 = spin_utils.T1_to_spin(S1a, S1b, noa, nva, nob, nvb)
@@ -173,8 +176,9 @@ class TamplEquationsTest(unittest.TestCase):
         T2aa = T2 - T2.transpose((0,1,3,2))
 
         # Update with UCCSD
-        uS1,uS2 = cc_equations.uccsd_stanton(F, F, Ia, Ia, I,
-                (T1a,T1b), (T2aa,T2,T2aa))
+        uS1,uS2 = cc_equations.uccsd_stanton(
+            F, F, Ia, Ia, I,
+            (T1a,T1b), (T2aa,T2,T2aa))
         ref1 = uS1[0]
         ref2 = uS2[1]
         rS1,rS2 = cc_equations.rccsd_stanton(F, I, T1, T2)
@@ -186,6 +190,7 @@ class TamplEquationsTest(unittest.TestCase):
         e2 = "Error in RCCSD T2"
         self.assertTrue(d1 < 1e-14,e1)
         self.assertTrue(d2 < 1e-14,e2)
+
 
 if __name__ == '__main__':
     unittest.main()

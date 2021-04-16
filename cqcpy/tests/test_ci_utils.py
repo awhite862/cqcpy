@@ -3,6 +3,7 @@ import numpy
 
 from cqcpy import ci_utils
 
+
 class CIUtilsTest(unittest.TestCase):
     def setUp(self):
         pass
@@ -52,11 +53,13 @@ class CIUtilsTest(unittest.TestCase):
         H = numpy.zeros((nd,nd))
         for i,b in enumerate(basis):
             for j,k in enumerate(basis):
-                H[i,j] = ci_utils.ci_matrixel(b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
+                H[i,j] = ci_utils.ci_matrixel(
+                    b[0],b[1],k[0],k[1],ha,hb,Ia,Ib,Iabab,0.0)
         ref = numpy.einsum('ij,j->i',H,vec)
         out = ci_utils.H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab)
         diff = numpy.linalg.norm(out - ref)/numpy.linalg.norm(ref)
         self.assertTrue(diff < thresh,"Difference: {}".format(diff))
+
 
 if __name__ == '__main__':
     unittest.main()

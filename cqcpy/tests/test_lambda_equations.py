@@ -5,6 +5,7 @@ import cqcpy.spin_utils as spin_utils
 import cqcpy.cc_equations as cc_equations
 import cqcpy.ov_blocks as ov_blocks
 
+
 class LambdaEquationsTest(unittest.TestCase):
     def setUp(self):
         self.thresh = 1e-12
@@ -119,8 +120,9 @@ class LambdaEquationsTest(unittest.TestCase):
         L1_ref,L2_ref = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1, T2)
 
         # Get updated Lambda using unrestricted code
-        M1,M2 = cc_equations.uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab,
-            (L1aold,L1bold), (L2aaold, L2abold, L2bbold), (T1a,T1b),(T2aa, T2ab, T2bb))
+        M1,M2 = cc_equations.uccsd_lambda_opt(
+            Fa, Fb, Ia, Ib, Iabab, (L1aold,L1bold),
+            (L2aaold, L2abold, L2bbold), (T1a,T1b),(T2aa, T2ab, T2bb))
 
         L1a,L1b = M1
         L2aa,L2ab,L2bb = M2
@@ -160,8 +162,9 @@ class LambdaEquationsTest(unittest.TestCase):
         L2aa = L2 - L2.transpose((0,1,3,2))
 
         # Update with UCCSD
-        M1,M2 = cc_equations.uccsd_lambda_opt(F, F, Ia, Ia, I, (L1,L1),
-                (L2aa, L2, L2aa), (T1a,T1b),(T2aa, T2, T2aa))
+        M1,M2 = cc_equations.uccsd_lambda_opt(
+            F, F, Ia, Ia, I, (L1,L1), (L2aa, L2, L2aa),
+            (T1a,T1b), (T2aa, T2, T2aa))
         rL1,rL2 = cc_equations.rccsd_lambda_opt(F, I, L1, L2, T1, T2)
         ref1 = M1[0]
         ref2 = M2[1]
@@ -173,6 +176,7 @@ class LambdaEquationsTest(unittest.TestCase):
         e2 = "Error in RCCSD L2"
         self.assertTrue(d1 < 1e-14,e1)
         self.assertTrue(d2 < 1e-14,e2)
+
 
 if __name__ == '__main__':
     unittest.main()
