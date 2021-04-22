@@ -3,9 +3,11 @@ import numpy
 hartree_to_ev = 27.2113860217
 kb = 8.617330350e-5 # in eV
 
+
 def HtoK(T):
     """Convert KbT in Ha to Kelvin."""
     return T*hartree_to_ev / kb
+
 
 def fermi_function(beta, epsilon, mu):
     """Return the Fermi-Dirac distribution function."""
@@ -19,6 +21,7 @@ def fermi_function(beta, epsilon, mu):
     else:
         return 1.0 / (numpy.exp(x) + 1.0)
 
+
 def vfermi_function(beta, epsilon, mu):
     """Return the complement of Fermi-Dirac distribution function."""
     emm = epsilon - mu
@@ -30,6 +33,7 @@ def vfermi_function(beta, epsilon, mu):
     else:
         return numpy.exp(x) / (numpy.exp(x) + 1.0)
 
+
 def ffv(beta, epsilon, mu):
     """Return the complement of Fermi-Dirac distribution function
     for a vector of energies."""
@@ -39,6 +43,7 @@ def ffv(beta, epsilon, mu):
 
     return fvir
 
+
 def ff(beta, epsilon, mu):
     """Return the Fermi-Dirac distribution function
     for a vector of energies."""
@@ -47,6 +52,7 @@ def ff(beta, epsilon, mu):
         focc[i] = fermi_function(beta, epsilon[i], mu)
 
     return focc
+
 
 def grand_potential0(beta, epsilon, mu):
     """Return the 0th order Grand potential."""
@@ -60,6 +66,7 @@ def grand_potential0(beta, epsilon, mu):
     else:
         return numpy.log(fermi_function(beta, epsilon, mu))/beta + emm
 
+
 def dgrand_potential0(beta, epsilon, mu):
     """Return the derivative of the 0th order Grand potential."""
     emm = epsilon - mu
@@ -72,6 +79,7 @@ def dgrand_potential0(beta, epsilon, mu):
         return -numpy.log(fermi_function(beta, epsilon, mu))/(beta*beta)\
             - emm*vfermi_function(beta, epsilon, mu)/beta
 
+
 def GP0(beta, epsilon, mu):
     """Return a vector of the 0th order Grand potentials for a
     many-body system.
@@ -81,6 +89,7 @@ def GP0(beta, epsilon, mu):
         argA[i] = grand_potential0(beta, epsilon[i], mu)
 
     return argA
+
 
 def uGP0(beta, ea, eb, mu):
     """Return a vector of the 0th order Grand potentials for a
@@ -93,7 +102,8 @@ def uGP0(beta, ea, eb, mu):
     for i in range(eb.shape[0]):
         argB[i] = grand_potential0(beta, eb[i], mu)
 
-    return argA,argB
+    return argA, argB
+
 
 def dGP0(beta, epsilon, mu):
     """Return a vector of the derivatives of the 0th order
@@ -104,4 +114,3 @@ def dGP0(beta, epsilon, mu):
         argA[i] = dgrand_potential0(beta, epsilon[i], mu)
 
     return argA
-

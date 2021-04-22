@@ -3,6 +3,7 @@ from cqcpy.ov_blocks import one_e_blocks
 from cqcpy.ov_blocks import two_e_blocks
 from cqcpy.ov_blocks import two_e_blocks_full
 
+
 def F_to_spin(Faa, Fbb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
@@ -24,6 +25,7 @@ def F_to_spin(Faa, Fbb, noa, nva, nob, nvb):
 
     return one_e_blocks(Foo, Fov, Fvo, Fvv)
 
+
 def F_to_spatial(F, noa, nva, nob, nvb):
 
     # Fa
@@ -42,6 +44,7 @@ def F_to_spatial(F, noa, nva, nob, nvb):
 
     return Fa, Fb
 
+
 def T1_to_spin(Ta, Tb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
@@ -50,10 +53,12 @@ def T1_to_spin(Ta, Tb, noa, nva, nob, nvb):
     T[nva:,noa:] = Tb.copy()
     return T
 
+
 def T1_to_spatial(T, noa, nva, nob, nvb):
     Ta = T[:nva,:noa].copy()
     Tb = T[nva:,noa:].copy()
-    return Ta,Tb
+    return Ta, Tb
+
 
 def T2u(T2, noa, nva, nob, nvb):
     aaab = T2[:nva,:nva,:noa,noa:]
@@ -90,6 +95,7 @@ def T2_to_spin(Taa, Tab, Tbb, noa, nva, nob, nvb):
     T[nva:,:nva,:noa,noa:] = -Tab.transpose((1,0,2,3)).copy() # baab
     return T
 
+
 def D2_to_spin(Daa, Dab, Dbb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
@@ -102,11 +108,13 @@ def D2_to_spin(Daa, Dab, Dbb, noa, nva, nob, nvb):
     D[nva:,:nva,:noa,noa:] = Dab.transpose((1,0,2,3)).copy() # baab
     return D
 
+
 def T2_to_spatial(T, noa, nva, nob, nvb):
     Taa = T[:nva,:nva,:noa,:noa].copy()
     Tbb = T[nva:,nva:,noa:,noa:].copy()
     Tab = T[:nva,nva:,:noa,noa:].copy()
     return (Taa,Tab,Tbb)
+
 
 def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
         na1, na2, na3, na4, nb1, nb2, nb3, nb4):
@@ -122,6 +130,7 @@ def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
     I[na1:,:na2,:na3,na4:] = baab # baab
     I[na1:,:na2,na3:,:na4] = baba # baba
     return I
+
 
 def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
 
@@ -215,8 +224,10 @@ def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     Ioooo = int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
             noa, noa, noa, noa, nob, nob, nob, nob)
 
-    return two_e_blocks(vvvv=Ivvvv,vvvo=Ivvvo,vovv=Ivovv,vvoo=Ivvoo,
-            vovo=Ivovo,oovv=Ioovv,vooo=Ivooo,ooov=Iooov,oooo=Ioooo)
+    return two_e_blocks(
+        vvvv=Ivvvv, vvvo=Ivvvo, vovv=Ivovv, vvoo=Ivvoo,
+        vovo=Ivovo, oovv=Ioovv, vooo=Ivooo, ooov=Iooov, oooo=Ioooo)
+
 
 def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
 
@@ -310,8 +321,10 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     Ioooo = int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
             noa, noa, noa, noa, nob, nob, nob, nob)
 
-    return two_e_blocks(vvvv=Ivvvv,vvvo=Ivvvo,vovv=Ivovv,vvoo=Ivvoo,
-            vovo=Ivovo,oovv=Ioovv,vooo=Ivooo,ooov=Iooov,oooo=Ioooo)
+    return two_e_blocks(
+        vvvv=Ivvvv, vvvo=Ivvvo, vovv=Ivovv, vvoo=Ivvoo,
+        vovo=Ivovo, oovv=Ioovv, vooo=Ivooo, ooov=Iooov, oooo=Ioooo)
+
 
 def int_to_spatial(I, noa, nob, nva, nvb):
     vvvv = I.vvvv[:nva,:nva,:nva,:nva]
@@ -324,8 +337,8 @@ def int_to_spatial(I, noa, nob, nva, nvb):
     ooov = I.ooov[:noa,:noa,:noa,:nva]
     oooo = I.oooo[:noa,:noa,:noa,:noa]
     Ia = two_e_blocks(vvvv=vvvv,
-            vvvo=vvvo,vovv=vovv,vvoo=vvoo,vovo=vovo,
-            oovv=oovv,vooo=vooo,ooov=ooov,oooo=oooo)
+            vvvo=vvvo, vovv=vovv, vvoo=vvoo, vovo=vovo,
+            oovv=oovv, vooo=vooo, ooov=ooov, oooo=oooo)
 
     vvvv = I.vvvv[nva:,nva:,nva:,nva:]
     vvvo = I.vvvo[nva:,nva:,nva:,noa:]
@@ -337,8 +350,8 @@ def int_to_spatial(I, noa, nob, nva, nvb):
     ooov = I.ooov[noa:,noa:,noa:,nva:]
     oooo = I.oooo[noa:,noa:,noa:,noa:]
     Ib = two_e_blocks(vvvv=vvvv,
-            vvvo=vvvo,vovv=vovv,vvoo=vvoo,vovo=vovo,
-            oovv=oovv,vooo=vooo,ooov=ooov,oooo=oooo)
+            vvvo=vvvo, vovv=vovv, vvoo=vvoo, vovo=vovo,
+            oovv=oovv, vooo=vooo, ooov=ooov, oooo=oooo)
 
     vvvv = I.vvvv[:nva,nva:,:nva,nva:]
     vvvo = I.vvvo[:nva,nva:,:nva,noa:]
@@ -356,14 +369,10 @@ def int_to_spatial(I, noa, nob, nva, nvb):
     ooov = I.ooov[:noa,noa:,:noa,nva:]
     oovo = -I.ooov[:noa,noa:,noa:,:nva].transpose((0,1,3,2))
     oooo = I.oooo[:noa,noa:,:noa,noa:]
-    Iabab = two_e_blocks_full(vvvv=vvvv,
-            vvvo=vvvo,vvov=vvov,
-            vovv=vovv,ovvv=ovvv,
-            vvoo=vvoo,vovo=vovo,
-            ovvo=ovvo,voov=voov,
-            ovov=ovov,oovv=oovv,
-            vooo=vooo,ovoo=ovoo,
-            oovo=oovo,ooov=ooov,
-            oooo=oooo)
+    Iabab = two_e_blocks_full(
+        vvvv=vvvv, vvvo=vvvo, vvov=vvov, vovv=vovv,
+        ovvv=ovvv, vvoo=vvoo, vovo=vovo, ovvo=ovvo,
+        voov=voov, ovov=ovov, oovv=oovv, vooo=vooo,
+        ovoo=ovoo, oovo=oovo, ooov=ooov, oooo=oooo)
 
-    return Ia,Ib,Iabab
+    return Ia, Ib, Iabab

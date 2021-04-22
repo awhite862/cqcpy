@@ -1,5 +1,6 @@
 import numpy
 
+
 def block_diag(A, B):
     """Return a block diagonal matrix
        A 0
