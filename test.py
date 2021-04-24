@@ -1,7 +1,7 @@
 try:
     import pyscf
     with_pyscf = True
-except:
+except ImportError:
     with_pyscf = False
 
 from cqcpy.tests.test_cc_ampl import *

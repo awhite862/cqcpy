@@ -13,7 +13,7 @@ def full_suite():
     try:
         import pyscf
         with_pyscf = True
-    except:
+    except ImportError:
         with_pyscf = False
 
     suite = unittest.TestSuite()

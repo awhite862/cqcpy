@@ -1,7 +1,7 @@
 import numpy
 
 hartree_to_ev = 27.2113860217
-kb = 8.617330350e-5 # in eV
+kb = 8.617330350e-5  # in eV
 
 
 def HtoK(T):
@@ -11,7 +11,6 @@ def HtoK(T):
 
 def fermi_function(beta, epsilon, mu):
     """Return the Fermi-Dirac distribution function."""
-    #return 1.0 / (numpy.exp(beta*(epsilon - mu)) + 1.0)
     emm = epsilon - mu
     x = beta*emm
     if x < -30.0:
@@ -61,7 +60,6 @@ def grand_potential0(beta, epsilon, mu):
     if x < -20.0:
         return ((-numpy.exp(x))/beta + emm)
     elif x > 20.0:
-        #return 0.0
         return ((-numpy.exp(-x))/beta)
     else:
         return numpy.log(fermi_function(beta, epsilon, mu))/beta + emm

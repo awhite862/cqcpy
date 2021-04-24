@@ -67,7 +67,8 @@ def diff(bra, ket):
 
 
 def s_strings(n, nocc, occ=None):
-    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    if occ is None:
+        occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
@@ -81,7 +82,8 @@ def s_strings(n, nocc, occ=None):
 
 
 def d_strings(n, nocc, occ=None):
-    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    if occ is None:
+        occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
@@ -90,9 +92,11 @@ def d_strings(n, nocc, occ=None):
     for i in iocc:
         for a in ivir:
             for j in iocc:
-                if j <= i: continue
+                if j <= i:
+                    continue
                 for b in ivir:
-                    if b <= a: continue
+                    if b <= a:
+                        continue
                     s1, d1 = ref.excite(i, a)
                     s2, d2 = d1.excite(j, b)
                     dlist.append(d2)
@@ -100,7 +104,8 @@ def d_strings(n, nocc, occ=None):
 
 
 def t_strings(n, nocc, occ=None):
-    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    if occ is None:
+        occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
@@ -109,13 +114,17 @@ def t_strings(n, nocc, occ=None):
     for i in iocc:
         for a in ivir:
             for j in iocc:
-                if j <= i: continue
+                if j <= i:
+                    continue
                 for b in ivir:
-                    if b <= a: continue
+                    if b <= a:
+                        continue
                     for k in iocc:
-                        if k <= j: continue
+                        if k <= j:
+                            continue
                         for c in ivir:
-                            if c <= b: continue
+                            if c <= b:
+                                continue
                             s1, d1 = ref.excite(i, a)
                             s2, d2 = d1.excite(j, b)
                             s3, d3 = d2.excite(k, c)
@@ -124,7 +133,8 @@ def t_strings(n, nocc, occ=None):
 
 
 def q_strings(n, nocc, occ=None):
-    if occ is None: occ = [1 if i < nocc else 0 for i in range(n)]
+    if occ is None:
+        occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
@@ -133,17 +143,23 @@ def q_strings(n, nocc, occ=None):
     for i in occ:
         for a in ivir:
             for j in occ:
-                if j <= i: continue
+                if j <= i:
+                    continue
                 for b in ivir:
-                    if b <= a: continue
+                    if b <= a:
+                        continue
                     for k in iocc:
-                        if k <= j: continue
+                        if k <= j:
+                            continue
                         for c in ivir:
-                            if c <= b: continue
+                            if c <= b:
+                                continue
                             for l in iocc:
-                                if l <= k: continue
+                                if l <= k:
+                                    continue
                                 for d in ivir:
-                                    if d <= c: continue
+                                    if d <= c:
+                                        continue
                                     s1, d1 = ref.excite(i, a)
                                     s2, d2 = d1.excite(j, b)
                                     s3, d3 = d2.excite(k, c)
@@ -414,7 +430,8 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
     else:
         raise Exception("Higher than 4th order is not supported")
 
-    if occ is None: occ = [1 if i < no else 0 for i in range(nmo//2)]
+    if occ is None:
+        occ = [1 if i < no else 0 for i in range(nmo//2)]
     vir = [1 if x == 0 else 0 for x in occ]
     iocc = [i for i,x in enumerate(occ) if x > 0]
     ivir = [i for i,x in enumerate(vir) if x > 0]
@@ -435,10 +452,12 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
         # loop over T2
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
-                if j <= i: continue
+                if j <= i:
+                    continue
                 for ia,a in enumerate(ivir):
                     for ib,b in enumerate(ivir):
-                        if b <= a: continue
+                        if b <= a:
+                            continue
                         s1, dstr = ref.excite(i, a)
                         if dstr is None:
                             continue
@@ -463,11 +482,13 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
                 for ik,k in enumerate(iocc):
-                    if k <= j: continue
+                    if k <= j:
+                        continue
                     for ia,a in enumerate(ivir):
                         for ib,b in enumerate(ivir):
                             for ic,c in enumerate(ivir):
-                                if c <= b: continue
+                                if c <= b:
+                                    continue
                                 s1, dstr = ref.excite(i, a)
                                 if dstr is None:
                                     continue
@@ -499,16 +520,20 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
         # T2^2
         for ii,i in enumerate(iocc):
             for ij,j in enumerate(iocc):
-                if j <= i: continue
+                if j <= i:
+                    continue
                 for ik,k in enumerate(iocc):
                     for il,l in enumerate(iocc):
-                        if l <= k: continue
+                        if l <= k:
+                            continue
                         for ia,a in enumerate(ivir):
                             for ib,b in enumerate(ivir):
-                                if b <= a: continue
+                                if b <= a:
+                                    continue
                                 for ic,c in enumerate(ivir):
                                     for idd,d in enumerate(ivir):
-                                        if d <= c: continue
+                                        if d <= c:
+                                            continue
                                         s1, dstr = ref.excite(i, a)
                                         if dstr is None:
                                             continue
@@ -527,12 +552,14 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
             for ij,j in enumerate(iocc):
                 for ik,k in enumerate(iocc):
                     for il,l in enumerate(iocc):
-                        if l <= k: continue
+                        if l <= k:
+                            continue
                         for ia,a in enumerate(ivir):
                             for ib,b in enumerate(ivir):
                                 for ic,c in enumerate(ivir):
                                     for idd,d in enumerate(ivir):
-                                        if d <= c: continue
+                                        if d <= c:
+                                            continue
                                         s1, dstr = ref.excite(i, a)
                                         if dstr is None:
                                             continue

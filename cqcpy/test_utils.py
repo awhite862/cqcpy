@@ -190,7 +190,6 @@ def make_random_ft_T2_spatial(ng, na, nb):
     return T2aa, T2ab, T2bb
 
 
-
 def make_random_ft_D(n):
     en = numpy.random.random((n))
     D1 = en[:,None] - en[None,:]

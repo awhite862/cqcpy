@@ -5,8 +5,8 @@ from cqcpy import ci_utils
 from cqcpy import integrals
 
 mol = gto.M(
-    atom = 'H 0 0 0; F 0 0 1.1',
-    basis = '631g')
+    atom='H 0 0 0; F 0 0 1.1',
+    basis='631g')
 mf = scf.RHF(mol)
 mf.conv_tol_grad = 1e-9
 Escf = mf.kernel()

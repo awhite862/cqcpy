@@ -87,12 +87,12 @@ def T2_to_spin(Taa, Tab, Tbb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
     T = numpy.zeros((nv,nv,no,no))
-    T[:nva,:nva,:noa,:noa] = Taa.copy() # aaaa
-    T[nva:,nva:,noa:,noa:] = Tbb.copy() # bbbb
-    T[:nva,nva:,:noa,noa:] = Tab.copy() # abab
-    T[nva:,:nva,noa:,:noa] = Tab.transpose((1,0,3,2)).copy() # baba
-    T[:nva,nva:,noa:,:noa] = -Tab.transpose((0,1,3,2)).copy() # abba
-    T[nva:,:nva,:noa,noa:] = -Tab.transpose((1,0,2,3)).copy() # baab
+    T[:nva,:nva,:noa,:noa] = Taa.copy()  # aaaa
+    T[nva:,nva:,noa:,noa:] = Tbb.copy()  # bbbb
+    T[:nva,nva:,:noa,noa:] = Tab.copy()  # abab
+    T[nva:,:nva,noa:,:noa] = Tab.transpose((1,0,3,2)).copy()  # baba
+    T[:nva,nva:,noa:,:noa] = -Tab.transpose((0,1,3,2)).copy()  # abba
+    T[nva:,:nva,:noa,noa:] = -Tab.transpose((1,0,2,3)).copy()  # baab
     return T
 
 
@@ -100,12 +100,12 @@ def D2_to_spin(Daa, Dab, Dbb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
     D = numpy.zeros((nv,nv,no,no))
-    D[:nva,:nva,:noa,:noa] = Daa.copy() # aaaa
-    D[nva:,nva:,noa:,noa:] = Dbb.copy() # bbbb
-    D[:nva,nva:,:noa,noa:] = Dab.copy() # abab
-    D[nva:,:nva,noa:,:noa] = Dab.transpose((1,0,3,2)).copy() # baba
-    D[:nva,nva:,noa:,:noa] = Dab.transpose((0,1,3,2)).copy() # abba
-    D[nva:,:nva,:noa,noa:] = Dab.transpose((1,0,2,3)).copy() # baab
+    D[:nva,:nva,:noa,:noa] = Daa.copy()  # aaaa
+    D[nva:,nva:,noa:,noa:] = Dbb.copy()  # bbbb
+    D[:nva,nva:,:noa,noa:] = Dab.copy()  # abab
+    D[nva:,:nva,noa:,:noa] = Dab.transpose((1,0,3,2)).copy()  # baba
+    D[:nva,nva:,noa:,:noa] = Dab.transpose((0,1,3,2)).copy()  # abba
+    D[nva:,:nva,:noa,noa:] = Dab.transpose((1,0,2,3)).copy()  # baab
     return D
 
 
@@ -123,12 +123,12 @@ def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
     n3 = na3 + nb3
     n4 = na4 + nb4
     I = numpy.zeros((n1,n2,n3,n4))
-    I[:na1,:na2,:na3,:na4] = aaaa # aaaa
-    I[na1:,na2:,na3:,na4:] = bbbb # bbbb
-    I[:na1,na2:,:na3,na4:] = abab # abab
-    I[:na1,na2:,na3:,:na4] = abba # abba
-    I[na1:,:na2,:na3,na4:] = baab # baab
-    I[na1:,:na2,na3:,:na4] = baba # baba
+    I[:na1,:na2,:na3,:na4] = aaaa  # aaaa
+    I[na1:,na2:,na3:,na4:] = bbbb  # bbbb
+    I[:na1,na2:,:na3,na4:] = abab  # abab
+    I[:na1,na2:,na3:,:na4] = abba  # abba
+    I[na1:,:na2,:na3,na4:] = baab  # baab
+    I[na1:,:na2,na3:,:na4] = baba  # baba
     return I
 
 

@@ -266,7 +266,7 @@ def get_phys_gen(mf, mo1, mo2, mo3, mo4, anti=False):
 
     if pbc:
         return get_phys_sol(mf, mo1, mo2, mo3, mo4, anti=anti)
-    else:                                           
+    else:
         return get_phys(mf.mol, mo1, mo2, mo3, mo4, anti=anti)
 
 
@@ -320,7 +320,7 @@ class eri_blocks(object):
             v = mf.mo_coeff[:,mo_occ == 0]
             if pbc:
                 self._build_integrals_sol(mf, o, o, v, v)
-            else:                                      
+            else:
                 self._build_integrals_mol(mf, o, o, v, v)
         elif len(mo_occ.shape) == 2:
             mo_occa = mo_occ[0]
@@ -331,45 +331,45 @@ class eri_blocks(object):
             vb = (mf.mo_coeff[1])[:,mo_occb == 0]
             if pbc:
                 self._build_integrals_sol(mf, oa, ob, va, vb)
-            else:                                     
+            else:
                 self._build_integrals_mol(mf, oa, ob, va, vb)
 
     def _build_integrals_mol(self, mf, oa, ob, va, vb):
         if self.has_vvvv:
             self.vvvv = get_phys_antiu(mf.mol, va, va, va, va, vb, vb, vb, vb)
-        if self.has_vvvo:                                                  
+        if self.has_vvvo:
             self.vvvo = get_phys_antiu(mf.mol, va, va, va, oa, vb, vb, vb, ob)
-        if self.has_vovv:                                                  
+        if self.has_vovv:
             self.vovv = get_phys_antiu(mf.mol, va, oa, va, va, vb, ob, vb, vb)
-        if self.has_vvoo:                                                  
+        if self.has_vvoo:
             self.vvoo = get_phys_antiu(mf.mol, va, va, oa, oa, vb, vb, ob, ob)
-        if self.has_vovo:                                                  
+        if self.has_vovo:
             self.vovo = get_phys_antiu(mf.mol, va, oa, va, oa, vb, ob, vb, ob)
-        if self.has_oovv:                                                  
+        if self.has_oovv:
             self.oovv = get_phys_antiu(mf.mol, oa, oa, va, va, ob, ob, vb, vb)
-        if self.has_vooo:                                                  
+        if self.has_vooo:
             self.vooo = get_phys_antiu(mf.mol, va, oa, oa, oa, vb, ob, ob, ob)
-        if self.has_ooov:                                                  
+        if self.has_ooov:
             self.ooov = get_phys_antiu(mf.mol, oa, oa, oa, va, ob, ob, ob, vb)
-        if self.has_oooo:                                                  
+        if self.has_oooo:
             self.oooo = get_phys_antiu(mf.mol, oa, oa, oa, oa, ob, ob, ob, ob)
 
     def _build_integrals_sol(self, mf, oa, ob, va, vb):
         if self.has_vvvv:
             self.vvvv = get_phys_antiu_sol(mf, va, va, va, va, vb, vb, vb, vb)
-        if self.has_vvvo:                                                  
+        if self.has_vvvo:
             self.vvvo = get_phys_antiu_sol(mf, va, va, va, oa, vb, vb, vb, ob)
-        if self.has_vovv:                                                  
+        if self.has_vovv:
             self.vovv = get_phys_antiu_sol(mf, va, oa, va, va, vb, ob, vb, vb)
-        if self.has_vvoo:                                                  
+        if self.has_vvoo:
             self.vvoo = get_phys_antiu_sol(mf, va, va, oa, oa, vb, vb, ob, ob)
-        if self.has_vovo:                                                  
+        if self.has_vovo:
             self.vovo = get_phys_antiu_sol(mf, va, oa, va, oa, vb, ob, vb, ob)
-        if self.has_oovv:                                                  
+        if self.has_oovv:
             self.oovv = get_phys_antiu_sol(mf, oa, oa, va, va, ob, ob, vb, vb)
-        if self.has_vooo:                                                  
+        if self.has_vooo:
             self.vooo = get_phys_antiu_sol(mf, va, oa, oa, oa, vb, ob, ob, ob)
-        if self.has_ooov:                                                  
+        if self.has_ooov:
             self.ooov = get_phys_antiu_sol(mf, oa, oa, oa, va, ob, ob, ob, vb)
-        if self.has_oooo:                                                  
+        if self.has_oooo:
             self.oooo = get_phys_antiu_sol(mf, oa, oa, oa, oa, ob, ob, ob, ob)

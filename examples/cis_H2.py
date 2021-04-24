@@ -1,5 +1,5 @@
 import numpy
-from pyscf import gto, scf, dft
+from pyscf import gto, scf
 from pyscf.tdscf import rhf
 
 from cqcpy import ci_utils
@@ -8,8 +8,8 @@ from cqcpy import integrals
 # reference
 mol = gto.Mole()
 mol.build(
-    atom = 'H 0 0 0; H 0 0 0.77',  # in Angstrom
-    basis = '631g'
+    atom='H 0 0 0; H 0 0 0.77',  # in Angstrom
+    basis='631g'
 )
 
 mf = scf.RHF(mol)
