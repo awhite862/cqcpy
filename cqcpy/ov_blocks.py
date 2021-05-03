@@ -7,8 +7,9 @@ class one_e_blocks(object):
 
 
 class two_e_blocks(object):
-    def __init__(self, vvvv=None, vvvo=None, vovv=None, vvoo=None,
-            vovo=None, oovv=None, vooo=None, ooov=None, oooo=None):
+    def __init__(self,
+                 vvvv=None, vvvo=None, vovv=None, vvoo=None,
+                 vovo=None, oovv=None, vooo=None, ooov=None, oooo=None):
         self.vvvv = vvvv
         self.vvvo = vvvo
         self.vovv = vovv
@@ -20,8 +21,7 @@ class two_e_blocks(object):
         self.oooo = oooo
 
 
-def make_two_e_blocks(Itot,
-        n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
+def make_two_e_blocks(Itot, n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     n1, n2, n3, n4 = Itot.shape
     assert(n1 == n1o + n1v)
     assert(n2 == n2o + n2v)
@@ -42,15 +42,11 @@ def make_two_e_blocks(Itot,
 
 
 class two_e_blocks_full(object):
-    def __init__(self, vvvv=None,
-            vvvo=None, vvov=None,
-            vovv=None, ovvv=None,
-            vvoo=None, vovo=None,
-            ovvo=None, voov=None,
-            ovov=None, oovv=None,
-            vooo=None, ovoo=None,
-            oovo=None, ooov=None,
-            oooo=None):
+    def __init__(self,
+                 vvvv=None, vvvo=None, vvov=None, vovv=None,
+                 ovvv=None, vvoo=None, vovo=None, ovvo=None,
+                 voov=None, ovov=None, oovv=None, vooo=None,
+                 ovoo=None, oovo=None, ooov=None, oooo=None):
         self.vvvv = vvvv
         self.vvvo = vvvo
         self.vvov = vvov
@@ -69,8 +65,7 @@ class two_e_blocks_full(object):
         self.oooo = oooo
 
 
-def make_two_e_blocks_full(Itot,
-        n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
+def make_two_e_blocks_full(Itot, n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     n1, n2, n3, n4 = Itot.shape
     assert(n1 == n1o + n1v)
     assert(n2 == n2o + n2v)
@@ -92,12 +87,8 @@ def make_two_e_blocks_full(Itot,
     Ioovo = Itot[:n1o,:n2o,n3o:,:n4o]
     Iooov = Itot[:n1o,:n2o,:n3o,n4o:]
     Ioooo = Itot[:n1o,:n2o,:n3o,:n4o]
-    return two_e_blocks_full(vvvv=Ivvvv,
-            vvvo=Ivvvo, vvov=Ivvov,
-            vovv=Ivovv, ovvv=Iovvv,
-            vvoo=Ivvoo, vovo=Ivovo,
-            ovov=Iovov, voov=Ivoov,
-            ovvo=Iovvo, oovv=Ioovv,
-            vooo=Ivooo, ovoo=Iovoo,
-            oovo=Ioovo, ooov=Iooov,
-            oooo=Ioooo)
+    return two_e_blocks_full(
+        vvvv=Ivvvv, vvvo=Ivvvo, vvov=Ivvov, vovv=Ivovv,
+        ovvv=Iovvv, vvoo=Ivvoo, vovo=Ivovo, ovov=Iovov,
+        voov=Ivoov, ovvo=Iovvo, oovv=Ioovv, vooo=Ivooo,
+        ovoo=Iovoo, oovo=Ioovo, ooov=Iooov, oooo=Ioooo)

@@ -1050,7 +1050,7 @@ class lambda_int(object):
         self.ITvovv = self.IvovvT - I.vovv
         self.ITooov = self.IooovT + I.ooov
         self.ITvovo2 = - IvovoT1 - IvovoT2 - I.vovo\
-                - einsum('djcb,ck->djbk', self.IvovvT, T1old)
+            - einsum('djcb,ck->djbk', self.IvovvT, T1old)
         self.ITvvvv = einsum('dkab,ck->cdab', I.vovv, T1old)\
             + 0.5*einsum('klab,cdkl->cdab', I.oovv, TTemp)\
             + 0.5*I.vvvv
@@ -1143,7 +1143,7 @@ def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     tempijab = einsum('ia,jb->ijab', L1old, F1ov)
     tempijab += einsum('imae,jebm->ijab', L2old, W1ovvo)
     L2 += tempijab - tempijab.transpose((0,1,3,2)) \
-            - tempijab.transpose((1,0,2,3)) + tempijab.transpose((1,0,3,2))
+        - tempijab.transpose((1,0,2,3)) + tempijab.transpose((1,0,3,2))
 
     tempij = -einsum('imab,jm->ijab', L2old, F1oo)
     tempij += einsum('ie,ejab->ijab', L1old, W1vovv)
@@ -1254,7 +1254,7 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
 
     # VOVO
     ITvovo = - IvovoT1 - IvovoT2 - I.vovo\
-            - einsum('djcb,ck->djbk', IvovvT, T1old)
+        - einsum('djcb,ck->djbk', IvovvT, T1old)
     temp = fac*einsum('ikad,djbk->ijab', L2old, ITvovo)
     L2 += temp
     L2 -= temp.transpose((1,0,2,3))
@@ -1394,7 +1394,7 @@ def _Lambda_opt_int(L1, L2, F, I, L1old, L2old, T1old, T2old, intor, fac=1.0):
 
 
 def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
-        L1olds, L2olds, T1olds, T2olds, fac=1.0):
+                      L1olds, L2olds, T1olds, T2olds, fac=1.0):
 
     # unpack
     L1aold, L1bold = L1olds
@@ -2576,7 +2576,7 @@ def ccsd_2rdm_klij_opt(T1, T2, L1, L2):
 
 
 def uccsd_1rdm_ba(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                  L1a, L1b, L2aa, L2ab, L2bb):
     pba_a = einsum('ia,bi->ba', L1a, T1a)
     pba_a += 0.5*einsum('kica,cbki->ba', L2aa, T2aa)
     pba_a += einsum('ikac,bcik->ba', L2ab, T2ab)
@@ -2588,7 +2588,7 @@ def uccsd_1rdm_ba(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_1rdm_ji(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                  L1a, L1b, L2aa, L2ab, L2bb):
     pji_a = -einsum('ja,ai->ji', L1a, T1a)
     pji_a -= 0.5*einsum('kjca,caki->ji', L2aa, T2aa)
     pji_a -= einsum('jkac,acik->ji', L2ab, T2ab)
@@ -2601,7 +2601,7 @@ def uccsd_1rdm_ji(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_1rdm_ai(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb, tfac=1.0):
+                  L1a, L1b, L2aa, L2ab, L2bb, tfac=1.0):
     T2tempaa = T2aa - einsum('bi,aj->baji', T1a, T1a)
     T2tempbb = T2bb - einsum('bi,aj->baji', T1b, T1b)
     T2tempab = T2ab
@@ -2666,7 +2666,7 @@ def rccsd_1rdm_ai(T1, T2, L1, L2, tfac=1.0):
 
 
 def uccsd_2rdm_ciab(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     Pciab = einsum('jiab,cj->ciab', L2aa, T1a)
     PCIAB = einsum('jiab,cj->ciab', L2bb, T1b)
     PcIaB = einsum('jiab,cj->ciab', L2ab, T1a)
@@ -2676,7 +2676,7 @@ def uccsd_2rdm_ciab(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_jkai(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     Pjkai = -einsum('jkab,bi->jkai', L2aa, T1a)
     PjKaI = -einsum('jkab,bi->jkai', L2ab, T1b)
     PJkAi = -einsum('kJbA,bi->JkAi', L2ab, T1a)
@@ -2685,7 +2685,7 @@ def uccsd_2rdm_jkai(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_cdab(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     T2tempaa = T2aa + einsum('ci,dj->cdij', T1a, T1a)
     T2tempbb = T2bb + einsum('ci,dj->cdij', T1b, T1b)
     T2tempab = T2ab + einsum('ci,dj->cdij', T1a, T1b)
@@ -2698,7 +2698,7 @@ def uccsd_2rdm_cdab(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_bjai(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     Pbjai = -einsum('bi,ja->bjai', T1a, L1a)
     PbJAi = -einsum('bi,ja->bjai', T1a, L1b)
     PBjaI = -einsum('bi,ja->bjai', T1b, L1a)
@@ -2725,7 +2725,7 @@ def uccsd_2rdm_bjai(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_klij(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     T2tempaa = T2aa + einsum('ci,dj->cdij', T1a, T1a)
     T2tempab = T2ab + einsum('ci,dj->cdij', T1a, T1b)
     T2tempbb = T2bb + einsum('ci,dj->cdij', T1b, T1b)
@@ -2738,7 +2738,7 @@ def uccsd_2rdm_klij(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_bcai(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
     T2tempaa = T2aa + einsum('ci,dj->cdij', T1a, T1a)
     T2tempab = T2ab + einsum('ci,dj->cdij', T1a, T1b)
     T2tempbb = T2bb + einsum('ci,dj->cdij', T1b, T1b)
@@ -2794,7 +2794,7 @@ def uccsd_2rdm_bcai(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_kaij(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb):
+                    L1a, L1b, L2aa, L2ab, L2bb):
 
     T2tempaa = T2aa + einsum('ci,dj->cdij', T1a, T1a)
     T2tempab = T2ab + einsum('ci,dj->cdij', T1a, T1b)
@@ -2852,7 +2852,7 @@ def uccsd_2rdm_kaij(T1a, T1b, T2aa, T2ab, T2bb,
 
 
 def uccsd_2rdm_abij(T1a, T1b, T2aa, T2ab, T2bb,
-        L1a, L1b, L2aa, L2ab, L2bb, tfac=1.0):
+                    L1a, L1b, L2aa, L2ab, L2bb, tfac=1.0):
 
     Pabij = tfac*T2aa.copy()
     PaBiJ = tfac*T2ab.copy()
@@ -3211,8 +3211,8 @@ def ccsd_pt_simple(F, I, eo, ev, T1, T2):
 
     T3 += numpy.einsum('abij,cljk->abcijk', T2, I.vooo)
     D = 1/(eo[None,None,None,:,None,None] + eo[None,None,None,None,:,None] + eo[None,None,None,None,None,:]
-            - ev[:,None,None,None,None,None] - ev[None,:,None,None,None,None] - ev[None,None,:,None,None,None])
+           - ev[:,None,None,None,None,None] - ev[None,:,None,None,None,None] - ev[None,None,:,None,None,None])
 
     Et = (1.0/36.0)*numpy.einsum('abcijk,abcijk,abcijk->', T3, D, T3) \
-            + 0.25*numpy.einsum('ai,bcjk,abcijk->', T1, I.vvoo, T3)
+        + 0.25*numpy.einsum('ai,bcjk,abcijk->', T1, I.vvoo, T3)
     return Et

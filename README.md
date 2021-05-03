@@ -18,4 +18,4 @@ and testing of quantum chemistry code. They are not intended to be computational
 Tests can be run in any of the following ways:
   - Individually from the `cqcpy/tests` subdirectory
   - All at once by running `python test_suites.py` from `cqcpy/tests`
-  - All at once by running `python -m unittest test.py`
+  - All at once by running `python test.py`

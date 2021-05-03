@@ -194,7 +194,7 @@ def make_random_ft_D(n):
     en = numpy.random.random((n))
     D1 = en[:,None] - en[None,:]
     D2 = en[:,None,None,None] + en[None,:,None,None] \
-            - en[None,None,:,None] - en[None,None,None,:]
+        - en[None,None,:,None] - en[None,None,None,:]
 
     return D1, D2
 
@@ -210,6 +210,6 @@ def make_random_ft_D2(n1, n2):
     e1 = numpy.random.random((n1))
     e2 = numpy.random.random((n2))
     D2 = e1[:,None,None,None] + e2[None,:,None,None] \
-            - e1[None,None,:,None] - e2[None,None,None,:]
+        - e1[None,None,:,None] - e2[None,None,None,:]
 
     return D2
