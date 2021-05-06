@@ -36,6 +36,8 @@ def full_suite():
 
     suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
+    suite.addTest(test_ft_utils.FTUtilsTest("test_dfermi"))
+    suite.addTest(test_ft_utils.FTUtilsTest("test_vector"))
 
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
     suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_stanton"))

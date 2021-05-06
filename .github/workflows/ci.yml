@@ -1,6 +1,6 @@
 # Install Python dependencies, run tests and lint with a different Python versions
 
-name: Build
+name: Tests
 
 on:
   push:

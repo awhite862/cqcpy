@@ -2,7 +2,7 @@
 These utilies exist to provide some generally useful functionality for development
 and testing of quantum chemistry code.
 
-[![Build](https://github.com/awhite862/cqcpy/workflows/Build/badge.svg)](https://github.com/awhite862/cqcpy/actions/workflows/ci.yml)
+[![Tests](https://github.com/awhite862/cqcpy/workflows/Tests/badge.svg)](https://github.com/awhite862/cqcpy/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/awhite862/cqcpy/branch/master/graph/badge.svg)](https://codecov.io/gh/awhite862/cqcpy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/awhite862/cqcpy/master/LICENSE)
 

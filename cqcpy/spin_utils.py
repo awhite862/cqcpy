@@ -60,27 +60,27 @@ def T1_to_spatial(T, noa, nva, nob, nvb):
     return Ta, Tb
 
 
-def T2u(T2, noa, nva, nob, nvb):
-    aaab = T2[:nva,:nva,:noa,noa:]
-    aaba = T2[:nva,:nva,noa:,:noa]
-    abaa = T2[:nva,nva:,:noa,:noa]
-    baaa = T2[nva:,:nva,:noa,:noa]
-    aabb = T2[:nva,:nva,noa:,noa:]
-    bbaa = T2[nva:,nva:,:noa,:noa]
-    bbba = T2[nva:,nva:,noa:,:noa]
-    bbab = T2[nva:,nva:,:noa,noa:]
-    babb = T2[nva:,:nva,noa:,noa:]
-    abbb = T2[:nva,nva:,noa:,noa:]
-    print(numpy.linalg.norm(aaab))
-    print(numpy.linalg.norm(aaba))
-    print(numpy.linalg.norm(abaa))
-    print(numpy.linalg.norm(baaa))
-    print(numpy.linalg.norm(aabb))
-    print(numpy.linalg.norm(bbaa))
-    print(numpy.linalg.norm(bbba))
-    print(numpy.linalg.norm(bbab))
-    print(numpy.linalg.norm(babb))
-    print(numpy.linalg.norm(abbb))
+#def T2u(T2, noa, nva, nob, nvb):
+#    aaab = T2[:nva,:nva,:noa,noa:]
+#    aaba = T2[:nva,:nva,noa:,:noa]
+#    abaa = T2[:nva,nva:,:noa,:noa]
+#    baaa = T2[nva:,:nva,:noa,:noa]
+#    aabb = T2[:nva,:nva,noa:,noa:]
+#    bbaa = T2[nva:,nva:,:noa,:noa]
+#    bbba = T2[nva:,nva:,noa:,:noa]
+#    bbab = T2[nva:,nva:,:noa,noa:]
+#    babb = T2[nva:,:nva,noa:,noa:]
+#    abbb = T2[:nva,nva:,noa:,noa:]
+#    print(numpy.linalg.norm(aaab))
+#    print(numpy.linalg.norm(aaba))
+#    print(numpy.linalg.norm(abaa))
+#    print(numpy.linalg.norm(baaa))
+#    print(numpy.linalg.norm(aabb))
+#    print(numpy.linalg.norm(bbaa))
+#    print(numpy.linalg.norm(bbba))
+#    print(numpy.linalg.norm(bbab))
+#    print(numpy.linalg.norm(babb))
+#    print(numpy.linalg.norm(abbb))
 
 
 def T2_to_spin(Taa, Tab, Tbb, noa, nva, nob, nvb):

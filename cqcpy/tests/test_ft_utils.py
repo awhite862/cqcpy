@@ -86,6 +86,22 @@ class FTUtilsTest(unittest.TestCase):
         self.assertTrue(diffo < 1e-8)
         self.assertTrue(diffv < 1e-8)
 
+    def test_vector(self):
+        beta = 1.0
+        mu = 0.01
+        es = numpy.asarray([-1, -0.5, 0.1, 0.5, 1])
+        out = ft_utils.ff(beta, es, mu)
+        ref = numpy.asarray(
+            [ft_utils.fermi_function(beta, e, mu) for e in es])
+        diff = numpy.linalg.norm(ref - out)
+        self.assertTrue(diff < 5e-14)
+
+        out = ft_utils.ffv(beta, es, mu)
+        ref = numpy.asarray(
+            [ft_utils.vfermi_function(beta, e, mu) for e in es])
+        diff = numpy.linalg.norm(ref - out)
+        self.assertTrue(diff < 5e-14)
+
 
 if __name__ == '__main__':
     unittest.main()
