@@ -24,7 +24,6 @@ hb = ha.copy()
 I = integrals.get_phys(mol, mos, mos, mos, mos)
 
 N = mol.nelectron
-N = mol.nelectron
 na = N//2
 nb = na
 

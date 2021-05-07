@@ -223,12 +223,7 @@ def get_physu_all_gen(mf, anti=False):
     """Get unrestricted, ERIs in physicist's
     notation for given scf reference.
     """
-    pbc = False
-    try:
-        ktemp = mf.kpt
-        pbc = True
-    except AttributeError:
-        pbc = False
+    pbc = hasattr(mf, "kpt")
 
     if pbc:
         if len(mf.mo_occ.shape) == 1:
@@ -257,12 +252,7 @@ def get_phys_antiu_all_gen(mf):
 
 
 def get_phys_gen(mf, mo1, mo2, mo3, mo4, anti=False):
-    pbc = False
-    try:
-        ktemp = mf.kpt
-        pbc = True
-    except AttributeError:
-        pbc = False
+    pbc = hasattr(mf, "kpt")
 
     if pbc:
         return get_phys_sol(mf, mo1, mo2, mo3, mo4, anti=anti)
@@ -308,12 +298,7 @@ class eri_blocks(object):
         if code == 9 or code == 0:
             self.has_oooo = True
         mo_occ = mf.mo_occ
-        pbc = False
-        try:
-            ktemp = mf.kpt
-            pbc = True
-        except AttributeError:
-            pbc = False
+        pbc = hasattr(mf, "kpt")
 
         if len(mo_occ.shape) == 1:
             o = mf.mo_coeff[:,mo_occ > 0]

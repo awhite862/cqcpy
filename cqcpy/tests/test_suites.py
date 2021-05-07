@@ -30,6 +30,7 @@ def full_suite():
     suite.addTest(test_cc_rdm.CCRDMTest("test_2rdm_opt"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_u1rdm"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_u2rdm"))
+    suite.addTest(test_cc_rdm.CCRDMTest("test_r1rdm"))
     suite.addTest(test_cc_rdm.CCRDMTest("test_r2rdm"))
 
     suite.addTest(test_ci_utils.CIUtilsTest("test_mat_on_vec_cisd"))

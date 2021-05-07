@@ -80,7 +80,7 @@ def _D_D_ladder(T2, I, T2old, fac=1.0):
     T2 += fac*0.5*einsum('klij,abkl->abij', I.oooo, T2old)
 
 
-def _D_D_ring(T2, F, I, T2old, fac=1.0):
+def _D_D_ring(T2, I, T2old, fac=1.0):
     # D[D]-E
     T2 -= fac*einsum('bkcj,acik->abij', I.vovo, T2old)
     T2 -= fac*einsum('akci,bcjk->abij', I.vovo, T2old)
@@ -150,7 +150,7 @@ def _D_DD_ladder(T2, I, T2old, fac=1.0):
     T2 += fac*0.25*einsum('klcd,cdij,abkl->abij', I.oovv, T2old, T2old)
 
 
-def _D_DD_ring(T2, F, I, T2old, fac=1.0):
+def _D_DD_ring(T2, I, T2old, fac=1.0):
     # D[DD]-B
     T2 += fac*einsum('klcd,acik,dblj->abij', I.oovv, T2old, T2old)
 

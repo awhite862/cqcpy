@@ -440,14 +440,13 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
     nd = len(basis)
     C = numpy.zeros(nd)
     C[0] = 1.0
-    if order >= 1:
-        # loop over T1
-        for ii,i in enumerate(iocc):
-            for ia,a in enumerate(ivir):
-                s, dstr = ref.excite(i, a)
-                if dstr is not None:
-                    idx = basis.index(dstr)
-                    C[idx] += s*T1[ia,ii]
+    # loop over T1
+    for ii,i in enumerate(iocc):
+        for ia,a in enumerate(ivir):
+            s, dstr = ref.excite(i, a)
+            if dstr is not None:
+                idx = basis.index(dstr)
+                C[idx] += s*T1[ia,ii]
     if order >= 2:
         # loop over T2
         for ii,i in enumerate(iocc):
@@ -623,21 +622,20 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
     C = numpy.zeros(nd)
     C[0] = 1.0
 
-    if order >= 1:
-        # loop over T1a
-        for i in range(noa):
-            for a in range(nva):
-                s, astr = refa.excite(i, a + noa)
-                if astr is not None:
-                    idx = basis.index((astr,refb))
-                    C[idx] += s*T1a[a,i]
-        # loop over T1b
-        for i in range(nob):
-            for a in range(nvb):
-                s, bstr = refb.excite(i, a + nob)
-                if bstr is not None:
-                    idx = basis.index((refa,bstr))
-                    C[idx] += s*T1b[a,i]
+    # loop over T1a
+    for i in range(noa):
+        for a in range(nva):
+            s, astr = refa.excite(i, a + noa)
+            if astr is not None:
+                idx = basis.index((astr,refb))
+                C[idx] += s*T1a[a,i]
+    # loop over T1b
+    for i in range(nob):
+        for a in range(nvb):
+            s, bstr = refb.excite(i, a + nob)
+            if bstr is not None:
+                idx = basis.index((refa,bstr))
+                C[idx] += s*T1b[a,i]
 
     if order >= 2:
         # loop over T2aa
