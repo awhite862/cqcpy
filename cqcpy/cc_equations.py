@@ -259,7 +259,6 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     temp_ij += einsum('abcj,ci->abij', I.vvvo, T1old)
     T2 += fac*temp_ij
     T2 -= fac*temp_ij.transpose((0,1,3,2))
-    del temp_ij
 
 
 def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
@@ -297,7 +296,6 @@ def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
     temp_ij = -einsum('kj,abik->abij', Foo, T2old)
     T2 += fac*temp_ij
     T2 -= fac*temp_ij.transpose((0,1,3,2))
-    del temp_ij
 
 
 def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old, fac=1.0):
@@ -305,9 +303,6 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     # unpack
     T1aold, T1bold = T1old
     T2aaold, T2abold, T2bbold = T2old
-
-    nva, noa = T1a.shape
-    nvb, nob = T1b.shape
 
     T2Aaa = T2aaold.copy()
     T2Aaa += 0.5*einsum('ai,bj->abij', T1aold, T1aold)
@@ -2267,10 +2262,6 @@ def uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab, L1old, L2old, T1old, T2old):
     T1aold, T1bold = T1old
     T2aaold, T2abold, T2bbold = T2old
 
-    # dims
-    noa, nva = L1aold.shape
-    nob, nvb = L1bold.shape
-
     L1a = Fa.ov.copy()
     L1b = Fb.ov.copy()
     L2aa = Ia.oovv.copy()
@@ -2286,9 +2277,6 @@ def rccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old):
     """Coupled cluster singles and doubles (CCSD) Lambda iteration
     with intermediats.
     """
-    # dims
-    no, nv = L1old.shape
-
     L1 = F.ov.copy()
     L2 = I.oovv.copy()
     _r_LS_TS(L1, I, T1old)
