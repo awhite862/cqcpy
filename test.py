@@ -1,3 +1,4 @@
+import unittest
 try:
     import pyscf
     with_pyscf = True

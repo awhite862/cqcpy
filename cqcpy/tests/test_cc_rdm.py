@@ -77,8 +77,8 @@ class CCRDMTest(unittest.TestCase):
         thresh = 1e-14
 
         # use unrestricted one-particle property
-        Aa = test_utils.make_random_F(noa,nva)
-        Ab = test_utils.make_random_F(nob,nvb)
+        Aa = test_utils.make_random_F(noa, nva)
+        Ab = test_utils.make_random_F(nob, nvb)
         Atot = spin_utils.F_to_spin(Aa, Ab, noa, nva, nob, nvb)
 
         # get unrestricted and general amplitudes
@@ -275,19 +275,19 @@ class CCRDMTest(unittest.TestCase):
         nv = 5
         thresh = 1e-12
 
-        T1 = numpy.random.random((nv,no))
-        T2 = numpy.random.random((nv,nv,no,no))
-        T2 = T2 + T2.transpose((1,0,3,2))
+        T1 = numpy.random.random((nv, no))
+        T2 = numpy.random.random((nv, nv, no, no))
+        T2 = T2 + T2.transpose((1, 0, 3, 2))
 
-        L1 = numpy.random.random((no,nv))
-        L2 = numpy.random.random((no,no,nv,nv))
-        L2 = L2 + L2.transpose((1,0,3,2))
+        L1 = numpy.random.random((no, nv))
+        L2 = numpy.random.random((no, no, nv, nv))
+        L2 = L2 + L2.transpose((1, 0, 3, 2))
 
         T1a = T1b = T1
-        T2aa = T2 - T2.transpose((0,1,3,2))
+        T2aa = T2 - T2.transpose((0, 1, 3, 2))
 
         L1a = L1b = L1
-        L2aa = L2 - L2.transpose((0,1,3,2))
+        L2aa = L2 - L2.transpose((0, 1, 3, 2))
 
         # make unrestricted 1-rdm
         pia_a = L1a.copy()
@@ -320,19 +320,19 @@ class CCRDMTest(unittest.TestCase):
         nv = 5
         thresh = 1e-12
 
-        T1 = numpy.random.random((nv,no))
-        T2 = numpy.random.random((nv,nv,no,no))
-        T2 = T2 + T2.transpose((1,0,3,2))
+        T1 = numpy.random.random((nv, no))
+        T2 = numpy.random.random((nv, nv, no, no))
+        T2 = T2 + T2.transpose((1, 0, 3, 2))
 
-        L1 = numpy.random.random((no,nv))
-        L2 = numpy.random.random((no,no,nv,nv))
-        L2 = L2 + L2.transpose((1,0,3,2))
+        L1 = numpy.random.random((no, nv))
+        L2 = numpy.random.random((no, no, nv, nv))
+        L2 = L2 + L2.transpose((1, 0, 3, 2))
 
         T1a = T1b = T1
-        T2aa = T2 - T2.transpose((0,1,3,2))
+        T2aa = T2 - T2.transpose((0, 1, 3, 2))
 
         L1a = L1b = L1
-        L2aa = L2 - L2.transpose((0,1,3,2))
+        L2aa = L2 - L2.transpose((0, 1, 3, 2))
 
         # make unrestricted 2-rdm
         PiJaB_u = L2.copy()
@@ -388,7 +388,7 @@ class CCRDMTest(unittest.TestCase):
         self.assertTrue(diff < thresh, "Error in Pbjai: {}".format(diff))
 
         # bjia
-        diff = numpy.linalg.norm(Pbjia + PbJAi_u.transpose((0,1,3,2)))/numpy.sqrt(PbJAi_u.size)
+        diff = numpy.linalg.norm(Pbjia + PbJAi_u.transpose((0, 1, 3, 2)))/numpy.sqrt(PbJAi_u.size)
         self.assertTrue(diff < thresh, "Error in Pbjai: {}".format(diff))
 
         # klij

@@ -76,8 +76,8 @@ class LambdaEquationsTest(unittest.TestCase):
         T1old, T2old = test_utils.make_random_T(no, nv)
         L1old, L2old = test_utils.make_random_L(no, nv)
         F, I = test_utils.make_random_integrals(no, nv)
-        T1old = numpy.zeros((nv,no))
-        L1old = numpy.zeros((no,nv))
+        T1old = numpy.zeros((nv, no))
+        L1old = numpy.zeros((no, nv))
 
         L2 = cc_equations.ccd_lambda_simple(F, I, L2old, T2old)
         L1t, L2t = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
@@ -142,24 +142,24 @@ class LambdaEquationsTest(unittest.TestCase):
         nv = 5
         n = no + nv
         F = test_utils.make_random_F(no, nv)
-        Itot = numpy.random.random((n,n,n,n))
-        Itot = Itot + Itot.transpose((1,0,3,2))
-        Ianti = Itot - Itot.transpose((0,1,3,2))
+        Itot = numpy.random.random((n, n, n, n))
+        Itot = Itot + Itot.transpose((1, 0, 3, 2))
+        Ianti = Itot - Itot.transpose((0, 1, 3, 2))
         I = ov_blocks.make_two_e_blocks_full(Itot, no, nv, no, nv, no, nv, no, nv)
         Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
 
-        T1 = numpy.random.random((nv,no))
-        T2 = numpy.random.random((nv,nv,no,no))
-        T2 = T2 + T2.transpose((1,0,3,2))
+        T1 = numpy.random.random((nv, no))
+        T2 = numpy.random.random((nv, nv, no, no))
+        T2 = T2 + T2.transpose((1, 0, 3, 2))
 
-        L1 = numpy.random.random((no,nv))
-        L2 = numpy.random.random((no,no,nv,nv))
-        L2 = L2 + L2.transpose((1,0,3,2))
+        L1 = numpy.random.random((no, nv))
+        L2 = numpy.random.random((no, no, nv, nv))
+        L2 = L2 + L2.transpose((1, 0, 3, 2))
 
         T1a = T1b = T1
-        T2aa = T2 - T2.transpose((0,1,3,2))
+        T2aa = T2 - T2.transpose((0, 1, 3, 2))
 
-        L2aa = L2 - L2.transpose((0,1,3,2))
+        L2aa = L2 - L2.transpose((0, 1, 3, 2))
 
         # Update with UCCSD
         M1, M2 = cc_equations.uccsd_lambda_opt(

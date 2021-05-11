@@ -202,7 +202,7 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     Foo += 0.5*einsum('jb,bi->ji', F.ov, T1old)
     Foo += einsum('jkib,bk->ji', I.ooov, T1old)
     Foo += 0.5*einsum('jkbc,bcik->ji', I.oovv, T2A)
-    T2A = None
+    del T2A
 
     Fov = F.ov.astype(T1.dtype)
     Fov += einsum('jkbc,ck->jb', I.oovv, T1old)
@@ -223,15 +223,15 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     Woooo -= einsum('kljc,ci->klij', I.ooov, T1old)
     Woooo += 0.25*einsum('klcd,cdij->klij', I.oovv, T2B)
     T2 += fac*0.5*einsum('klij,abkl->abij', Woooo, T2B)
-    Woooo = None
+    del Woooo
 
     Wvvvv = I.vvvv.astype(T2.dtype)
     Wvvvv -= einsum('akcd,bk->abcd', I.vovv, T1old)
     Wvvvv += einsum('bkcd,ak->abcd', I.vovv, T1old)
     Wvvvv += 0.25*einsum('klcd,abkl->abcd', I.oovv, T2B)
     T2 += fac*0.5*einsum('abcd,cdij->abij', Wvvvv, T2B)
-    T2B = None
-    Wvvvv = None
+    del T2B
+    del Wvvvv
 
     Wovvo = -I.vovo.transpose((1,0,2,3)).astype(T2.dtype)
     Wovvo -= einsum('bkcd,dj->kbcj', I.vovv, T1old)
@@ -244,22 +244,22 @@ def _Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     T2 -= fac*temp.transpose((0,1,3,2))
     T2 -= fac*temp.transpose((1,0,2,3))
     T2 += fac*temp.transpose((1,0,3,2))
-    temp = None
-    Wovvo = None
+    del temp
+    del Wovvo
 
     Ftemp = Fvv - 0.5*einsum('jb,aj->ab', Fov, T1old)
     temp_ab = einsum('bc,acij->abij', Ftemp, T2old)
     temp_ab += einsum('bkij,ak->abij', I.vooo, T1old)
     T2 += fac*temp_ab
     T2 -= fac*temp_ab.transpose((1,0,2,3))
-    temp_ab = None
+    del temp_ab
 
     Ftemp = Foo + 0.5*einsum('jb,bi->ji', Fov, T1old)
     temp_ij = -einsum('kj,abik->abij', Ftemp, T2old)
     temp_ij += einsum('abcj,ci->abij', I.vvvo, T1old)
     T2 += fac*temp_ij
     T2 -= fac*temp_ij.transpose((0,1,3,2))
-    temp_ij = None
+    del temp_ij
 
 
 def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
@@ -272,12 +272,12 @@ def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
     Woooo = I.oooo.astype(T2.dtype)
     Woooo += 0.25*einsum('klcd,cdij->klij', I.oovv, T2old)
     T2 += fac*0.5*einsum('klij,abkl->abij', Woooo, T2old)
-    Woooo = None
+    del Woooo
 
     Wvvvv = I.vvvv.astype(T2.dtype)
     Wvvvv += 0.25*einsum('klcd,abkl->abcd', I.oovv, T2old)
     T2 += fac*0.5*einsum('abcd,cdij->abij', Wvvvv, T2old)
-    Wvvvv = None
+    del Wvvvv
 
     Wovvo = -I.vovo.transpose((1,0,2,3)).astype(T2.dtype)
     Wovvo -= 0.5*einsum('klcd,dbjl->kbcj', I.oovv, T2old)
@@ -286,18 +286,18 @@ def _Stanton_ccd(T2, F, I, T2old, fac=1.0):
     T2 -= fac*temp.transpose((0,1,3,2))
     T2 -= fac*temp.transpose((1,0,2,3))
     T2 += fac*temp.transpose((1,0,3,2))
-    temp = None
-    Wovvo = None
+    del temp
+    del Wovvo
 
     temp_ab = einsum('bc,acij->abij', Fvv, T2old)
     T2 += fac*temp_ab
     T2 -= fac*temp_ab.transpose((1,0,2,3))
-    temp_ab = None
+    del temp_ab
 
     temp_ij = -einsum('kj,abik->abij', Foo, T2old)
     T2 += fac*temp_ij
     T2 -= fac*temp_ij.transpose((0,1,3,2))
-    temp_ij = None
+    del temp_ij
 
 
 def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old, fac=1.0):
@@ -345,9 +345,9 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     Foob += einsum('kjbi,bk->ji', Iabab.oovo, T1aold)
     Foob += 0.5*einsum('jkbc,bcik->ji', Ib.oovv, T2Abb)
     Foob += einsum('kjcb,cbki->ji', Iabab.oovv, T2Aab)
-    T2Aaa = None
-    T2Aab = None
-    T2Abb = None
+    del T2Aaa
+    del T2Aab
+    del T2Abb
 
     Fova = Faa.ov.astype(T1a.dtype)
     Fova += einsum('jkbc,ck->jb', Ia.oovv, T1aold)
@@ -405,9 +405,9 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2aa += fac*0.5*einsum('klij,abkl->abij', Wo_aaaa, T2Baa)
     T2bb += fac*0.5*einsum('klij,abkl->abij', Wo_bbbb, T2Bbb)
     T2ab += fac*einsum('klij,abkl->abij', Wo_abab, T2Bab)
-    Wo_aaaa = None
-    Wo_bbbb = None
-    Wo_abab = None
+    del Wo_aaaa
+    del Wo_bbbb
+    del Wo_abab
 
     Wv_aaaa = Ia.vvvv.astype(T2aa.dtype)
     Wv_aaaa -= einsum('akcd,bk->abcd', Ia.vovv, T1aold)
@@ -424,12 +424,12 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2aa += fac*0.5*einsum('abcd,cdij->abij', Wv_aaaa, T2Baa)
     T2bb += fac*0.5*einsum('abcd,cdij->abij', Wv_bbbb, T2Bbb)
     T2ab += fac*einsum('abcd,cdij->abij', Wv_abab, T2Bab)
-    T2Baa = None
-    T2Bab = None
-    T2Bbb = None
-    Wv_aaaa = None
-    Wv_bbbb = None
-    Wv_abab = None
+    del T2Baa
+    del T2Bab
+    del T2Bbb
+    del Wv_aaaa
+    del Wv_bbbb
+    del Wv_abab
 
     aatemp = einsum('bkcj,ci,ak->abij', Ia.vovo, T1aold, T1aold)
     bbtemp = einsum('bkcj,ci,ak->abij', Ib.vovo, T1bold, T1bold)
@@ -442,9 +442,9 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2aa += fac*aatemp
     T2bb += fac*bbtemp
     T2ab += fac*abtemp
-    aatemp = None
-    abtemp = None
-    bbtemp = None
+    del aatemp
+    del abtemp
+    del bbtemp
 
     TTTaa = 0.5*T2aaold + einsum('dj,bl->dbjl', T1aold, T1aold)
     TTTbb = 0.5*T2bbold + einsum('dj,bl->dbjl', T1bold, T1bold)
@@ -501,12 +501,12 @@ def _u_Stanton(T1a, T1b, T2aa, T2ab, T2bb, Faa, Fbb, Ia, Ib, Iabab, T1old, T2old
     T2ab += fac*ATab
     T2bb += fac*ATbb
 
-    W_ovvo = None
-    W_OVVO = None
-    W_oVvO = None
-    W_OvVo = None
-    W_oVVo = None
-    W_OvvO = None
+    del W_ovvo
+    del W_OVVO
+    del W_oVvO
+    del W_OvVo
+    del W_oVVo
+    del W_OvvO
 
     Fvva -= 0.5*einsum('jb,aj->ab', Fova, T1aold)
     Fvvb -= 0.5*einsum('jb,aj->ab', Fovb, T1bold)
@@ -548,26 +548,35 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     Fvv -= 0.5*einsum('jb,aj->ab', F.ov, T1old)
     Iovvv = 2.0*I.ovvv - I.vovv.transpose((1,0,2,3))
     Fvv += einsum('jacb,cj->ab', Iovvv, T1old)
+    del Iovvv
+
     Foo = F.oo.astype(T1.dtype)
     Foo += 0.5*einsum('jb,bi->ji', F.ov, T1old)
     Ioovo = 2.0*I.oovo - I.oovo.transpose((1,0,2,3))
     Foo += einsum('kjbi,bk->ji', Ioovo, T1old)
+    del Ioovo
+
     T2temp = 2.0*T2old - T2old.transpose((0,1,3,2))
     Ioovv = 2.0*I.oovv - I.oovv.transpose((1,0,2,3))
     tau2 = T2old + 0.5*einsum('ai,bj->abij', T1old, T1old)
     Fvv -= einsum('jkbc,acjk->ab', Ioovv, tau2)
     Foo += einsum('jkbc,bcik->ji', Ioovv, tau2)
     Fov += einsum('kjcb,ck->jb', Ioovv, T1old)
+    del Ioovv
     T1 += fac*einsum('jb,abij->ai', Fov, T2temp)
     T1 += fac*einsum('ab,bi->ai', Fvv, T1old)
     T1 -= fac*einsum('ji,aj->ai', Foo, T1old)
+    del T2temp
 
     Iovvo = 2.0*I.ovvo - I.ovov.transpose((0,1,3,2))
     T1 += fac*einsum('jabi,bj->ai', Iovvo, T1old)
+    del Iovvo
     Ivovv = 2.0*I.vovv - I.vovv.transpose((0,1,3,2))
     T1 += fac*einsum('ajbc,bcij->ai', Ivovv, T2old)
+    del Ivovv
     Iooov = 2.0*I.ooov - I.oovo.transpose((0,1,3,2))
     T1 -= fac*einsum('jkib,abjk->ai', Iooov, T2old)
+    del Iooov
 
     # T2 equation
     tau2 = T2old + einsum('ai,bj->abij', T1old, T1old)
@@ -576,12 +585,14 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     Wo += tmp + tmp.transpose((1,0,3,2))
     Wo += 0.5*einsum('klcd,cdij->klij', I.oovv, tau2)
     T2 += fac*einsum('klij,abkl->abij', Wo, tau2)
+    del Wo
 
     Wv = I.vvvv.astype(T2.dtype)
     tmp = einsum('akcd,bk->abcd', I.vovv, T1old)
     Wv -= (tmp + tmp.transpose((1,0,3,2)))
     Wv += 0.5*einsum('klcd,abkl->abcd', I.oovv, tau2)
     T2 += fac*einsum('abcd,cdij->abij', Wv, tau2)
+    del Wv
 
     temp = -einsum('kbcj,ci,ak->abij', I.ovvo, T1old, T1old)
     temp += temp.transpose((1,0,3,2))
@@ -589,6 +600,7 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     temp = -einsum('akcj,ci,bk->abij', I.vovo, T1old, T1old)
     temp += temp.transpose((1,0,3,2))
     T2 += fac*temp
+    del temp
 
     TTT1 = 0.5*(T2old - T2old.transpose((0,1,3,2))) + einsum('dj,bl->dbjl', T1old, T1old)
     TTT2 = 0.5*T2old + einsum('dj,bl->dbjl', T1old, T1old)
@@ -603,15 +615,20 @@ def _r_Stanton(T1, T2, F, I, T1old, T2old, fac=1.0):
     W2 -= einsum('klcj,bl->kbcj', I.oovo, T1old)
     W2 -= einsum('klcd,dbjl->kbcj', I.oovv, TTT1)
     W2 += 0.5*einsum('klcd,dblj->kbcj', I.oovv - I.oovv.transpose((0,1,3,2)), T2old)
+    del TTT1
 
     W3 = -I.ovov.transpose((0,1,3,2)).astype(T2.dtype)
     W3 -= einsum('kbdc,dj->kbcj', I.ovvv, T1old)
     W3 += einsum('kljc,bl->kbcj', I.ooov, T1old)
     W3 += einsum('kldc,dbjl->kbcj', I.oovv, TTT2)
+    del TTT2
 
     AT = einsum('kbcj,acik->abij', W2, T2old - T2old.transpose((0,1,3,2)))
     AT += einsum('kbcj,acik->abij', W1, T2old)
     AT += einsum('kacj,cbik->abij', W3, T2old)
+    del W1
+    del W2
+    del W3
     T2 += fac*(AT + AT.transpose((1,0,3,2)))
 
     Fvv -= 0.5*einsum('jb,aj->ab', Fov, T1old)
@@ -1061,7 +1078,6 @@ class lambda_int(object):
 
 
 def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
-    # t1 = time.time()
 
     T2A = T2old.copy()
     T2A += 0.5*einsum('ai,bj->abij', T1old, T1old)
@@ -1155,11 +1171,8 @@ def _Lambda_Stanton(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     tempab += einsum('ijae,be->ijab', I.oovv, Gvv)
     L2 += tempab - tempab.transpose((0,1,3,2))
 
-    # t2 = time.time()
-
 
 def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
-    # t1 = time.time()
 
     TTemp = 0.5*T2old + einsum('bj,ck->bcjk', T1old, T1old)
     IvovoT1 = einsum('aibc,ck->aibk', I.vovv, T1old)
@@ -1177,8 +1190,8 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     temp = fac*einsum('ikab,jk->ijab', L2old, IToo)
     L2 -= temp
     L2 += temp.transpose((1,0,2,3))
-    IToo = None
-    temp = None
+    del IToo
+    del temp
 
     # VV
     ITvv = einsum('ja,bj->ba', F.ov, T1old) - F.vv\
@@ -1189,19 +1202,19 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     temp = fac*einsum('ijac,cb->ijab', L2old, ITvv)
     L2 -= temp
     L2 += temp.transpose((0,1,3,2))
-    ITvv = None
-    temp = None
+    del ITvv
+    del temp
 
     # VOVO
     ITvovo = -IvovoT1 - IvovoT2 - I.vovo
     L1 += fac*einsum('jb,biaj->ia', L1old, ITvovo)
-    ITvovo = None
+    del ITvovo
 
     # OOVV
     IToovv = einsum('kica,bcjk->ijab', I.oovv, T2old)\
         - einsum('ciba,bj->ijac', IvovvT, T1old)
     L1 += fac*einsum('jb,ijab->ia', L1old, IToovv)
-    IToovv = None
+    del IToovv
 
     # VOOO
     ITvooo = einsum('cibk,bj->cijk', I.vovo, T1old) + 0.5*I.vooo\
@@ -1214,7 +1227,7 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
         - einsum('ikjc,cdkl->dijl', IooovT, T2old)\
         - 0.5*einsum('bicd,cdkl->bikl', IvovvT, TTemp)
     L1 += fac*einsum('jkab,bijk->ia', L2old, ITvooo)
-    ITvooo = None
+    del ITvooo
 
     # VVVO
     ITvvvo = einsum('cjak,bj->cbak', I.vovo, T1old) - 0.5*I.vvvo\
@@ -1227,7 +1240,7 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
         + einsum('bkac,cdkl->bdal', IvovvT, T2old)\
         + 0.5*einsum('klja,cdkl->cdaj', IooovT, TTemp)
     L1 += fac*einsum('ikbc,cbak->ia', L2old, ITvvvo)
-    ITvvvo = None
+    del ITvvvo
 
     # OV
     ITov = IovT + F.ov
@@ -1236,21 +1249,21 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     L2 -= temp.transpose((1,0,2,3))
     L2 -= temp.transpose((0,1,3,2))
     L2 += temp.transpose((1,0,3,2))
-    ITov = None
+    del ITov
 
     # VOVV
     ITvovv = IvovvT - I.vovv
     temp = fac*einsum('ic,cjab->ijab', L1old, ITvovv)
     L2 -= temp
     L2 += temp.transpose((1,0,2,3))
-    ITvovv = None
+    del ITvovv
 
     # OOOV
     ITooov = IooovT + I.ooov
     temp = fac*einsum('ka,ijkb->ijab', L1old, ITooov)
     L2 -= temp
     L2 += temp.transpose((0,1,3,2))
-    ITooov = None
+    del ITooov
 
     # VOVO
     ITvovo = - IvovoT1 - IvovoT2 - I.vovo\
@@ -1260,21 +1273,21 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     L2 -= temp.transpose((1,0,2,3))
     L2 -= temp.transpose((0,1,3,2))
     L2 += temp.transpose((1,0,3,2))
-    ITvovo = None
+    del ITvovo
 
     # VVVV
     ITvvvv = einsum('dkab,ck->cdab', I.vovv, T1old)\
         + 0.5*einsum('klab,cdkl->cdab', I.oovv, TTemp)\
         + 0.5*I.vvvv
     L2 += fac*einsum('ijcd,cdab->ijab', L2old, ITvvvv)
-    ITvvvv = None
+    del ITvvvv
 
     # OOOO
     IToooo = einsum('ijlc,ck->ijkl', I.ooov, T1old)\
         - 0.5*einsum('ijcd,cdkl->ijkl', I.oovv, TTemp)\
         - 0.5*I.oooo
     L2 -= fac*einsum('klab,ijkl->ijab', L2old, IToooo)
-    IToooo = None
+    del IToooo
 
     # OOVV
     IToovv = einsum('ljdb,cdkl->kjcb', I.oovv, T2old)
@@ -1283,7 +1296,7 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     L2 -= temp.transpose((1,0,2,3))
     L2 -= temp.transpose((0,1,3,2))
     L2 += temp.transpose((1,0,3,2))
-    IToovv = None
+    del IToovv
 
     # LT terms
     Ltemp1 = einsum('jkbd,bcjk->cd', L2old, T2old)
@@ -1304,8 +1317,6 @@ def _Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     temp = 0.5*fac*einsum('il,ljab->ijab', Ltemp2, I.oovv)
     L2 -= temp
     L2 += temp.transpose((1,0,2,3))
-
-    # t2 = time.time()
 
 
 def _Lambda_opt_int(L1, L2, F, I, L1old, L2old, T1old, T2old, intor, fac=1.0):
@@ -1450,9 +1461,9 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     tempa = einsum('ikab,jk->ijab', L2aaold, ITooa)
     tempa -= tempa.transpose((1,0,2,3))
     L2aa -= fac*tempa
-    tempa = None
+    del tempa
     tempab = einsum('kjab,ik->ijab', L2abold, ITooa)
-    ITooa = None
+    del ITooa
     IToob = einsum('ib,bj->ij', Fb.ov, T1bold) + Fb.oo\
         + einsum('ikbc,bcjk->ij', Ib.oovv, TTempbb)\
         + einsum('kicb,cbkj->ij', Iabab.oovv, TTempab)\
@@ -1463,11 +1474,11 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     tempb = einsum('ikab,jk->ijab', L2bbold, IToob)
     tempb -= tempb.transpose((1,0,2,3))
     L2bb -= fac*tempb
-    tempb = None
+    del tempb
     tempab += einsum('ikab,jk->ijab', L2abold, IToob)
-    IToob = None
+    del IToob
     L2ab -= fac*tempab
-    tempab = None
+    del tempab
 
     # VV
     ITvva = einsum('ja,bj->ba', Fa.ov, T1aold) - Fa.vv\
@@ -1480,7 +1491,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     tempa = einsum('ijac,cb->ijab', L2aaold, ITvva)
     tempa -= tempa.transpose((0,1,3,2))
     tempab = einsum('ijcb,ca->ijab', L2abold, ITvva)
-    ITvva = None
+    del ITvva
     ITvvb = einsum('ja,bj->ba', Fb.ov, T1bold) - Fb.vv\
         - einsum('bkac,ck->ba', Ib.vovv, T1bold)\
         - einsum('kbca,ck->ba', Iabab.ovvv, T1aold)
@@ -1491,7 +1502,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     tempb = einsum('ijac,cb->ijab', L2bbold, ITvvb)
     tempb -= tempb.transpose((0,1,3,2))
     tempab += einsum('ijac,cb->ijab', L2abold, ITvvb)
-    ITvvb = None
+    del ITvvb
 
     L2aa -= fac*tempa
     L2ab -= fac*tempab
@@ -1502,25 +1513,25 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     IToovvs1 += einsum('ikad,bdjk->ijab', Iabab.oovv, T2abold)
     IToovvs1 -= einsum('ciba,bj->ijac', Ivovvs, T1aold)
     L1a += fac*einsum('jb,ijab->ia', L1aold, IToovvs1)
-    IToovvs1 = None
+    del IToovvs1
 
     ITOOVVs1 = einsum('kica,bcjk->ijab', Ib.oovv, T2bbold)
     ITOOVVs1 += einsum('kica,cbkj->ijab', Iabab.oovv, T2abold)
     ITOOVVs1 -= einsum('ciba,bj->ijac', IVOVVs, T1bold)
     L1b += fac*einsum('jb,ijab->ia', L1bold, ITOOVVs1)
-    ITOOVVs1 = None
+    del ITOOVVs1
 
     IToOvVs1 = einsum('kica,cbkj->ijab', Ia.oovv, T2abold)
     IToOvVs1 += einsum('ikac,bcjk->ijab', Iabab.oovv, T2bbold)
     IToOvVs1 -= einsum('ciba,bj->ijac', IVoVvs, T1bold)
     L1a += fac*einsum('jb,ijab->ia', L1bold, IToOvVs1)
-    IToOvVs1 = None
+    del IToOvVs1
 
     ITOoVvs1 = einsum('kica,bcjk->ijab', Iabab.oovv, T2aaold)
     ITOoVvs1 += einsum('kica,bcjk->ijab', Ib.oovv, T2abold)
     ITOoVvs1 -= einsum('ciba,bj->ijac', IvOvVs, T1aold)
     L1b += fac*einsum('jb,ijab->ia', L1aold, ITOoVvs1)
-    ITOoVvs1 = None
+    del ITOoVvs1
 
     # VOOO
     ITvooos = einsum('cibk,bj->cijk', Ia.vovo, T1aold)
@@ -1536,7 +1547,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvooos -= einsum('ikjc,dclk->dijl', IoOoVs, T2abold)
     ITvooos -= 0.5*einsum('bicd,cdkl->bikl', Ivovvs, TTempaa)
     L1a += fac*einsum('jkab,bijk->ia', L2aaold, ITvooos)
-    ITvooos = None
+    del ITvooos
 
     ITVOOOs = einsum('cibk,bj->cijk', Ib.vovo, T1bold)
     ITVOOOs += 0.5*Ib.vooo
@@ -1551,7 +1562,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVOOOs -= einsum('ikjc,cdkl->dijl', IOoOvs, T2abold)
     ITVOOOs -= 0.5*einsum('bicd,cdkl->bikl', IVOVVs, TTempbb)
     L1b += fac*einsum('jkab,bijk->ia', L2bbold, ITVOOOs)
-    ITVOOOs = None
+    del ITVOOOs
 
     ITVooOs = -einsum('icbk,bj->cijk', Iabab.ovvo, T1aold)
     ITVooOs -= 0.5*Iabab.ovoo.transpose((1,0,2,3))
@@ -1568,7 +1579,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVooOs -= 0.5*einsum('bicd,cdkl->bikl', IVovVs, TTempab)
     ITVooOs += 0.25*einsum('bicd,dckl->bikl', IVoVvs, T2abold)
     L1a += fac*einsum('jkab,bijk->ia', L2abold, ITVooOs)
-    ITVooOs = None
+    del ITVooOs
 
     ITvOOos = -einsum('cikb,bj->cijk', Iabab.voov, T1bold)
     ITvOOos -= 0.5*Iabab.vooo.transpose((0,1,3,2))
@@ -1585,7 +1596,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvOOos -= 0.5*einsum('bicd,dclk->bikl', IvOVvs, TTempab)
     ITvOOos += 0.25*einsum('bicd,cdlk->bikl', IvOvVs, T2abold)
     L1b += fac*einsum('kjba,bijk->ia', L2abold, ITvOOos)
-    ITvOOos = None
+    del ITvOOos
 
     ITVoOos = einsum('ickb,bj->cijk', Iabab.ovov, T1bold)
     ITVoOos += 0.5*Iabab.ovoo.transpose((1,0,3,2))
@@ -1600,7 +1611,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVoOos -= 0.5*einsum('bicd,dclk->bikl', IVoVvs, TTempab)
     ITVoOos += 0.25*einsum('bicd,cdlk->bikl', IVovVs, T2abold)
     L1a -= fac*einsum('kjab,bijk->ia', L2abold, ITVoOos)
-    ITVoOos = None
+    del ITVoOos
 
     ITvOoOs = einsum('cibk,bj->cijk', Iabab.vovo, T1aold)
     ITvOoOs += 0.5*Iabab.vooo
@@ -1615,7 +1626,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvOoOs -= 0.5*einsum('bicd,cdkl->bikl', IvOvVs, TTempab)
     ITvOoOs += 0.25*einsum('bicd,dckl->bikl', IvOVvs, T2abold)
     L1b -= fac*einsum('jkba,bijk->ia', L2abold, ITvOoOs)
-    ITvOoOs = None
+    del ITvOoOs
 
     # VVVO
     ITvvvos = -0.5*Ia.vvvo
@@ -1631,7 +1642,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvvvos += einsum('bkac,dclk->bdal', IvOvVs, T2abold)
     ITvvvos += 0.5*einsum('klja,cdkl->cdaj', Iooovs, TTempaa)
     L1a += fac*einsum('ikbc,cbak->ia', L2aaold, ITvvvos)
-    ITvvvos = None
+    del ITvvvos
 
     ITVVVOs = -0.5*Ib.vvvo
     ITVVVOs += einsum('cjak,bj->cbak', Ib.vovo, T1bold)
@@ -1646,7 +1657,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVVVOs += einsum('bkac,cdkl->bdal', IVoVvs, T2abold)
     ITVVVOs += 0.5*einsum('klja,cdkl->cdaj', IOOOVs, TTempbb)
     L1b += fac*einsum('ikbc,cbak->ia', L2bbold, ITVVVOs)
-    ITVVVOs = None
+    del ITVVVOs
 
     ITVvvOs = 0.5*Iabab.vvvo.transpose((1,0,2,3))
     ITVvvOs -= einsum('jcak,bj->cbak', Iabab.ovvo, T1aold)
@@ -1662,7 +1673,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVvvOs += 0.5*einsum('klja,dclk->cdaj', IOoOvs, TTempab)
     ITVvvOs -= 0.25*einsum('klja,dckl->cdaj', IoOOvs, T2abold)
     L1a += fac*einsum('ikbc,cbak->ia', L2abold, ITVvvOs)
-    ITVvvOs = None
+    del ITVvvOs
 
     ITvVVos = 0.5*Iabab.vvov.transpose((0,1,3,2))
     ITvVVos -= einsum('cjka,bj->cbak', Iabab.voov, T1bold)
@@ -1678,7 +1689,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvVVos += 0.5*einsum('klja,cdkl->cdaj', IoOoVs, TTempab)
     ITvVVos -= 0.25*einsum('klja,cdlk->cdaj', IOooVs, T2abold)
     L1b += fac*einsum('kicb,cbak->ia', L2abold, ITvVVos)
-    ITvVVos = None
+    del ITvVVos
 
     ITVvVos = -0.5*Iabab.vvov.transpose((1,0,3,2))
     ITVvVos += einsum('jcka,bj->cbak', Iabab.ovov, T1aold)
@@ -1694,7 +1705,7 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITVvVos += 0.5*einsum('klja,dclk->cdaj', IOooVs, TTempab)
     ITVvVos -= 0.25*einsum('klja,dckl->cdaj', IoOoVs, T2abold)
     L1b -= fac*einsum('kibc,cbak->ia', L2abold, ITVvVos)
-    ITVvVos = None
+    del ITVvVos
 
     ITvVvOs = -0.5*Iabab.vvvo
     ITvVvOs += einsum('cjak,bj->cbak', Iabab.vovo, T1bold)
@@ -1710,19 +1721,19 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvVvOs += 0.5*einsum('klja,cdkl->cdaj', IoOOvs, TTempab)
     ITvVvOs -= 0.25*einsum('klja,cdlk->cdaj', IOoOvs, T2abold)
     L1a -= fac*einsum('ikcb,cbak->ia', L2abold, ITvVvOs)
-    ITvVvOs = None
+    del ITvVvOs
 
     # OV
     ITovs = Iovs + Fa.ov
     tempaa = einsum('jb,ia->ijab', L1aold, ITovs)
     tempab = einsum('jb,ia->ijab', L1bold, ITovs)
-    ITovs = None
+    del ITovs
     ITOVs = IOVs + Fb.ov
     tempaa += tempaa.transpose((1,0,3,2)) - tempaa.transpose((0,1,3,2)) - tempaa.transpose((1,0,2,3))
     tempbb = einsum('jb,ia->ijab', L1bold, ITOVs)
     tempbb += tempbb.transpose((1,0,3,2)) - tempbb.transpose((0,1,3,2)) - tempbb.transpose((1,0,2,3))
     tempab += einsum('ia,jb->ijab', L1aold, ITOVs)
-    ITOVs = None
+    del ITOVs
     L2aa += fac*tempaa
     L2ab += fac*tempab
     L2bb += fac*tempbb
@@ -1730,39 +1741,39 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     # VOVV
     ITvovvs = Ivovvs - Ia.vovv
     tempaa = einsum('ic,cjab->ijab', L1aold, ITvovvs)
-    ITvovvs = None
+    del ITvovvs
     tempaa -= tempaa.transpose((1,0,2,3))
     L2aa -= fac*tempaa
 
     ITVOVVs = IVOVVs - Ib.vovv
     tempbb = einsum('ic,cjab->ijab', L1bold, ITVOVVs)
-    ITVOVVs = None
+    del ITVOVVs
     tempbb -= tempbb.transpose((1,0,2,3))
     L2bb -= fac*tempbb
 
     ITvOvVs = IvOvVs - Iabab.vovv
     tempab = einsum('ic,cjab->ijab', L1aold, ITvOvVs)
-    ITvOvVs = None
+    del ITvOvVs
     ITVovVs = IVovVs + Iabab.ovvv.transpose((1,0,2,3))
     tempab -= einsum('jc,ciab->ijab', L1bold, ITVovVs)
-    ITVovVs = None
+    del ITVovVs
     L2ab -= fac*tempab
 
     # OOOV
     ITooovs = Iooovs + Ia.ooov
     tempaa = einsum('ka,ijkb->ijab', L1aold, ITooovs)
     tempaa -= tempaa.transpose((0,1,3,2))
-    ITooovs = None
+    del ITooovs
     ITOOOVs = IOOOVs + Ib.ooov
     tempbb = einsum('ka,ijkb->ijab', L1bold, ITOOOVs)
     tempbb -= tempbb.transpose((0,1,3,2))
-    ITOOOVs = None
+    del ITOOOVs
     IToOoVs = IoOoVs + Iabab.ooov
     tempab = einsum('ka,ijkb->ijab', L1aold, IToOoVs)
-    IToOoVs = None
+    del IToOoVs
     IToOOvs = IoOOvs - Iabab.oovo.transpose((0,1,3,2))
     tempab -= einsum('kb,ijka->ijab', L1bold, IToOOvs)
-    IToOOvs = None
+    del IToOOvs
     L2aa -= fac*tempaa
     L2ab -= fac*tempab
     L2bb -= fac*tempbb
@@ -1773,33 +1784,33 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
     ITvovos -= einsum('djcb,ck->djbk', Ivovvs, T1aold)
     tempaa = einsum('ikad,djbk->ijab', L2aaold, ITvovos)
     tempab = einsum('kjdb,diak->ijab', L2abold, ITvovos)
-    ITvovos = None
+    del ITvovos
     ITVOVOs = -IVOVOs1 - IVOVOs2 - Ib.vovo
     L1b += fac*einsum('jb,biaj->ia', L1bold, ITVOVOs)
     ITVOVOs -= einsum('djcb,ck->djbk', IVOVVs, T1bold)
     tempab += einsum('ikad,djbk->ijab', L2abold, ITVOVOs)
     tempbb = einsum('ikad,djbk->ijab', L2bbold, ITVOVOs)
-    ITVOVOs = None
+    del ITVOVOs
     ITvOVos = -IvOVos1 - IvOVos2 + Iabab.voov.transpose((0,1,3,2))
     L1b += fac*einsum('jb,biaj->ia', L1aold, ITvOVos)
     ITvOVos -= einsum('djcb,ck->djbk', IvOvVs, T1aold)
     tempab += einsum('ikad,djbk->ijab', L2aaold, ITvOVos)
     tempbb += einsum('kida,djbk->ijab', L2abold, ITvOVos)
-    ITvOVos = None
+    del ITvOVos
     ITVovOs = -IVovOs1 - IVovOs2 + Iabab.ovvo.transpose((1,0,2,3))
     L1a += fac*einsum('jb,biaj->ia', L1bold, ITVovOs)
     ITVovOs -= einsum('djcb,ck->djbk', IVoVvs, T1bold)
     tempaa += einsum('ikad,djbk->ijab', L2abold, ITVovOs)
     tempab += einsum('kjdb,diak->ijab', L2bbold, ITVovOs)
-    ITVovOs = None
+    del ITVovOs
     ITvOvOs = -IvOvOs1 - IvOvOs2 - Iabab.vovo
     ITvOvOs -= einsum('djcb,ck->djbk', IvOVvs, T1bold)
     tempab += einsum('ikdb,djak->ijab', L2abold, ITvOvOs)
-    ITvOvOs = None
+    del ITvOvOs
     ITVoVos = -IVoVos1 - IVoVos2 - Iabab.ovov.transpose((1,0,3,2))
     ITVoVos -= einsum('djcb,ck->djbk', IVovVs, T1aold)
     tempab += einsum('kjad,dibk->ijab', L2abold, ITVoVos)
-    ITVoVos = None
+    del ITVoVos
     tempaa += tempaa.transpose((1,0,3,2)) - tempaa.transpose((0,1,3,2)) - tempaa.transpose((1,0,2,3))
     tempbb += tempbb.transpose((1,0,3,2)) - tempbb.transpose((0,1,3,2)) - tempbb.transpose((1,0,2,3))
     L2aa += fac*tempaa
@@ -1811,76 +1822,76 @@ def _uccsd_Lambda_opt(L1a, L1b, L2aa, L2ab, L2bb, Fa, Fb, Ia, Ib, Iabab,
         + 0.5*einsum('klab,cdkl->cdab', Ia.oovv, TTempaa)\
         + 0.5*Ia.vvvv
     L2aa += fac*einsum('ijcd,cdab->ijab', L2aaold, ITvvvvs)
-    ITvvvvs = None
+    del ITvvvvs
     ITVVVVs = einsum('dkab,ck->cdab', Ib.vovv, T1bold)\
         + 0.5*einsum('klab,cdkl->cdab', Ib.oovv, TTempbb)\
         + 0.5*Ib.vvvv
     L2bb += fac*einsum('ijcd,cdab->ijab', L2bbold, ITVVVVs)
-    ITVVVVs = None
+    del ITVVVVs
     ITvVvVs = -einsum('kdab,ck->cdab', Iabab.ovvv, T1aold)
     ITvVvVs += 0.5*einsum('klab,cdkl->cdab', Iabab.oovv, TTempab)
     ITvVvVs += 0.25*einsum('lkab,cdlk->cdab', Iabab.oovv, T2abold)
     ITvVvVs += 0.5*Iabab.vvvv
     L2ab += fac*einsum('ijcd,cdab->ijab', L2abold, ITvVvVs)
-    ITvVvVs = None
+    del ITvVvVs
     ITVvvVs = einsum('dkab,ck->cdab', Iabab.vovv, T1bold)
     ITVvvVs -= 0.5*einsum('lkab,dclk->cdab', Iabab.oovv, TTempab)
     ITVvvVs -= 0.25*einsum('klab,dckl->cdab', Iabab.oovv, T2abold)
     ITVvvVs -= 0.5*Iabab.vvvv.transpose((1,0,2,3))
     L2ab -= fac*einsum('ijdc,cdab->ijab', L2abold, ITVvvVs)
-    ITVvvVs = None
+    del ITVvvVs
 
     # OOOO
     IToooos = einsum('ijlc,ck->ijkl', Ia.ooov, T1aold)\
         - 0.5*einsum('ijcd,cdkl->ijkl', Ia.oovv, TTempaa)\
         - 0.5*Ia.oooo
     L2aa -= fac*einsum('klab,ijkl->ijab', L2aaold, IToooos)
-    IToooos = None
+    del IToooos
     ITOOOOs = einsum('ijlc,ck->ijkl', Ib.ooov, T1bold)\
         - 0.5*einsum('ijcd,cdkl->ijkl', Ib.oovv, TTempbb)\
         - 0.5*Ib.oooo
     L2bb -= fac*einsum('klab,ijkl->ijab', L2bbold, ITOOOOs)
-    ITOOOOs = None
+    del ITOOOOs
     IToOoOs = -einsum('ijcl,ck->ijkl', Iabab.oovo, T1aold)\
         - 0.5*einsum('ijcd,cdkl->ijkl', Iabab.oovv, TTempab)\
         - 0.25*einsum('ijdc,dckl->ijkl', Iabab.oovv, T2abold)
     IToOoOs += - 0.5*Iabab.oooo
     L2ab -= fac*einsum('klab,ijkl->ijab', L2abold, IToOoOs)
-    IToOoOs = None
+    del IToOoOs
     IToOOos = einsum('ijlc,ck->ijkl', Iabab.ooov, T1bold)
     IToOOos += 0.5*einsum('ijdc,dclk->ijkl', Iabab.oovv, TTempab)
     IToOOos += 0.25*einsum('ijcd,cdlk->ijkl', Iabab.oovv, T2abold)
     IToOOos += 0.5*Iabab.oooo.transpose((0,1,3,2))
     L2ab += fac*einsum('lkab,ijkl->ijab', L2abold, IToOOos)
-    IToOOos = None
+    del IToOOos
 
     # OOVV
     IToovvs = einsum('ljdb,cdkl->kjcb', Ia.oovv, T2aaold)
     IToovvs += einsum('jlbd,cdkl->kjcb', Iabab.oovv, T2abold)
     tempaa = einsum('ikac,kjcb->ijab', L2aaold, IToovvs)
     tempab = einsum('kjcb,kica->ijab', L2abold, IToovvs)
-    IToovvs = None
+    del IToovvs
     ITOOVVs = einsum('ljdb,cdkl->kjcb', Ib.oovv, T2bbold)
     ITOOVVs += einsum('ljdb,dclk->kjcb', Iabab.oovv, T2abold)
     tempbb = einsum('ikac,kjcb->ijab', L2bbold, ITOOVVs)
     tempab += einsum('ikac,kjcb->ijab', L2abold, ITOOVVs)
-    ITOOVVs = None
+    del ITOOVVs
     IToOvVs = einsum('ljdb,cdkl->kjcb', Iabab.oovv, T2aaold)
     IToOvVs += einsum('ljdb,cdkl->kjcb', Ib.oovv, T2abold)
     tempbb += einsum('kica,kjcb->ijab', L2abold, IToOvVs)
     tempab += einsum('ikac,kjcb->ijab', L2aaold, IToOvVs)
-    IToOvVs = None
+    del IToOvVs
     ITOoVvs = einsum('ljdb,dclk->kjcb', Ia.oovv, T2abold)
     ITOoVvs += einsum('jlbd,cdkl->kjcb', Iabab.oovv, T2bbold)
     tempaa += einsum('ikac,kjcb->ijab', L2abold, ITOoVvs)
     tempab += einsum('kjcb,kica->ijab', L2bbold, ITOoVvs)
-    ITOoVvs = None
+    del ITOoVvs
     ITOOvvs = einsum('ljbd,cdlk->kjcb', Iabab.oovv, T2abold)
     tempab += einsum('ikcb,kjca->ijab', L2abold, ITOOvvs)
-    ITOOvvs = None
+    del ITOOvvs
     ITooVVs = einsum('jldb,dckl->kjcb', Iabab.oovv, T2abold)
     tempab += einsum('kjac,kicb->ijab', L2abold, ITooVVs)
-    ITooVVs = None
+    del ITooVVs
     tempaa += tempaa.transpose((1,0,3,2)) - tempaa.transpose((0,1,3,2)) - tempaa.transpose((1,0,2,3))
     tempbb += tempbb.transpose((1,0,3,2)) - tempbb.transpose((0,1,3,2)) - tempbb.transpose((1,0,2,3))
     L2aa += fac*tempaa
@@ -1997,7 +2008,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     IToovvs1 += einsum('ikac,bcjk->ijab', I.oovv, T2anti)
     IToovvs1 -= einsum('ciba,bj->ijac', IvOvVs, T1old)
     L1 += fac*einsum('jb,ijab->ia', L1old, IToovvs1)
-    IToovvs1 = None
+    del IToovvs1
 
     # VOOO
     ITvooos = einsum('cibk,bj->cijk', I.vovo - I.voov.transpose((0,1,3,2)), T1old)
@@ -2013,7 +2024,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITvooos -= einsum('ikjc,dclk->dijl', IoOoVs, T2old)
     ITvooos -= 0.5*einsum('bicd,cdkl->bikl', Ivovvs, TTempaa)
     L1 += fac*einsum('jkab,bijk->ia', L2old - L2old.transpose((0,1,3,2)), ITvooos)
-    ITvooos = None
+    del ITvooos
 
     ITVooOs = -einsum('icbk,bj->cijk', I.ovvo, T1old)
     ITVooOs -= 0.5*I.ovoo.transpose((1,0,2,3))
@@ -2030,7 +2041,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITVooOs -= 0.5*einsum('bicd,cdkl->bikl', IvOVvs, TTempab)
     ITVooOs += 0.25*einsum('bicd,dckl->bikl', IvOvVs, T2old)
     L1 += fac*einsum('jkab,bijk->ia', L2old, ITVooOs)
-    ITVooOs = None
+    del ITVooOs
 
     ITVoOos = einsum('ickb,bj->cijk', I.ovov, T1old)
     ITVoOos += 0.5*I.ovoo.transpose((1,0,3,2))
@@ -2045,7 +2056,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITVoOos -= 0.5*einsum('bicd,dclk->bikl', IvOvVs, TTempab)
     ITVoOos += 0.25*einsum('bicd,cdlk->bikl', IvOVvs, T2old)
     L1 -= fac*einsum('kjab,bijk->ia', L2old, ITVoOos)
-    ITVoOos = None
+    del ITVoOos
 
     # VVVO
     ITvvvos = -0.5*(I.vvvo - I.vvov.transpose((0,1,3,2)))
@@ -2061,7 +2072,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITvvvos += einsum('bkac,dclk->bdal', IvOvVs, T2old)
     ITvvvos += 0.5*einsum('klja,cdkl->cdaj', Iooovs, TTempaa)
     L1 += fac*einsum('ikbc,cbak->ia', L2anti, ITvvvos)
-    ITvvvos = None
+    del ITvvvos
 
     ITVvvOs = 0.5*I.vvvo.transpose((1,0,2,3))
     ITVvvOs -= einsum('jcak,bj->cbak', I.ovvo, T1old)
@@ -2077,7 +2088,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITVvvOs += 0.5*einsum('klja,dclk->cdaj', IoOoVs, TTempab)
     ITVvvOs -= 0.25*einsum('klja,dckl->cdaj', IoOOvs, T2old)
     L1 += fac*einsum('ikbc,cbak->ia', L2old, ITVvvOs)
-    ITVvvOs = None
+    del ITVvvOs
 
     ITvVvOs = - 0.5*I.vvvo
     ITvVvOs += einsum('cjak,bj->cbak', I.vovo, T1old)
@@ -2093,7 +2104,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITvVvOs += 0.5*einsum('klja,cdkl->cdaj', IoOOvs, TTempab)
     ITvVvOs -= 0.25*einsum('klja,cdlk->cdaj', IoOoVs, T2old)
     L1 -= fac*einsum('ikcb,cbak->ia', L2old, ITvVvOs)
-    ITvVvOs = None
+    del ITvVvOs
 
     # OV
     ITovs = Iovs + F.ov
@@ -2121,14 +2132,14 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITvOVos = -IvOVos1 - IvOVos2 + I.voov.transpose((0,1,3,2))
     ITvOVos -= einsum('djcb,ck->djbk', IvOvVs, T1old)
     tempab += einsum('ikad,djbk->ijab', L2anti, ITvOVos)
-    ITvOVos = None
+    del ITvOVos
     ITVovOs = -IvOVos1 - IvOVos2 + I.ovvo.transpose((1,0,2,3))
     L1 += fac*einsum('jb,biaj->ia', L1old, ITVovOs)
-    ITVovOs = None
+    del ITVovOs
     ITvOvOs = -IvOvOs1 - IvOvOs2 - I.vovo
     ITvOvOs -= einsum('djcb,ck->djbk', IvOVvs, T1old)
     tempab += einsum('ikdb,djak->ijab', L2old, ITvOvOs)
-    ITvOvOs = None
+    del ITvOvOs
     tempab += tempab.transpose((1,0,3,2))
     L2 += fac*tempab
 
@@ -2138,13 +2149,13 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     ITvVvVs += 0.25*einsum('lkab,cdlk->cdab', I.oovv, T2old)
     ITvVvVs += 0.5*I.vvvv
     L2 += fac*einsum('ijcd,cdab->ijab', L2old, ITvVvVs)
-    ITvVvVs = None
+    del ITvVvVs
     ITVvvVs = einsum('dkab,ck->cdab', I.vovv, T1old)
     ITVvvVs -= 0.5*einsum('lkab,dclk->cdab', I.oovv, TTempab)
     ITVvvVs -= 0.25*einsum('klab,dckl->cdab', I.oovv, T2old)
     ITVvvVs -= 0.5*I.vvvv.transpose((1,0,2,3))
     L2 -= fac*einsum('ijdc,cdab->ijab', L2old, ITVvvVs)
-    ITVvvVs = None
+    del ITVvvVs
 
     # OOOO
     IToOoOs = -einsum('ijcl,ck->ijkl', I.oovo, T1old)\
@@ -2152,13 +2163,13 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
         - 0.25*einsum('ijdc,dckl->ijkl', I.oovv, T2old)
     IToOoOs += - 0.5*I.oooo
     L2 -= fac*einsum('klab,ijkl->ijab', L2old, IToOoOs)
-    IToOoOs = None
+    del IToOoOs
     IToOOos = einsum('ijlc,ck->ijkl', I.ooov, T1old)
     IToOOos += 0.5*einsum('ijdc,dclk->ijkl', I.oovv, TTempab)
     IToOOos += 0.25*einsum('ijcd,cdlk->ijkl', I.oovv, T2old)
     IToOOos += 0.5*I.oooo.transpose((0,1,3,2))
     L2 += fac*einsum('lkab,ijkl->ijab', L2old, IToOOos)
-    IToOOos = None
+    del IToOOos
 
     # OOVV
     IToovvs = einsum('ljdb,cdkl->kjcb', I.oovv - I.oovv.transpose((0,1,3,2)), T2anti)
@@ -2169,7 +2180,7 @@ def _rccsd_Lambda_opt(L1, L2, F, I, L1old, L2old, T1old, T2old, fac=1.0):
     tempab += einsum('ikac,kjcb->ijab', L2anti, IToOvVs)
     ITOOvvs = einsum('ljbd,cdlk->kjcb', I.oovv, T2old)
     tempab += einsum('ikcb,kjca->ijab', L2old, ITOOvvs)
-    ITOOvvs = None
+    del ITOOvvs
     tempab += tempab.transpose((1,0,3,2))
     L2 += fac*tempab
 

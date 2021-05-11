@@ -17,22 +17,22 @@ class SpinUtilsTest(unittest.TestCase):
         Faa = test_utils.make_random_F(noa, nva)
         Fbb = test_utils.make_random_F(nob, nvb)
         F = spin_utils.F_to_spin(Faa, Fbb, noa, nva, nob, nvb)
-        z = F.oo[:noa,noa:]
+        z = F.oo[:noa, noa:]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero ab block of Foo"
         self.assertTrue(s, err)
 
-        z = F.ov[:noa,nva:]
+        z = F.ov[:noa, nva:]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero ab block of Fov"
         self.assertTrue(s, err)
 
-        z = F.vo[:nva,noa:]
+        z = F.vo[:nva, noa:]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero ab block of Fvo"
         self.assertTrue(s, err)
 
-        z = F.vo[:nva,nva:]
+        z = F.vo[:nva, nva:]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero ab block of Fvv"
         self.assertTrue(s, err)
@@ -52,19 +52,19 @@ class SpinUtilsTest(unittest.TestCase):
         I = spin_utils.int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb)
 
         # check a coupled selected blocks that should be zero
-        z = I.oooo[noa:,:noa,:noa,:noa]
+        z = I.oooo[noa:, :noa, :noa, :noa]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero abbb block of Ioooo"
         self.assertTrue(s, err)
-        z = I.ooov[noa:,:noa,:noa,:nva]
+        z = I.ooov[noa:, :noa, :noa, :nva]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero abbb block of Iooov"
         self.assertTrue(s, err)
-        z = I.vovo[nva:,:noa,:nva,:noa]
+        z = I.vovo[nva:, :noa, :nva, :noa]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero abbb block of Ivovo"
         self.assertTrue(s, err)
-        z = I.vvvv[nva:,:nva,:nva,:nva]
+        z = I.vvvv[nva:, :nva, :nva, :nva]
         s = numpy.linalg.norm(z) < self.thresh
         err = "non-zero abbb block of Ivvvv"
         self.assertTrue(s, err)
@@ -82,7 +82,7 @@ class SpinUtilsTest(unittest.TestCase):
             noa, nva, nob, nvb, noa, nva, nob, nvb)
 
         I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
-        Ia,Ib,Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
+        Ia, Ib, Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
 
         test = Ia.vvvv - Ia_ref.vvvv
         s = numpy.linalg.norm(test) < self.thresh
@@ -270,10 +270,10 @@ class SpinUtilsTest(unittest.TestCase):
         mo_occb = mo_occ[1]
         moa = mf.mo_coeff[0]
         mob = mf.mo_coeff[1]
-        oa = (mf.mo_coeff[0])[:,mo_occa > 0]
-        va = (mf.mo_coeff[0])[:,mo_occa == 0]
-        ob = (mf.mo_coeff[1])[:,mo_occb > 0]
-        vb = (mf.mo_coeff[1])[:,mo_occb == 0]
+        oa = (mf.mo_coeff[0])[:, mo_occa > 0]
+        va = (mf.mo_coeff[0])[:, mo_occa == 0]
+        ob = (mf.mo_coeff[1])[:, mo_occb > 0]
+        vb = (mf.mo_coeff[1])[:, mo_occb == 0]
         noa = oa.shape[1]
         nva = va.shape[1]
         nob = ob.shape[1]

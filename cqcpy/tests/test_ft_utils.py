@@ -37,14 +37,14 @@ class FTUtilsTest(unittest.TestCase):
 
     def test_fermi(self):
         tol = 1e-14
-        for i,b in enumerate(self.betas):
-            for j,e in enumerate(self.es):
+        for i, b in enumerate(self.betas):
+            for j, e in enumerate(self.es):
                 val = ft_utils.fermi_function(b, e, 0.0)
                 ref = self.Fs[i][j]
                 fail = abs(val - ref)/abs(ref) > tol
                 self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
-        for i,b in enumerate(self.betas):
-            for j,e in enumerate(self.es):
+        for i, b in enumerate(self.betas):
+            for j, e in enumerate(self.es):
                 val = ft_utils.fermi_function(b, e + 0.1, 0.1)
                 ref = self.Fs[i][j]
                 fail = abs(val - ref)/abs(ref) > tol
@@ -52,14 +52,14 @@ class FTUtilsTest(unittest.TestCase):
 
     def test_vfermi(self):
         tol = 1e-14
-        for i,b in enumerate(self.betas):
-            for j,e in enumerate(self.es):
+        for i, b in enumerate(self.betas):
+            for j, e in enumerate(self.es):
                 val = ft_utils.vfermi_function(b, e, 0.0)
                 ref = self.Fs[i][4 - j]
                 fail = abs(val - ref)/abs(ref) > tol
                 self.assertFalse(fail, "Value: {}  Ref: {}".format(val, ref))
-        for i,b in enumerate(self.betas):
-            for j,e in enumerate(self.es):
+        for i, b in enumerate(self.betas):
+            for j, e in enumerate(self.es):
                 val = ft_utils.vfermi_function(b, e + 0.1, 0.1)
                 ref = self.Fs[i][4 - j]
                 fail = abs(val - ref)/abs(ref) > tol

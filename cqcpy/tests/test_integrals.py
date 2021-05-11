@@ -53,7 +53,7 @@ class IntegralsTest(unittest.TestCase):
         cell.unit = 'B'
         cell.verbose = 0
         cell.build()
-        kpt = cell.make_kpts((1,1,1), scaled_center=(0,0,1./3.))
+        kpt = cell.make_kpts((1, 1, 1), scaled_center=(0, 0, 1./3.))
         pbc_mf2 = pbc_scf.RHF(cell, kpt=kpt, exxdiv=None)
         pbc_mf2.kernel()
         return pbc_mf2
@@ -62,14 +62,14 @@ class IntegralsTest(unittest.TestCase):
         from cqcpy import integrals
         mf = self._get_mf()
         nao = mf.mo_coeff[0].shape[0]
-        mo1 = mf.mo_coeff[0][:,0].reshape((nao,1))
-        mo2 = mf.mo_coeff[0][:,1].reshape((nao,1))
-        mo3 = mf.mo_coeff[1][:,0].reshape((nao,1))
-        mo4 = mf.mo_coeff[1][:,1].reshape((nao,1))
+        mo1 = mf.mo_coeff[0][:, 0].reshape((nao, 1))
+        mo2 = mf.mo_coeff[0][:, 1].reshape((nao, 1))
+        mo3 = mf.mo_coeff[1][:, 0].reshape((nao, 1))
+        mo4 = mf.mo_coeff[1][:, 1].reshape((nao, 1))
 
-        ref = integrals.get_chem(mf.mol, mo1, mo3, mo2, mo4, anti=True).transpose((0,2,1,3))
+        ref = integrals.get_chem(mf.mol, mo1, mo3, mo2, mo4, anti=True).transpose((0, 2, 1, 3))
         out = integrals.get_phys(mf.mol, mo1, mo2, mo3, mo4, anti=True)
-        diff = abs(ref[0,0,0,0] - out[0,0,0,0])
+        diff = abs(ref[0, 0, 0, 0] - out[0, 0, 0, 0])
         self.assertTrue(diff < 1e-12)
 
     def test_u(self):
@@ -87,16 +87,16 @@ class IntegralsTest(unittest.TestCase):
         pbc_mf = self._get_pbc()
         mo_coeff = pbc_mf.mo_coeff
         nao = mo_coeff.shape[0]
-        mo1 = mo_coeff[:,0].reshape((nao,1))
-        mo2 = mo_coeff[:,1].reshape((nao,1))
-        mo3 = mo_coeff[:,2].reshape((nao,1))
-        mo4 = mo_coeff[:,3].reshape((nao,1))
+        mo1 = mo_coeff[:, 0].reshape((nao, 1))
+        mo2 = mo_coeff[:, 1].reshape((nao, 1))
+        mo3 = mo_coeff[:, 2].reshape((nao, 1))
+        mo4 = mo_coeff[:, 3].reshape((nao, 1))
 
         ref = integrals.get_chem_sol(
-            pbc_mf, mo1, mo3, mo2, mo4, anti=True).transpose((0,2,1,3))
+            pbc_mf, mo1, mo3, mo2, mo4, anti=True).transpose((0, 2, 1, 3))
         out = integrals.get_phys_sol(
             pbc_mf, mo1, mo2, mo3, mo4, anti=True)
-        diff = abs(ref[0,0,0,0] - out[0,0,0,0])
+        diff = abs(ref[0, 0, 0, 0] - out[0, 0, 0, 0])
         self.assertTrue(diff < 1e-12)
 
     def test_fock(self):
@@ -190,12 +190,12 @@ class IntegralsTest(unittest.TestCase):
         cc = pbc_cc.CCSD(mf)
         eris = cc.ao2mo()
         mo = mf.mo_coeff
-        o = mo[:,mf.mo_occ > 0]
-        v = mo[:,mf.mo_occ == 0]
+        o = mo[:, mf.mo_occ > 0]
+        v = mo[:, mf.mo_occ == 0]
 
         oooo = eris.oooo
         Ioooo = integrals.get_phys_gen(mf, o, o, o, o)
-        diff = numpy.linalg.norm(oooo - Ioooo.transpose((0,2,1,3)))
+        diff = numpy.linalg.norm(oooo - Ioooo.transpose((0, 2, 1, 3)))
         self.assertTrue(diff < 1e-12)
 
         oovv = eris.oovv
