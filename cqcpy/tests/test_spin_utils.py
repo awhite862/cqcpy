@@ -81,7 +81,8 @@ class SpinUtilsTest(unittest.TestCase):
         Iabab_ref = test_utils.make_random_Ifull_gen(
             noa, nva, nob, nvb, noa, nva, nob, nvb)
 
-        I = spin_utils.int_to_spin2(Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
+        I = spin_utils.int_to_spin2(
+            Ia_ref, Ib_ref, Iabab_ref, noa, nva, nob, nvb)
         Ia, Ib, Iabab = spin_utils.int_to_spatial(I, noa, nob, nva, nvb)
 
         test = Ia.vvvv - Ia_ref.vvvv

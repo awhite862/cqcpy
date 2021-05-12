@@ -40,12 +40,18 @@ def full_suite():
     suite.addTest(test_ft_utils.FTUtilsTest("test_dfermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vector"))
 
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_stanton"))
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccsd_opt_int"))
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_ccd"))
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_uccsd_lambda"))
-    suite.addTest(test_lambda_equations.LambdaEquationsTest("test_rccsd_lambda"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_ccsd_stanton"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_ccsd_opt_int"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_ccd"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_uccsd_lambda"))
+    suite.addTest(
+        test_lambda_equations.LambdaEquationsTest("test_rccsd_lambda"))
 
     suite.addTest(test_spin_utils.SpinUtilsTest("test_F_sym"))
     suite.addTest(test_spin_utils.SpinUtilsTest("test_I_sym"))

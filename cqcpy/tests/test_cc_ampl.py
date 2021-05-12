@@ -81,7 +81,8 @@ class TamplEquationsTest(unittest.TestCase):
 
         # initial T
         T1a, T1b = test_utils.make_random_T1_spatial(noa, nva, nob, nvb)
-        T2aa, T2ab, T2bb = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
+        T2aa, T2ab, T2bb \
+            = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
         T1 = spin_utils.T1_to_spin(T1a, T1b, noa, nva, nob, nvb)
         T2 = spin_utils.T2_to_spin(T2aa, T2ab, T2bb, noa, nva, nob, nvb)
 
@@ -113,7 +114,8 @@ class TamplEquationsTest(unittest.TestCase):
 
         # initial T
         T1a, T1b = test_utils.make_random_T1_spatial(noa, nva, nob, nvb)
-        T2aa, T2ab, T2bb = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
+        T2aa, T2ab, T2bb \
+            = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
         T1 = spin_utils.T1_to_spin(T1a, T1b, noa, nva, nob, nvb)
         T2 = spin_utils.T2_to_spin(T2aa, T2ab, T2bb, noa, nva, nob, nvb)
 

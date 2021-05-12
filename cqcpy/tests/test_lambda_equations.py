@@ -19,8 +19,10 @@ class LambdaEquationsTest(unittest.TestCase):
         L1old, L2old = test_utils.make_random_L(no, nv)
         F, I = test_utils.make_random_integrals(no, nv)
 
-        L1sim, L2sim = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
-        L1opt, L2opt = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1old, T2old)
+        L1sim, L2sim = cc_equations.ccsd_lambda_simple(
+            F, I, L1old, L2old, T1old, T2old)
+        L1opt, L2opt = cc_equations.ccsd_lambda_opt(
+            F, I, L1old, L2old, T1old, T2old)
 
         D1 = numpy.linalg.norm(L1sim - L1opt)
         D2 = numpy.linalg.norm(L2sim - L2opt)
@@ -38,8 +40,10 @@ class LambdaEquationsTest(unittest.TestCase):
         L1old, L2old = test_utils.make_random_L(no, nv)
         F, I = test_utils.make_random_integrals(no, nv)
 
-        L1sim, L2sim = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
-        L1opt, L2opt = cc_equations.ccsd_lambda_stanton(F, I, L1old, L2old, T1old, T2old)
+        L1sim, L2sim = cc_equations.ccsd_lambda_simple(
+            F, I, L1old, L2old, T1old, T2old)
+        L1opt, L2opt = cc_equations.ccsd_lambda_stanton(
+            F, I, L1old, L2old, T1old, T2old)
 
         D1 = numpy.linalg.norm(L1sim - L1opt)
         D2 = numpy.linalg.norm(L2sim - L2opt)
@@ -58,8 +62,10 @@ class LambdaEquationsTest(unittest.TestCase):
         F, I = test_utils.make_random_integrals(no, nv)
         intor = cc_equations.lambda_int(F, I, T1old, T2old)
 
-        L1sim, L2sim = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
-        L1opt, L2opt = cc_equations.ccsd_lambda_opt_int(F, I, L1old, L2old, T1old, T2old, intor)
+        L1sim, L2sim = cc_equations.ccsd_lambda_simple(
+            F, I, L1old, L2old, T1old, T2old)
+        L1opt, L2opt = cc_equations.ccsd_lambda_opt_int(
+            F, I, L1old, L2old, T1old, T2old, intor)
 
         D1 = numpy.linalg.norm(L1sim - L1opt)
         D2 = numpy.linalg.norm(L2sim - L2opt)
@@ -80,7 +86,8 @@ class LambdaEquationsTest(unittest.TestCase):
         L1old = numpy.zeros((no, nv))
 
         L2 = cc_equations.ccd_lambda_simple(F, I, L2old, T2old)
-        L1t, L2t = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
+        L1t, L2t \
+            = cc_equations.ccsd_lambda_simple(F, I, L1old, L2old, T1old, T2old)
         D = numpy.linalg.norm(L2 - L2t)
         s = D < self.thresh
         err = "Error in CCD L2"
@@ -106,18 +113,23 @@ class LambdaEquationsTest(unittest.TestCase):
 
         # initial T
         T1a, T1b = test_utils.make_random_T1_spatial(noa, nva, nob, nvb)
-        T2aa, T2ab, T2bb = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
+        T2aa, T2ab, T2bb \
+            = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
         T1 = spin_utils.T1_to_spin(T1a, T1b, noa, nva, nob, nvb)
         T2 = spin_utils.T2_to_spin(T2aa, T2ab, T2bb, noa, nva, nob, nvb)
 
         # initial L
         L1aold, L1bold = test_utils.make_random_T1_spatial(nva, noa, nvb, nob)
-        L2aaold, L2abold, L2bbold = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
-        L1old = spin_utils.T1_to_spin(L1aold, L1bold, nva, noa, nvb, nob)
-        L2old = spin_utils.T2_to_spin(L2aaold, L2abold, L2bbold, nva, noa, nvb, nob)
+        L2aaold, L2abold, L2bbold \
+            = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
+        L1old = spin_utils.T1_to_spin(
+            L1aold, L1bold, nva, noa, nvb, nob)
+        L2old = spin_utils.T2_to_spin(
+            L2aaold, L2abold, L2bbold, nva, noa, nvb, nob)
 
         # Get updated Lambda using spin orbitals
-        L1_ref, L2_ref = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1, T2)
+        L1_ref, L2_ref \
+            = cc_equations.ccsd_lambda_opt(F, I, L1old, L2old, T1, T2)
 
         # Get updated Lambda using unrestricted code
         M1, M2 = cc_equations.uccsd_lambda_opt(
@@ -145,8 +157,10 @@ class LambdaEquationsTest(unittest.TestCase):
         Itot = numpy.random.random((n, n, n, n))
         Itot = Itot + Itot.transpose((1, 0, 3, 2))
         Ianti = Itot - Itot.transpose((0, 1, 3, 2))
-        I = ov_blocks.make_two_e_blocks_full(Itot, no, nv, no, nv, no, nv, no, nv)
-        Ia = ov_blocks.make_two_e_blocks(Ianti, no, nv, no, nv, no, nv, no, nv)
+        I = ov_blocks.make_two_e_blocks_full(
+            Itot, no, nv, no, nv, no, nv, no, nv)
+        Ia = ov_blocks.make_two_e_blocks(
+            Ianti, no, nv, no, nv, no, nv, no, nv)
 
         T1 = numpy.random.random((nv, no))
         T2 = numpy.random.random((nv, nv, no, no))

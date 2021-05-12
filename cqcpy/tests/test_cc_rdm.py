@@ -41,32 +41,38 @@ class CCRDMTest(unittest.TestCase):
 
         pcdab_ref = cc_equations.ccsd_2rdm_cdab(T1, T2, L1, L2)
         pcdab_out = cc_equations.ccsd_2rdm_cdab_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pcdab_ref - pcdab_out)/numpy.sqrt(pcdab_ref.size)
+        diff = numpy.linalg.norm(pcdab_ref - pcdab_out)
+        diff /= numpy.sqrt(pcdab_ref.size)
         self.assertTrue(diff < thresh, "Error in p_cdab: {}".format(diff))
 
         pbcai_ref = cc_equations.ccsd_2rdm_bcai(T1, T2, L1, L2)
         pbcai_out = cc_equations.ccsd_2rdm_bcai_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pbcai_ref - pbcai_out)/numpy.sqrt(pbcai_ref.size)
+        diff = numpy.linalg.norm(pbcai_ref - pbcai_out)
+        diff /= numpy.sqrt(pbcai_ref.size)
         self.assertTrue(diff < thresh, "Error in p_bcai: {}".format(diff))
 
         pbjai_ref = cc_equations.ccsd_2rdm_bjai(T1, T2, L1, L2)
         pbjai_out = cc_equations.ccsd_2rdm_bjai_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pbjai_ref - pbjai_out)/numpy.sqrt(pbjai_ref.size)
+        diff = numpy.linalg.norm(pbjai_ref - pbjai_out)
+        diff /= numpy.sqrt(pbjai_ref.size)
         self.assertTrue(diff < thresh, "Error in p_bjai: {}".format(diff))
 
         pabij_ref = cc_equations.ccsd_2rdm_abij(T1, T2, L1, L2)
         pabij_out = cc_equations.ccsd_2rdm_abij_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pabij_ref - pabij_out)/numpy.sqrt(pabij_ref.size)
+        diff = numpy.linalg.norm(pabij_ref - pabij_out)
+        diff /= numpy.sqrt(pabij_ref.size)
         self.assertTrue(diff < thresh, "Error in p_abij: {}".format(diff))
 
         pkaij_ref = cc_equations.ccsd_2rdm_kaij(T1, T2, L1, L2)
         pkaij_out = cc_equations.ccsd_2rdm_kaij_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pkaij_ref - pkaij_out)/numpy.sqrt(pkaij_ref.size)
+        diff = numpy.linalg.norm(pkaij_ref - pkaij_out)
+        diff /= numpy.sqrt(pkaij_ref.size)
         self.assertTrue(diff < thresh, "Error in p_kaij: {}".format(diff))
 
         pklij_ref = cc_equations.ccsd_2rdm_klij(T1, T2, L1, L2)
         pklij_out = cc_equations.ccsd_2rdm_klij_opt(T1, T2, L1, L2)
-        diff = numpy.linalg.norm(pklij_ref - pklij_out)/numpy.sqrt(pklij_ref.size)
+        diff = numpy.linalg.norm(pklij_ref - pklij_out)
+        diff /= numpy.sqrt(pklij_ref.size)
         self.assertTrue(diff < thresh, "Error in p_klij: {}".format(diff))
 
     def test_u1rdm(self):
@@ -83,9 +89,11 @@ class CCRDMTest(unittest.TestCase):
 
         # get unrestricted and general amplitudes
         T1a, T1b = test_utils.make_random_T1_spatial(noa, nva, nob, nvb)
-        T2aa, T2ab, T2bb = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
+        T2aa, T2ab, T2bb \
+            = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
         L1a, L1b = test_utils.make_random_T1_spatial(nva, noa, nvb, nob)
-        L2aa, L2ab, L2bb = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
+        L2aa, L2ab, L2bb \
+            = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
         T1 = spin_utils.T1_to_spin(T1a, T1b, noa, nva, nob, nvb)
         L1 = spin_utils.T1_to_spin(L1a, L1b, nva, noa, nvb, nob)
         T2 = spin_utils.T2_to_spin(T2aa, T2ab, T2bb, noa, nva, nob, nvb)
@@ -145,14 +153,17 @@ class CCRDMTest(unittest.TestCase):
         # use unrestricted one-particle property
         Aa = test_utils.make_random_I_anti(noa, nva)
         Ab = test_utils.make_random_I_anti(nob, nvb)
-        Aab = test_utils.make_random_Ifull_gen(noa, nva, nob, nvb, noa, nva, nob, nvb)
+        Aab = test_utils.make_random_Ifull_gen(
+            noa, nva, nob, nvb, noa, nva, nob, nvb)
         Atot = spin_utils.int_to_spin2(Aa, Ab, Aab, noa, nva, nob, nvb)
 
         # get unrestricted and general amplitudes
         T1a, T1b = test_utils.make_random_T1_spatial(noa, nva, nob, nvb)
-        T2aa, T2ab, T2bb = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
+        T2aa, T2ab, T2bb \
+            = test_utils.make_random_T2_spatial(noa, nva, nob, nvb)
         L1a, L1b = test_utils.make_random_T1_spatial(nva, noa, nvb, nob)
-        L2aa, L2ab, L2bb = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
+        L2aa, L2ab, L2bb \
+            = test_utils.make_random_T2_spatial(nva, noa, nvb, nob)
         T1 = spin_utils.T1_to_spin(T1a, T1b, noa, nva, nob, nvb)
         L1 = spin_utils.T1_to_spin(L1a, L1b, nva, noa, nvb, nob)
         T2 = spin_utils.T2_to_spin(T2aa, T2ab, T2bb, noa, nva, nob, nvb)
@@ -180,8 +191,9 @@ class CCRDMTest(unittest.TestCase):
             T1a, T1b, T2aa, T2ab, T2bb, L1a, L1b, L2aa, L2ab, L2bb)
         Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
             T1a, T1b, T2aa, T2ab, T2bb, L1a, L1b, L2aa, L2ab, L2bb)
-        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
-            T1a, T1b, T2aa, T2ab, T2bb, L1a, L1b, L2aa, L2ab, L2bb)
+        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u \
+            = cc_equations.uccsd_2rdm_bjai(
+                T1a, T1b, T2aa, T2ab, T2bb, L1a, L1b, L2aa, L2ab, L2bb)
         Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
             T1a, T1b, T2aa, T2ab, T2bb, L1a, L1b, L2aa, L2ab, L2bb)
         Pbcai_u, PBCAI_u, PbCaI_u, PBcAi_u = cc_equations.uccsd_2rdm_bcai(
@@ -343,8 +355,9 @@ class CCRDMTest(unittest.TestCase):
             T1a, T1b, T2aa, T2, T2aa, L1a, L1b, L2aa, L2, L2aa)
         Pcdab_u, PCDAB_u, PcDaB_u = cc_equations.uccsd_2rdm_cdab(
             T1a, T1b, T2aa, T2, T2aa, L1a, L1b, L2aa, L2, L2aa)
-        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u = cc_equations.uccsd_2rdm_bjai(
-            T1a, T1b, T2aa, T2, T2aa, L1a, L1b, L2aa, L2, L2aa)
+        Pbjai_u, PBJAI_u, PbJaI_u, PbJAi_u, PBjaI_u, PBjAi_u \
+            = cc_equations.uccsd_2rdm_bjai(
+                T1a, T1b, T2aa, T2, T2aa, L1a, L1b, L2aa, L2, L2aa)
         Pklij_u, PKLIJ_u, PkLiJ_u = cc_equations.uccsd_2rdm_klij(
             T1a, T1b, T2aa, T2, T2aa, L1a, L1b, L2aa, L2, L2aa)
         Pbcai_u, PBCAI_u, PbCaI_u, PBcAi_u = cc_equations.uccsd_2rdm_bcai(
@@ -388,7 +401,8 @@ class CCRDMTest(unittest.TestCase):
         self.assertTrue(diff < thresh, "Error in Pbjai: {}".format(diff))
 
         # bjia
-        diff = numpy.linalg.norm(Pbjia + PbJAi_u.transpose((0, 1, 3, 2)))/numpy.sqrt(PbJAi_u.size)
+        diff = numpy.linalg.norm(Pbjia + PbJAi_u.transpose((0, 1, 3, 2)))
+        diff /= numpy.sqrt(PbJAi_u.size)
         self.assertTrue(diff < thresh, "Error in Pbjai: {}".format(diff))
 
         # klij

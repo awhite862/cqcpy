@@ -2257,10 +2257,7 @@ def uccsd_lambda_opt(Fa, Fb, Ia, Ib, Iabab, L1old, L2old, T1old, T2old):
     with intermediats.
     """
     # unpack
-    L1aold, L1bold = L1old
-    L2aaold, L2abold, L2bbold = L2old
     T1aold, T1bold = T1old
-    T2aaold, T2abold, T2bbold = T2old
 
     L1a = Fa.ov.copy()
     L1b = Fb.ov.copy()

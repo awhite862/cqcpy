@@ -67,7 +67,8 @@ class IntegralsTest(unittest.TestCase):
         mo3 = mf.mo_coeff[1][:, 0].reshape((nao, 1))
         mo4 = mf.mo_coeff[1][:, 1].reshape((nao, 1))
 
-        ref = integrals.get_chem(mf.mol, mo1, mo3, mo2, mo4, anti=True).transpose((0, 2, 1, 3))
+        ref = integrals.get_chem(
+            mf.mol, mo1, mo3, mo2, mo4, anti=True).transpose((0, 2, 1, 3))
         out = integrals.get_phys(mf.mol, mo1, mo2, mo3, mo4, anti=True)
         diff = abs(ref[0, 0, 0, 0] - out[0, 0, 0, 0])
         self.assertTrue(diff < 1e-12)
@@ -77,7 +78,8 @@ class IntegralsTest(unittest.TestCase):
         mf = self._get_mf()
         moa = mf.mo_coeff[0]
         mob = mf.mo_coeff[1]
-        Iref = integrals.get_chemu(mf.mol, moa, moa, moa, moa, mob, mob, mob, mob, anti=True)
+        Iref = integrals.get_chemu(
+            mf.mol, moa, moa, moa, moa, mob, mob, mob, mob, anti=True)
         Iout = integrals.get_chemu_all(mf.mol, moa, mob, anti=True)
         diff = numpy.linalg.norm(Iref - Iout)
         self.assertTrue(diff < 1e-12)
