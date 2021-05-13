@@ -26,7 +26,7 @@ ereft = tda.kernel()[0]
 mos = mf.mo_coeff
 nmo = mos.shape[1]
 hcore = mf.get_hcore()
-ha = numpy.einsum('mp,mn,nq->pq',mos,hcore,mos)
+ha = numpy.einsum('mp,mn,nq->pq', mos, hcore, mos)
 hb = ha.copy()
 I = integrals.get_phys(mol, mos, mos, mos, mos)
 
@@ -36,17 +36,18 @@ nb = na
 basis = ci_utils.ucis_basis(nmo, na, nb, gs=False)
 nd = len(basis)
 
-H = numpy.zeros((nd,nd))
+H = numpy.zeros((nd, nd))
 const = -Escf + mol.energy_nuc()
 F = mf.get_fock()
-F = numpy.einsum('mp,mn,nq->pq',mos,F,mos)
+F = numpy.einsum('mp,mn,nq->pq', mos, F, mos)
 mo_energy = mf.mo_energy
-for i,b in enumerate(basis):
-    for j,k in enumerate(basis):
-        H[i,j] = ci_utils.ci_matrixel(b[0],b[1],k[0],k[1],ha,hb,I,I,I,const)
+for i, b in enumerate(basis):
+    for j, k in enumerate(basis):
+        H[i, j] = ci_utils.ci_matrixel(
+            b[0], b[1], k[0], k[1], ha, hb, I, I, I, const)
 
-eout,v = numpy.linalg.eigh(H)
+eout, v = numpy.linalg.eigh(H)
 ns = na*(nmo - na)
-eref = numpy.sort(numpy.concatenate((erefs,ereft)))
+eref = numpy.sort(numpy.concatenate((erefs, ereft)))
 print(eref)
 print(eout)
