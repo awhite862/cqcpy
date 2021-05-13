@@ -1290,8 +1290,8 @@ def gci_matrixel(bra, ket, h, I, const):
         sign = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         Hel += h[v,o]
-        Hel += numpy.einsum('ii,i->',I[v,:,o,:],p)
-        Hel -= numpy.einsum('ii,i->',I[v,:,:,o],p)
+        Hel += numpy.einsum('ii,i->', I[v,:,o,:], p)
+        Hel -= numpy.einsum('ii,i->', I[v,:,:,o], p)
         return sign*Hel
     elif ddd == 2:
         o = numpy.nonzero(ao)[0]
@@ -1303,7 +1303,7 @@ def gci_matrixel(bra, ket, h, I, const):
         j1, j2 = min(o2, v2), max(o2, v2)
         sign1 = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
         sign2 = 1.0 if b[j1+1:j2].sum() % 2 == 0 else -1.0
-        sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
+        #sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
         Hel = I[v1,v2,o1,o2] - I[v1,v2,o2,o1]
         return sign1*sign2*Hel

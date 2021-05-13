@@ -1,6 +1,6 @@
 import numpy
-from pyscf import gto, scf
-from pyscf.tdscf import rhf
+from pyscf import gto
+from pyscf.tdscf.rhf import scf
 
 from cqcpy import ci_utils
 from cqcpy import integrals
