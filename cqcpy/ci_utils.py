@@ -70,8 +70,8 @@ def s_strings(n, nocc, occ=None):
     if occ is None:
         occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
-    iocc = [i for i,x in enumerate(occ) if x > 0]
-    ivir = [i for i,x in enumerate(vir) if x > 0]
+    iocc = [i for i, x in enumerate(occ) if x > 0]
+    ivir = [i for i, x in enumerate(vir) if x > 0]
     ref = Dstring(n, occ)
     dlist = []
     for i in iocc:
@@ -85,8 +85,8 @@ def d_strings(n, nocc, occ=None):
     if occ is None:
         occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
-    iocc = [i for i,x in enumerate(occ) if x > 0]
-    ivir = [i for i,x in enumerate(vir) if x > 0]
+    iocc = [i for i, x in enumerate(occ) if x > 0]
+    ivir = [i for i, x in enumerate(vir) if x > 0]
     ref = Dstring(n, occ)
     dlist = []
     for i in iocc:
@@ -107,8 +107,8 @@ def t_strings(n, nocc, occ=None):
     if occ is None:
         occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
-    iocc = [i for i,x in enumerate(occ) if x > 0]
-    ivir = [i for i,x in enumerate(vir) if x > 0]
+    iocc = [i for i, x in enumerate(occ) if x > 0]
+    ivir = [i for i, x in enumerate(vir) if x > 0]
     ref = Dstring(n, occ)
     dlist = []
     for i in iocc:
@@ -136,8 +136,8 @@ def q_strings(n, nocc, occ=None):
     if occ is None:
         occ = [1 if i < nocc else 0 for i in range(n)]
     vir = [1 if x == 0 else 0 for x in occ]
-    iocc = [i for i,x in enumerate(occ) if x > 0]
-    ivir = [i for i,x in enumerate(vir) if x > 0]
+    iocc = [i for i, x in enumerate(occ) if x > 0]
+    ivir = [i for i, x in enumerate(vir) if x > 0]
     ref = Dstring(n, occ)
     dlist = []
     for i in occ:
@@ -197,13 +197,13 @@ def ucis_basis(n, na, nb, gs=True):
     refa = Dstring(n, occa)
     refb = Dstring(n, occb)
     if gs:
-        basis = [(refa,refb)]
+        basis = [(refa, refb)]
     else:
         basis = []
     for a in sa:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in sb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     return basis
 
 
@@ -216,18 +216,18 @@ def ucisd_basis(n, na, nb):
     occb = [1 if i < nb else 0 for i in range(n)]
     refa = Dstring(n, occa)
     refb = Dstring(n, occb)
-    basis = [(refa,refb)]
+    basis = [(refa, refb)]
     for a in sa:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in sb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in da:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in db:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in sa:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     return basis
 
 
@@ -242,28 +242,28 @@ def ucisdt_basis(n, na, nb):
     occb = [1 if i < nb else 0 for i in range(n)]
     refa = Dstring(n, occa)
     refb = Dstring(n, occb)
-    basis = [(refa,refb)]
+    basis = [(refa, refb)]
     for a in sa:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in sb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in da:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in db:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in sa:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in ta:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in tb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in da:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in sa:
         for b in db:
-            basis.append((a,b))
+            basis.append((a, b))
     return basis
 
 
@@ -282,39 +282,39 @@ def ucisdtq_basis(n, na, nb):
     refb = Dstring(n, occb)
     basis = [(refa,refb)]
     for a in sa:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in sb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in da:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in db:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in sa:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in ta:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in tb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in da:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in sa:
         for b in db:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in qa:
-        basis.append((a,refb))
+        basis.append((a, refb))
     for b in qb:
-        basis.append((refa,b))
+        basis.append((refa, b))
     for a in ta:
         for b in sb:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in da:
         for b in db:
-            basis.append((a,b))
+            basis.append((a, b))
     for a in sa:
         for b in tb:
-            basis.append((a,b))
+            basis.append((a, b))
     return basis
 
 
@@ -433,28 +433,28 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
     if occ is None:
         occ = [1 if i < no else 0 for i in range(nmo//2)]
     vir = [1 if x == 0 else 0 for x in occ]
-    iocc = [i for i,x in enumerate(occ) if x > 0]
-    ivir = [i for i,x in enumerate(vir) if x > 0]
+    iocc = [i for i, x in enumerate(occ) if x > 0]
+    ivir = [i for i, x in enumerate(vir) if x > 0]
     ref = Dstring(nmo, occ)
 
     nd = len(basis)
     C = numpy.zeros(nd)
     C[0] = 1.0
     # loop over T1
-    for ii,i in enumerate(iocc):
-        for ia,a in enumerate(ivir):
+    for ii, i in enumerate(iocc):
+        for ia, a in enumerate(ivir):
             s, dstr = ref.excite(i, a)
             if dstr is not None:
                 idx = basis.index(dstr)
-                C[idx] += s*T1[ia,ii]
+                C[idx] += s*T1[ia, ii]
     if order >= 2:
         # loop over T2
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
                 if j <= i:
                     continue
-                for ia,a in enumerate(ivir):
-                    for ib,b in enumerate(ivir):
+                for ia, a in enumerate(ivir):
+                    for ib, b in enumerate(ivir):
                         if b <= a:
                             continue
                         s1, dstr = ref.excite(i, a)
@@ -463,29 +463,29 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                         s2, dstr = dstr.excite(j, b)
                         if dstr is not None:
                             idx = basis.index(dstr)
-                            C[idx] += s1*s2*T2[ia,ib,ii,ij]
+                            C[idx] += s1*s2*T2[ia, ib, ii, ij]
         # loop over T1^2
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
-                for ia,a in enumerate(ivir):
-                    for ib,b in enumerate(ivir):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
+                for ia, a in enumerate(ivir):
+                    for ib, b in enumerate(ivir):
                         s1, dstr = ref.excite(i, a)
                         if dstr is None:
                             continue
                         s2, dstr = dstr.excite(j, b)
                         if dstr is not None:
                             idx = basis.index(dstr)
-                            C[idx] += 0.5*s1*s2*T1[ia,ii]*T1[ib,ij]
+                            C[idx] += 0.5*s1*s2*T1[ia, ii]*T1[ib, ij]
     if order >= 3:
         # loop over T1T2
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
-                for ik,k in enumerate(iocc):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
+                for ik, k in enumerate(iocc):
                     if k <= j:
                         continue
-                    for ia,a in enumerate(ivir):
-                        for ib,b in enumerate(ivir):
-                            for ic,c in enumerate(ivir):
+                    for ia, a in enumerate(ivir):
+                        for ib, b in enumerate(ivir):
+                            for ic, c in enumerate(ivir):
                                 if c <= b:
                                     continue
                                 s1, dstr = ref.excite(i, a)
@@ -497,14 +497,14 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                                 s3, dstr = dstr.excite(k, c)
                                 if dstr is not None:
                                     idx = basis.index(dstr)
-                                    C[idx] += s1*s2*s3*T1[ia,ii]*T2[ib,ic,ij,ik]
+                                    C[idx] += s1*s2*s3*T1[ia, ii]*T2[ib, ic, ij, ik]
         # loop over T1^3
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
-                for ik,k in enumerate(iocc):
-                    for ia,a in enumerate(ivir):
-                        for ib,b in enumerate(ivir):
-                            for ic,c in enumerate(ivir):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
+                for ik, k in enumerate(iocc):
+                    for ia, a in enumerate(ivir):
+                        for ib, b in enumerate(ivir):
+                            for ic, c in enumerate(ivir):
                                 s1, dstr = ref.excite(i, a)
                                 if dstr is None:
                                     continue
@@ -514,23 +514,23 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                                 s3, dstr = dstr.excite(k, c)
                                 if dstr is not None:
                                     idx = basis.index(dstr)
-                                    C[idx] += s1*s2*s3*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]/6.0
+                                    C[idx] += s1*s2*s3*T1[ia, ii]*T1[ib, ij]*T1[ic, ik]/6.0
     if order >= 4:
         # T2^2
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
                 if j <= i:
                     continue
-                for ik,k in enumerate(iocc):
-                    for il,l in enumerate(iocc):
+                for ik, k in enumerate(iocc):
+                    for il, l in enumerate(iocc):
                         if l <= k:
                             continue
-                        for ia,a in enumerate(ivir):
-                            for ib,b in enumerate(ivir):
+                        for ia, a in enumerate(ivir):
+                            for ib, b in enumerate(ivir):
                                 if b <= a:
                                     continue
-                                for ic,c in enumerate(ivir):
-                                    for idd,d in enumerate(ivir):
+                                for ic, c in enumerate(ivir):
+                                    for idd, d in enumerate(ivir):
                                         if d <= c:
                                             continue
                                         s1, dstr = ref.excite(i, a)
@@ -545,18 +545,18 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                                         s4, dstr = dstr.excite(l, d)
                                         if dstr is not None:
                                             idx = basis.index(dstr)
-                                            C[idx] += s1*s2*s3*s4*T2[ia,ib,ii,ij]*T2[ic,idd,ik,il]/2.0
+                                            C[idx] += s1*s2*s3*s4*T2[ia, ib, ii, ij]*T2[ic, idd, ik, il]/2.0
         # T1^2T2
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
-                for ik,k in enumerate(iocc):
-                    for il,l in enumerate(iocc):
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
+                for ik, k in enumerate(iocc):
+                    for il, l in enumerate(iocc):
                         if l <= k:
                             continue
-                        for ia,a in enumerate(ivir):
-                            for ib,b in enumerate(ivir):
-                                for ic,c in enumerate(ivir):
-                                    for idd,d in enumerate(ivir):
+                        for ia, a in enumerate(ivir):
+                            for ib, b in enumerate(ivir):
+                                for ic, c in enumerate(ivir):
+                                    for idd, d in enumerate(ivir):
                                         if d <= c:
                                             continue
                                         s1, dstr = ref.excite(i, a)
@@ -571,15 +571,15 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                                         s4, dstr = dstr.excite(l, d)
                                         if dstr is not None:
                                             idx = basis.index(dstr)
-                                            C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T2[ic,idd,ik,il]/2.0
-        for ii,i in enumerate(iocc):
-            for ij,j in enumerate(iocc):
-                for ik,k in enumerate(iocc):
-                    for il,l in enumerate(iocc):
-                        for ia,a in enumerate(ivir):
-                            for ib,b in enumerate(ivir):
-                                for ic,c in enumerate(ivir):
-                                    for idd,d in enumerate(ivir):
+                                            C[idx] += s1*s2*s3*s4*T1[ia, ii]*T1[ib, ij]*T2[ic, idd, ik, il]/2.0
+        for ii, i in enumerate(iocc):
+            for ij, j in enumerate(iocc):
+                for ik, k in enumerate(iocc):
+                    for il, l in enumerate(iocc):
+                        for ia, a in enumerate(ivir):
+                            for ib, b in enumerate(ivir):
+                                for ic, c in enumerate(ivir):
+                                    for idd, d in enumerate(ivir):
                                         s1, dstr = ref.excite(i, a)
                                         if dstr is None:
                                             continue
@@ -593,7 +593,7 @@ def gmakeCfromT(no, nv, T1, T2, order=2, occ=None):
                                         if dstr is not None:
                                             idx = basis.index(dstr)
                                             # T1^4
-                                            C[idx] += s1*s2*s3*s4*T1[ia,ii]*T1[ib,ij]*T1[ic,ik]*T1[idd,il]/24.0
+                                            C[idx] += s1*s2*s3*s4*T1[ia, ii]*T1[ib, ij]*T1[ic, ik]*T1[idd, il]/24.0
     return C
 
 
@@ -627,14 +627,14 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
         for a in range(nva):
             s, astr = refa.excite(i, a + noa)
             if astr is not None:
-                idx = basis.index((astr,refb))
-                C[idx] += s*T1a[a,i]
+                idx = basis.index((astr, refb))
+                C[idx] += s*T1a[a, i]
     # loop over T1b
     for i in range(nob):
         for a in range(nvb):
             s, bstr = refb.excite(i, a + nob)
             if bstr is not None:
-                idx = basis.index((refa,bstr))
+                idx = basis.index((refa, bstr))
                 C[idx] += s*T1b[a,i]
 
     if order >= 2:
@@ -648,8 +648,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                             continue
                         s2, astr = astr.excite(j, b + noa)
                         if astr is not None:
-                            idx = basis.index((astr,refb))
-                            C[idx] += s1*s2*T2aa[a,b,i,j]
+                            idx = basis.index((astr, refb))
+                            C[idx] += s1*s2*T2aa[a, b, i, j]
         # loop over T2bb
         for i in range(nob):
             for j in range(i+1, nob):
@@ -660,8 +660,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                             continue
                         s2, bstr = bstr.excite(j, b + nob)
                         if bstr is not None:
-                            idx = basis.index((refa,bstr))
-                            C[idx] += s1*s2*T2bb[a,b,i,j]
+                            idx = basis.index((refa, bstr))
+                            C[idx] += s1*s2*T2bb[a, b, i, j]
         # loop over T2ab
         for i in range(noa):
             for j in range(nob):
@@ -670,8 +670,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                         sa, astr = refa.excite(i, a + noa)
                         sb, bstr = refb.excite(j, b + nob)
                         if astr is not None and bstr is not None:
-                            idx = basis.index((astr,bstr))
-                            C[idx] += sa*sb*T2ab[a,b,i,j]
+                            idx = basis.index((astr, bstr))
+                            C[idx] += sa*sb*T2ab[a, b, i, j]
 
         # loop over T1a^2
         for i in range(noa):
@@ -683,8 +683,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                             continue
                         s2, astr = astr.excite(j, b + noa)
                         if astr is not None:
-                            idx = basis.index((astr,refb))
-                            C[idx] += 0.5*s1*s2*T1a[a,i]*T1a[b,j]
+                            idx = basis.index((astr, refb))
+                            C[idx] += 0.5*s1*s2*T1a[a, i]*T1a[b, j]
         # loop over T1b^2
         for i in range(nob):
             for j in range(nob):
@@ -695,8 +695,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                             continue
                         s2, bstr = bstr.excite(j, b + nob)
                         if bstr is not None:
-                            idx = basis.index((refa,bstr))
-                            C[idx] += 0.5*s1*s2*T1b[a,i]*T1b[b,j]
+                            idx = basis.index((refa, bstr))
+                            C[idx] += 0.5*s1*s2*T1b[a, i]*T1b[b, j]
         # loop over T1a*T1b
         for i in range(noa):
             for j in range(nob):
@@ -705,8 +705,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                         sa, astr = refa.excite(i, a + noa)
                         sb, bstr = refb.excite(j, b + nob)
                         if astr is not None and bstr is not None:
-                            idx = basis.index((astr,bstr))
-                            C[idx] += sa*sb*T1a[a,i]*T1b[b,j]
+                            idx = basis.index((astr, bstr))
+                            C[idx] += sa*sb*T1a[a, i]*T1b[b, j]
     if order >= 3:
         # loop over T1a*T2aa
         for i in range(noa):
@@ -723,8 +723,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s3, astr = astr.excite(k, c + noa)
                                 if astr is not None:
-                                    idx = basis.index((astr,refb))
-                                    C[idx] += s1*s2*s3*T1a[a,i]*T2aa[b,c,j,k]
+                                    idx = basis.index((astr, refb))
+                                    C[idx] += s1*s2*s3*T1a[a, i]*T2aa[b, c, j, k]
         # loop over T1a*T2ab
         for i in range(noa):
             for j in range(noa):
@@ -738,8 +738,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                 s2a, astr = astr.excite(j, b + noa)
                                 sb, bstr = refb.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
-                                    C[idx] += s1a*s2a*sb*T1a[a,i]*T2ab[b,c,j,k]
+                                    idx = basis.index((astr, bstr))
+                                    C[idx] += s1a*s2a*sb*T1a[a, i]*T2ab[b, c, j, k]
         # loop over T1b*T2aa
         for i in range(nob):
             for j in range(noa):
@@ -753,8 +753,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s2a, astr = astr.excite(k, c + noa)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
-                                    C[idx] += s1a*s2a*sb*T1b[a,i]*T2aa[b,c,j,k]
+                                    idx = basis.index((astr, bstr))
+                                    C[idx] += s1a*s2a*sb*T1b[a, i]*T2aa[b, c, j, k]
         # loop over T1a*T2bb
         for i in range(noa):
             for j in range(nob):
@@ -768,8 +768,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s2b, bstr = bstr.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
-                                    C[idx] += s1b*s2b*sa*T1a[a,i]*T2bb[b,c,j,k]
+                                    idx = basis.index((astr, bstr))
+                                    C[idx] += s1b*s2b*sa*T1a[a, i]*T2bb[b, c, j, k]
         # loop over T1b*T2ab
         for i in range(nob):
             for j in range(noa):
@@ -783,8 +783,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                 sa, astr = refa.excite(j, b + noa)
                                 s2b, bstr = bstr.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
-                                    C[idx] += s1b*s2b*sa*T1b[a,i]*T2ab[b,c,j,k]
+                                    idx = basis.index((astr, bstr))
+                                    C[idx] += s1b*s2b*sa*T1b[a, i]*T2ab[b, c, j, k]
         # loop over T1b*T2bb
         for i in range(nob):
             for j in range(nob):
@@ -800,7 +800,7 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s3, bstr = bstr.excite(k, c + nob)
                                 if bstr is not None:
-                                    idx = basis.index((refa,bstr))
+                                    idx = basis.index((refa, bstr))
                                     C[idx] += s1*s2*s3*T1b[a,i]*T2bb[b,c,j,k]
 
         # loop over T1a^3
@@ -818,8 +818,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s3, astr = astr.excite(k, c + noa)
                                 if astr is not None:
-                                    idx = basis.index((astr,refb))
-                                    C[idx] += s1*s2*s3*T1a[a,i]*T1a[b,j]*T1a[c,k]/6.0
+                                    idx = basis.index((astr, refb))
+                                    C[idx] += s1*s2*s3*T1a[a, i]*T1a[b, j]*T1a[c, k]/6.0
         # loop over T1a^2T1b
         for i in range(noa):
             for j in range(noa):
@@ -833,7 +833,7 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                 s2a, astr = astr.excite(j, b + noa)
                                 sb, bstr = refb.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
+                                    idx = basis.index((astr, bstr))
                                     C[idx] += s1a*s2a*sb*T1a[a,i]*T1a[b,j]*T1b[c,k]/2.0
         # loop over T1aT1b^2
         for i in range(noa):
@@ -848,8 +848,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s2b, bstr = bstr.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
-                                    idx = basis.index((astr,bstr))
-                                    C[idx] += s1b*s2b*sa*T1a[a,i]*T1b[b,j]*T1b[c,k]/2.0
+                                    idx = basis.index((astr, bstr))
+                                    C[idx] += s1b*s2b*sa*T1a[a, i]*T1b[b, j]*T1b[c, k]/2.0
         # loop over T1b^3
         for i in range(nob):
             for j in range(nob):
@@ -865,8 +865,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                     continue
                                 s3, bstr = bstr.excite(k, c + nob)
                                 if bstr is not None:
-                                    idx = basis.index((refa,bstr))
-                                    C[idx] += s1*s2*s3*T1b[a,i]*T1b[b,j]*T1b[c,k]/6.0
+                                    idx = basis.index((refa, bstr))
+                                    C[idx] += s1*s2*s3*T1b[a, i]*T1b[b, j]*T1b[c, k]/6.0
     if order >= 4:
         # loop over T2aa^2
         for i in range(noa):
@@ -888,8 +888,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sa4, astr = astr.excite(l, d + noa)
                                         if astr is not None:
-                                            idx = basis.index((astr,refb))
-                                            C[idx] += sa1*sa2*sa3*sa4*T2aa[a,b,i,j]*T2aa[c,d,k,l]/2.0
+                                            idx = basis.index((astr, refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T2aa[a, b, i, j]*T2aa[c, d, k, l]/2.0
         # loop over T2aa*T2ab
         for i in range(noa):
             for j in range(i+1, noa):
@@ -908,8 +908,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                         sa3, astr = astr.excite(k, c + noa)
                                         sb1, bstr = refb.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sa3*sb1*T2aa[a,b,i,j]*T2ab[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T2aa[a, b, i, j]*T2ab[c, d, k, l]
         # loop over T2aa*T2bb
         for i in range(noa):
             for j in range(i+1, noa):
@@ -928,8 +928,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sb2, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sb1*sb2*T2aa[a,b,i,j]*T2bb[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T2aa[a, b, i, j]*T2bb[c, d, k, l]
         # loop over T2ab^2
         for i in range(noa):
             for j in range(nob):
@@ -948,8 +948,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sb2, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sb1*sb2*T2ab[a,b,i,j]*T2ab[c,d,k,l]/2.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T2ab[a, b, i, j]*T2ab[c, d, k, l]/2.0
         # loop over T2ab*T2bb
         for i in range(noa):
             for j in range(nob):
@@ -968,8 +968,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s3, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa*s1*s2*s3*T2ab[a,b,i,j]*T2bb[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa*s1*s2*s3*T2ab[a, b, i, j]*T2bb[c, d, k, l]
         # loop over T2bb^2
         for i in range(nob):
             for j in range(i+1, nob):
@@ -990,8 +990,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s4, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None:
-                                            idx = basis.index((refa,bstr))
-                                            C[idx] += s1*s2*s3*s4*T2bb[a,b,i,j]*T2bb[c,d,k,l]/2.0
+                                            idx = basis.index((refa, bstr))
+                                            C[idx] += s1*s2*s3*s4*T2bb[a, b, i, j]*T2bb[c, d, k, l]/2.0
 
         # loop over T1a^2*T2aa
         for i in range(noa):
@@ -1013,8 +1013,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sa4, astr = astr.excite(l, d + noa)
                                         if astr is not None:
-                                            idx = basis.index((astr,refb))
-                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a,i]*T1a[b,j]*T2aa[c,d,k,l]/2.0
+                                            idx = basis.index((astr, refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a, i]*T1a[b, j]*T2aa[c, d, k, l]/2.0
         # loop over T1a^2*T2ab
         for i in range(noa):
             for j in range(noa):
@@ -1033,8 +1033,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                         sa3, astr = astr.excite(k, c + noa)
                                         sb1, bstr = refb.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1a[b,j]*T2ab[c,d,k,l]/2.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a, i]*T1a[b, j]*T2ab[c, d, k, l]/2.0
         # loop over T1a*T1b*T2aa
         for i in range(noa):
             for j in range(nob):
@@ -1053,8 +1053,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                         sa3, astr = astr.excite(l, d + noa)
                                         sb1, bstr = refb.excite(j, b + nob)
                                         if astr is not None and bstr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1b[b,j]*T2aa[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a, i]*T1b[b, j]*T2aa[c, d, k, l]
         # loop over T1a^2*T2bb
         for i in range(noa):
             for j in range(noa):
@@ -1075,8 +1075,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sb2, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1a[b,j]*T2bb[c,d,k,l]/2.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a, i]*T1a[b, j]*T2bb[c, d, k, l]/2.0
         # loop over T1a*T1b*T2ab
         for i in range(noa):
             for j in range(nob):
@@ -1095,8 +1095,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sb2, bstr = bstr.excite(l, d + nob)
                                         if astr is not None and bstr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1b[b,j]*T2ab[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a, i]*T1b[b, j]*T2ab[c, d, k, l]
         # loop over T1a*T1b*T2bb
         for i in range(noa):
             for j in range(nob):
@@ -1115,8 +1115,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s3, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa*s1*s2*s3*T1a[a,i]*T1b[b,j]*T2bb[c,d,k,l]
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa*s1*s2*s3*T1a[a, i]*T1b[b, j]*T2bb[c, d, k, l]
         # loop over T1b^2*T2ab
         for i in range(nob):
             for j in range(nob):
@@ -1135,8 +1135,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s3, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += s1*s2*s3*sa*T1b[a,i]*T1b[b,j]*T2ab[c,d,k,l]/2.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += s1*s2*s3*sa*T1b[a, i]*T1b[b, j]*T2ab[c, d, k, l]/2.0
         # loop over T1b^2*T2bb
         for i in range(nob):
             for j in range(nob):
@@ -1157,8 +1157,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s4, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None:
-                                            idx = basis.index((refa,bstr))
-                                            C[idx] += s1*s2*s3*s4*T1b[a,i]*T1b[b,j]*T2bb[c,d,k,l]/2.0
+                                            idx = basis.index((refa, bstr))
+                                            C[idx] += s1*s2*s3*s4*T1b[a, i]*T1b[b, j]*T2bb[c, d, k, l]/2.0
 
         # loop over T1a^4
         for i in range(noa):
@@ -1180,8 +1180,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sa4, astr = astr.excite(l, d + noa)
                                         if astr is not None:
-                                            idx = basis.index((astr,refb))
-                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a,i]*T1a[b,j]*T1a[c,k]*T1a[d,l]/24.0
+                                            idx = basis.index((astr, refb))
+                                            C[idx] += sa1*sa2*sa3*sa4*T1a[a, i]*T1a[b, j]*T1a[c, k]*T1a[d, l]/24.0
         # loop over T1a^3T1b
         for i in range(noa):
             for j in range(noa):
@@ -1200,8 +1200,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                         sa3, astr = astr.excite(k, c + noa)
                                         sb1, bstr = refb.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a,i]*T1a[b,j]*T1a[c,k]*T1b[d,l]/6.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sa3*sb1*T1a[a, i]*T1a[b, j]*T1a[c, k]*T1b[d, l]/6.0
         # loop over T1a^2T1b^2
         for i in range(noa):
             for j in range(noa):
@@ -1220,8 +1220,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         sb2, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a,i]*T1a[b,j]*T1b[c,k]*T1b[d,l]/4.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa1*sa2*sb1*sb2*T1a[a, i]*T1a[b, j]*T1b[c, k]*T1b[d, l]/4.0
         # loop over T1aT1b^3
         for i in range(noa):
             for j in range(nob):
@@ -1240,8 +1240,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s3, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None and astr is not None:
-                                            idx = basis.index((astr,bstr))
-                                            C[idx] += sa*s1*s2*s3*T1a[a,i]*T1b[b,j]*T1b[c,k]*T1b[d,l]/6.0
+                                            idx = basis.index((astr, bstr))
+                                            C[idx] += sa*s1*s2*s3*T1a[a, i]*T1b[b, j]*T1b[c, k]*T1b[d, l]/6.0
         # loop over T1b^4
         for i in range(nob):
             for j in range(nob):
@@ -1262,8 +1262,8 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                             continue
                                         s4, bstr = bstr.excite(l, d + nob)
                                         if bstr is not None:
-                                            idx = basis.index((refa,bstr))
-                                            C[idx] += s1*s2*s3*s4*T1b[a,i]*T1b[b,j]*T1b[c,k]*T1b[d,l]/24.0
+                                            idx = basis.index((refa, bstr))
+                                            C[idx] += s1*s2*s3*s4*T1b[a, i]*T1b[b, j]*T1b[c, k]*T1b[d, l]/24.0
     if order >= 5:
         raise Exception("Order {} is not supported".format(order))
     return C
@@ -1289,9 +1289,9 @@ def gci_matrixel(bra, ket, h, I, const):
         i2 = max(o, v)
         sign = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
-        Hel += h[v,o]
-        Hel += numpy.einsum('ii,i->', I[v,:,o,:], p)
-        Hel -= numpy.einsum('ii,i->', I[v,:,:,o], p)
+        Hel += h[v, o]
+        Hel += numpy.einsum('ii,i->', I[v, :, o, :], p)
+        Hel -= numpy.einsum('ii,i->', I[v, :, :, o], p)
         return sign*Hel
     elif ddd == 2:
         o = numpy.nonzero(ao)[0]
@@ -1305,7 +1305,7 @@ def gci_matrixel(bra, ket, h, I, const):
         sign2 = 1.0 if b[j1+1:j2].sum() % 2 == 0 else -1.0
         #sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
-        Hel = I[v1,v2,o1,o2] - I[v1,v2,o2,o1]
+        Hel = I[v1, v2, o1, o2] - I[v1, v2, o2, o1]
         return sign1*sign2*Hel
     else:
         return 0.0
@@ -1350,11 +1350,11 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         sign = 1.0 if ba[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         # from Ha
-        Hel += ha[v,o]
-        Hel += numpy.einsum('ii,i->', Ia[v,:,o,:], pa)
-        Hel -= numpy.einsum('ii,i->', Ia[v,:,:,o], pa)
+        Hel += ha[v, o]
+        Hel += numpy.einsum('ii,i->', Ia[v, :, o, :], pa)
+        Hel -= numpy.einsum('ii,i->', Ia[v, :, :, o], pa)
         # from Hab
-        Hel += numpy.einsum('ii,i->', Iabab[v,:,o,:], pb)
+        Hel += numpy.einsum('ii,i->', Iabab[v, :, o, :], pb)
         return sign*Hel
 
     elif diffa == 0 and diffb == 1:
@@ -1369,10 +1369,10 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         Hel = 0.0
         # from Hb
         Hel += hb[v,o]
-        Hel += numpy.einsum('ii,i->', Ib[v,:,o,:], pb)
-        Hel -= numpy.einsum('ii,i->', Ib[v,:,:,o], pb)
+        Hel += numpy.einsum('ii,i->', Ib[v, :, o, :], pb)
+        Hel -= numpy.einsum('ii,i->', Ib[v, :, :, o], pb)
         # from Hab
-        Hel += numpy.einsum('ii,i->', Iabab[:,v,:,o], pa)
+        Hel += numpy.einsum('ii,i->', Iabab[:, v, :, o], pa)
         return sign*Hel
 
     elif diffa == 1 and diffb == 1:
@@ -1389,7 +1389,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         signa = 1.0 if ba[i1a+1:i2a].sum() % 2 == 0 else -1.0
         signb = 1.0 if bb[i1b+1:i2b].sum() % 2 == 0 else -1.0
         # from Hab
-        Hel = Iabab[va,vb,oa,ob]
+        Hel = Iabab[va, vb, oa, ob]
         return signa*signb*Hel
 
     elif diffa == 2 and diffb == 0:
@@ -1404,7 +1404,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         sign2 = 1.0 if ba[j1+1:j2].sum() % 2 == 0 else -1.0
         sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Ha
-        Hel = Ia[v1,v2,o1,o2] - Ia[v1,v2,o2,o1]
+        Hel = Ia[v1, v2, o1, o2] - Ia[v1, v2, o2, o1]
         return sign*Hel
 
     elif diffa == 0 and diffb == 2:
@@ -1419,7 +1419,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         sign2 = 1.0 if bb[j1+1:j2].sum() % 2 == 0 else -1.0
         sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
         # from Hb
-        Hel = Ib[v1,v2,o1,o2] - Ib[v1,v2,o2,o1]
+        Hel = Ib[v1, v2, o1, o2] - Ib[v1, v2, o2, o1]
         return sign*Hel
 
     else:
@@ -1428,7 +1428,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
 
 def s_on_vec(basis, vec, i, a):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         dd = basis[ix]
         s, new = dd.excite(i, a)
         if new is None:
@@ -1443,7 +1443,7 @@ def s_on_vec(basis, vec, i, a):
 
 def sa_on_vec(basis, vec, i, a):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         ab, bb = basis[ix]
         sa, anew = ab.excite(i, a)
         if anew is None:
@@ -1527,7 +1527,7 @@ def db_on_vec(basis, vec, i, j, a, b):
 
 def sasb_on_vec(basis, vec, i, j, a, b):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         ab, bb = basis[ix]
         sa, anew = ab.excite(i, a)
         if anew is None:
@@ -1536,7 +1536,7 @@ def sasb_on_vec(basis, vec, i, j, a, b):
         if bnew is None:
             continue
         try:
-            idx = basis.index((anew,bnew))
+            idx = basis.index((anew, bnew))
             out[idx] += sa*sb*x
         except ValueError:
             pass
@@ -1545,15 +1545,15 @@ def sasb_on_vec(basis, vec, i, j, a, b):
 
 def H_on_vec(basis, vec, ha, hb, Ia, Ib, Iabab):
     out = numpy.zeros(vec.shape)
-    for i,b in enumerate(basis):
-        for j,k in enumerate(basis):
+    for i, b in enumerate(basis):
+        for j, k in enumerate(basis):
             out[i] += vec[j]*ci_matrixel(b[0], b[1], k[0], k[1], ha, hb, Ia, Ib, Iabab, 0.0)
     return out
 
 
 def gH_on_vec(basis, vec, h, I,):
     out = numpy.zeros(vec.shape)
-    for i,b in enumerate(basis):
-        for j,k in enumerate(basis):
+    for i, b in enumerate(basis):
+        for j, k in enumerate(basis):
             out[i] += vec[j]*gci_matrixel(b, k, h, I, 0.0)
     return out

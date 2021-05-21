@@ -14,7 +14,6 @@ print(Escf)
 myci = ci.CISD(mf).run()
 print('RCISD correlation energy', myci.e_corr)
 
-
 # run naive CISD calculation
 mos = mf.mo_coeff
 nmo = mos.shape[1]

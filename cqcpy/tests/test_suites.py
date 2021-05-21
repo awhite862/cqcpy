@@ -35,6 +35,7 @@ def full_suite():
 
     suite.addTest(test_ci_utils.CIUtilsTest("test_mat_on_vec_cisd"))
     suite.addTest(test_ci_utils.CIUtilsTest("test_cis"))
+    suite.addTest(test_ci_utils.CIUtilsTest("test_cisd"))
 
     suite.addTest(test_ft_utils.FTUtilsTest("test_fermi"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_vfermi"))
