@@ -7,6 +7,7 @@ from cqcpy.tests import test_integrals
 from cqcpy.tests import test_lambda_equations
 from cqcpy.tests import test_spin_utils
 from cqcpy.tests import test_test
+from cqcpy.tests import test_utils
 
 
 def full_suite():
@@ -66,6 +67,10 @@ def full_suite():
     suite.addTest(test_test.TestTest("test_Lsym"))
     suite.addTest(test_test.TestTest("test_ft_int_sym"))
     suite.addTest(test_test.TestTest("test_ft_Tsym"))
+
+    suite.addTest(test_utils.UtilsTest("test_block_diag"))
+    suite.addTest(test_utils.UtilsTest("test_D1"))
+    suite.addTest(test_utils.UtilsTest("test_D2"))
 
     if not with_pyscf:
         print("WARNING: PySCF not found, skipping some tests")

@@ -16,3 +16,18 @@ def block_diag(A, B):
     M1 = numpy.hstack((A, z1))
     M2 = numpy.hstack((z2, B))
     return numpy.vstack((M1, M2))
+
+
+def D1(ev, eo):
+    """Create 4D tensor of energy denominators from
+    2 1-d arrays"""
+    D1 = ev[:, None] - eo[None, :]
+    return D1
+
+
+def D2(ev, eo):
+    """Create 4D tensor of energy denominators from
+    2 1-d arrays"""
+    D2 = (ev[:, None, None, None] + ev[None, :, None, None]
+        - eo[None, None, :, None] - eo[None, None, None, :])
+    return D2
