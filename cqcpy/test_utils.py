@@ -209,7 +209,6 @@ def make_random_ft_D1(n):
 def make_random_ft_D2(n1, n2):
     e1 = numpy.random.random((n1))
     e2 = numpy.random.random((n2))
-    D2 = e1[:,None,None,None] + e2[None,:,None,None] \
-        - e1[None,None,:,None] - e2[None,None,None,:]
+    D2 = utils.D2u(e1, e2, e1, e2)
 
     return D2

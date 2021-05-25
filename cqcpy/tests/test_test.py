@@ -117,6 +117,12 @@ class TestTest(unittest.TestCase):
         self.assertTrue(err < 1e-14)
         err = numpy.linalg.norm(D2 - D2.transpose((1, 0, 3, 2)))
         self.assertTrue(err < 1e-14)
+        D2 = test_utils.make_random_ft_D2(3, 4)
+        err = numpy.linalg.norm(D2 + D2.transpose((2, 3, 0, 1)))
+        self.assertTrue(err < 1e-14)
+        D1 = test_utils.make_random_ft_D1(3)
+        err = numpy.linalg.norm(D1 + D1.transpose((1, 0)))
+        self.assertTrue(err < 1e-14)
 
     def test_ft_int_sym(self):
         F, I = test_utils.make_random_ft_integrals(5)
@@ -142,8 +148,24 @@ class TestTest(unittest.TestCase):
         sym2 = numpy.linalg.norm(test) < self.thresh
         test = T2 - T2.transpose((0, 2, 1, 4, 3))
         sym3 = numpy.linalg.norm(test) < self.thresh
-        err = "Bad symmetry in FT I"
+        err = "Bad symmetry in FT T"
         self.assertTrue(sym1 and sym2 and sym3, err)
+
+        T1a, T1b = test_utils.make_random_ft_T1_spatial(7, 2, 2)
+        self.assertTrue(T1a.shape == (7,2,2))
+        self.assertTrue(T1b.shape == (7,2,2))
+
+        T2aa, T2ab, T2bb = test_utils.make_random_ft_T2_spatial(7, 2, 2)
+        test = T2aa + T2aa.transpose((0, 1, 2, 4, 3))
+        sym1 = numpy.linalg.norm(test) < self.thresh
+        test = T2bb + T2bb.transpose((0, 2, 1, 3, 4))
+        sym2 = numpy.linalg.norm(test) < self.thresh
+        test = T2aa + T2aa.transpose((0, 2, 1, 3, 4))
+        sym3 = numpy.linalg.norm(test) < self.thresh
+        test = T2bb + T2bb.transpose((0, 1, 2, 4, 3))
+        sym4 = numpy.linalg.norm(test) < self.thresh
+        err = "Bad symmetry in FT T"
+        self.assertTrue(sym1 and sym2 and sym3 and sym4, err)
 
 
 if __name__ == '__main__':
