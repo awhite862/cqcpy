@@ -13,6 +13,7 @@ if with_pyscf:
     from cqcpy.tests.test_integrals import *
 from cqcpy.tests.test_lambda_equations import *
 from cqcpy.tests.test_spin_utils import *
+from cqcpy.tests.test_utils import *
 from cqcpy.tests.test_test import *
 
 if __name__ == '__main__':

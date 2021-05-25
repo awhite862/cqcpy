@@ -111,6 +111,13 @@ class TestTest(unittest.TestCase):
         err = "Bad symmetry in T2"
         self.assertTrue(s1 and s2 and s3, err)
 
+    def test_ft_D_sym(self):
+        D1, D2 = test_utils.make_random_ft_D(4)
+        err = numpy.linalg.norm(D1 + D1.transpose((1, 0)))
+        self.assertTrue(err < 1e-14)
+        err = numpy.linalg.norm(D2 - D2.transpose((1, 0, 3, 2)))
+        self.assertTrue(err < 1e-14)
+
     def test_ft_int_sym(self):
         F, I = test_utils.make_random_ft_integrals(5)
         test = I + I.transpose((0, 1, 3, 2))

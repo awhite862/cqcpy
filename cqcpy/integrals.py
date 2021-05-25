@@ -8,9 +8,9 @@ def get_chem(mol, o1, o2, o3, o4, anti=False):
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    Id = mol_ao2mo.general(mol, (o1,o2,o3,o4), compact=False).reshape(n1, n2, n3, n4)
+    Id = mol_ao2mo.general(mol, (o1, o2, o3, o4), compact=False).reshape(n1, n2, n3, n4)
     if anti:
-        Ix = mol_ao2mo.general(mol, (o1,o4,o3,o2), compact=False).reshape(n1, n4, n3, n2)
+        Ix = mol_ao2mo.general(mol, (o1, o4, o3, o2), compact=False).reshape(n1, n4, n3, n2)
         return Id - Ix.transpose(0, 3, 2, 1)
     else:
         return Id
@@ -23,7 +23,7 @@ def get_chem_anti(mol, o1, o2, o3, o4):
 
 def get_phys(mol, o1, o2, o3, o4, anti=False):
     """Get ERIs in physicist's notation for given orbital Coeffs."""
-    return get_chem(mol, o1, o3, o2, o4, anti=anti).transpose((0,2,1,3))
+    return get_chem(mol, o1, o3, o2, o4, anti=anti).transpose((0, 2, 1, 3))
 
 
 def get_phys_anti(mol, o1, o2, o3, o4):
@@ -52,16 +52,16 @@ def get_chemu(mol, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
     n2 = a2 + b2
     n3 = a3 + b3
     n4 = a4 + b4
-    I = numpy.zeros((n1,n2,n3,n4), dtype=dtype)
-    I[:a1,:a2,:a3,:a4] = Ia
-    I[a1:,a2:,a3:,a4:] = Ib
-    I[:a1,:a2,a3:,a4:] = Iaabb
-    I[a1:,a2:,:a3,:a4] = Ibbaa
+    I = numpy.zeros((n1, n2, n3, n4), dtype=dtype)
+    I[:a1, :a2, :a3, :a4] = Ia
+    I[a1:, a2:, a3:, a4:] = Ib
+    I[:a1, :a2, a3:, a4:] = Iaabb
+    I[a1:, a2:, :a3, :a4] = Ibbaa
     if anti:
         Iaabbx = get_chem(mol, o1, o4, p3, p2)
         Ibbaax = get_chem(mol, p1, p4, o3, o2)
-        I[:a1,a2:,a3:,:a4] = -Iaabbx.transpose((0,3,2,1))
-        I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
+        I[:a1, a2:, a3:, :a4] = -Iaabbx.transpose((0, 3, 2, 1))
+        I[a1:, :a2, :a3, a4:] = -Ibbaax.transpose((0, 3, 2, 1))
     return I
 
 
@@ -80,17 +80,17 @@ def get_chemu_all(mol, oa, ob, anti=False):
     nb = ob.shape[1]
     n = na + nb
     Ia = mol_ao2mo.general(
-        mol, (oa,oa,oa,oa), compact=False).reshape(na, na, na, na)
+        mol, (oa, oa, oa, oa), compact=False).reshape(na, na, na, na)
     Ib = mol_ao2mo.general(
-        mol, (ob,ob,ob,ob), compact=False).reshape(nb, nb, nb, nb)
+        mol, (ob, ob, ob, ob), compact=False).reshape(nb, nb, nb, nb)
     Iab = mol_ao2mo.general(
-        mol, (oa,oa,ob,ob), compact=False).reshape(na, na, nb, nb)
+        mol, (oa, oa, ob, ob), compact=False).reshape(na, na, nb, nb)
     dtype = oa.dtype
-    Id = numpy.zeros((n,n,n,n), dtype=dtype)
-    Id[:na,:na,:na,:na] = Ia
-    Id[na:,na:,na:,na:] = Ib
-    Id[:na,:na,na:,na:] = Iab
-    Id[na:,na:,:na,:na] = Iab.transpose((2,3,0,1))
+    Id = numpy.zeros((n, n, n, n), dtype=dtype)
+    Id[:na, :na, :na, :na] = Ia
+    Id[na:, na:, na:, na:] = Ib
+    Id[:na, :na, na:, na:] = Iab
+    Id[na:, na:, :na, :na] = Iab.transpose((2, 3, 0, 1))
     if anti:
         return Id - Id.transpose(0, 3, 2, 1)
     else:
@@ -133,16 +133,16 @@ def get_chem_sol(mf, o1, o2, o3, o4, anti=False):
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    Id = mf.with_df.ao2mo((o1,o2,o3,o4), mf.kpt, compact=False).reshape(n1, n2, n3, n4)
+    Id = mf.with_df.ao2mo((o1, o2, o3, o4), mf.kpt, compact=False).reshape(n1, n2, n3, n4)
     if anti:
-        Ix = mf.with_df.ao2mo((o1,o4,o3,o2), mf.kpt, compact=False).reshape(n1, n4, n3, n2)
+        Ix = mf.with_df.ao2mo((o1, o4, o3, o2), mf.kpt, compact=False).reshape(n1, n4, n3, n2)
         return Id - Ix.transpose(0, 3, 2, 1)
     else:
         return Id
 
 
 def get_phys_sol(mf, o1, o2, o3, o4, anti=False):
-    return get_chem_sol(mf, o1, o3, o2, o4, anti=anti).transpose((0,2,1,3))
+    return get_chem_sol(mf, o1, o3, o2, o4, anti=anti).transpose((0, 2, 1, 3))
 
 
 def get_chemu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
@@ -166,16 +166,16 @@ def get_chemu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
     n3 = a3 + b3
     n4 = a4 + b4
     dtype = o1.dtype
-    I = numpy.zeros((n1,n2,n3,n4), dtype=dtype)
-    I[:a1,:a2,:a3,:a4] = Ia
-    I[a1:,a2:,a3:,a4:] = Ib
-    I[:a1,:a2,a3:,a4:] = Iaabb
-    I[a1:,a2:,:a3,:a4] = Ibbaa
+    I = numpy.zeros((n1, n2, n3, n4), dtype=dtype)
+    I[:a1, :a2, :a3, :a4] = Ia
+    I[a1:, a2:, a3:, a4:] = Ib
+    I[:a1, :a2, a3:, a4:] = Iaabb
+    I[a1:, a2:, :a3, :a4] = Ibbaa
     if anti:
         Iaabbx = get_chem_sol(mf, o1, o4, p3, p2)
         Ibbaax = get_chem_sol(mf, p1, p4, o3, o2)
-        I[:a1,a2:,a3:,:a4] = -Iaabbx.transpose((0,3,2,1))
-        I[a1:,:a2,:a3,a4:] = -Ibbaax.transpose((0,3,2,1))
+        I[:a1, a2:, a3:, :a4] = -Iaabbx.transpose((0, 3, 2, 1))
+        I[a1:, :a2, :a3, a4:] = -Ibbaax.transpose((0, 3, 2, 1))
     return I
 
 
@@ -199,16 +199,16 @@ def get_chemu_all_sol(mf, oa, ob, anti=False):
     nb = ob.shape[1]
     n = na + nb
     Ia = mf.with_df.ao2mo(
-        (oa,oa,oa,oa), mf.kpt, compact=False).reshape(na, na, na, na)
+        (oa, oa, oa, oa), mf.kpt, compact=False).reshape(na, na, na, na)
     Ib = mf.with_df.ao2mo(
-        (ob,ob,ob,ob), mf.kpt, compact=False).reshape(nb, nb, nb, nb)
+        (ob, ob, ob, ob), mf.kpt, compact=False).reshape(nb, nb, nb, nb)
     Iab = mf.with_df.ao2mo(
-        (oa,oa,ob,ob), mf.kpt, compact=False).reshape(na, na, nb, nb)
-    Id = numpy.zeros((n,n,n,n), dtype=oa.dtype)
-    Id[:na,:na,:na,:na] = Ia
-    Id[na:,na:,na:,na:] = Ib
-    Id[:na,:na,na:,na:] = Iab
-    Id[na:,na:,:na,:na] = Iab.transpose((2,3,0,1))
+        (oa, oa, ob, ob), mf.kpt, compact=False).reshape(na, na, nb, nb)
+    Id = numpy.zeros((n, n, n, n), dtype=oa.dtype)
+    Id[:na, :na, :na, :na] = Ia
+    Id[na:, na:, na:, na:] = Ib
+    Id[:na, :na, na:, na:] = Iab
+    Id[na:, na:, :na, :na] = Iab.transpose((2, 3, 0, 1))
     if anti:
         return Id - Id.transpose(0, 3, 2, 1)
     else:
@@ -216,7 +216,7 @@ def get_chemu_all_sol(mf, oa, ob, anti=False):
 
 
 def get_physu_all_sol(mf, oa, ob, anti=False):
-    return get_chemu_all_sol(mf, oa, ob, anti=anti).transpose((0,2,1,3))
+    return get_chemu_all_sol(mf, oa, ob, anti=anti).transpose((0, 2, 1, 3))
 
 
 def get_physu_all_gen(mf, anti=False):
@@ -301,8 +301,8 @@ class eri_blocks(object):
         pbc = hasattr(mf, "kpt")
 
         if len(mo_occ.shape) == 1:
-            o = mf.mo_coeff[:,mo_occ > 0]
-            v = mf.mo_coeff[:,mo_occ == 0]
+            o = mf.mo_coeff[:, mo_occ > 0]
+            v = mf.mo_coeff[:, mo_occ == 0]
             if pbc:
                 self._build_integrals_sol(mf, o, o, v, v)
             else:
@@ -310,10 +310,10 @@ class eri_blocks(object):
         elif len(mo_occ.shape) == 2:
             mo_occa = mo_occ[0]
             mo_occb = mo_occ[1]
-            oa = (mf.mo_coeff[0])[:,mo_occa > 0]
-            va = (mf.mo_coeff[0])[:,mo_occa == 0]
-            ob = (mf.mo_coeff[1])[:,mo_occb > 0]
-            vb = (mf.mo_coeff[1])[:,mo_occb == 0]
+            oa = (mf.mo_coeff[0])[:, mo_occa > 0]
+            va = (mf.mo_coeff[0])[:, mo_occa == 0]
+            ob = (mf.mo_coeff[1])[:, mo_occb > 0]
+            vb = (mf.mo_coeff[1])[:, mo_occb == 0]
             if pbc:
                 self._build_integrals_sol(mf, oa, ob, va, vb)
             else:

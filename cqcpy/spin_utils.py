@@ -8,20 +8,20 @@ def F_to_spin(Faa, Fbb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
     Foo = numpy.zeros((no, no))
-    Foo[:noa,:noa] = Faa.oo
-    Foo[noa:,noa:] = Fbb.oo
+    Foo[:noa, :noa] = Faa.oo
+    Foo[noa:, noa:] = Fbb.oo
 
     Fov = numpy.zeros((no, nv))
-    Fov[:noa,:nva] = Faa.ov
-    Fov[noa:,nva:] = Fbb.ov
+    Fov[:noa, :nva] = Faa.ov
+    Fov[noa:, nva:] = Fbb.ov
 
     Fvo = numpy.zeros((nv, no))
-    Fvo[:nva,:noa] = Faa.vo
-    Fvo[nva:,noa:] = Fbb.vo
+    Fvo[:nva, :noa] = Faa.vo
+    Fvo[nva:, noa:] = Fbb.vo
 
     Fvv = numpy.zeros((nv, nv))
-    Fvv[:nva,:nva] = Faa.vv
-    Fvv[nva:,nva:] = Fbb.vv
+    Fvv[:nva, :nva] = Faa.vv
+    Fvv[nva:, nva:] = Fbb.vv
 
     return one_e_blocks(Foo, Fov, Fvo, Fvv)
 
@@ -49,14 +49,14 @@ def T1_to_spin(Ta, Tb, noa, nva, nob, nvb):
     no = noa + nob
     nv = nva + nvb
     T = numpy.zeros((nv, no))
-    T[:nva,:noa] = Ta.copy()
-    T[nva:,noa:] = Tb.copy()
+    T[:nva, :noa] = Ta.copy()
+    T[nva:, noa:] = Tb.copy()
     return T
 
 
 def T1_to_spatial(T, noa, nva, nob, nvb):
-    Ta = T[:nva,:noa].copy()
-    Tb = T[nva:,noa:].copy()
+    Ta = T[:nva, :noa].copy()
+    Tb = T[nva:, noa:].copy()
     return Ta, Tb
 
 
@@ -113,7 +113,7 @@ def T2_to_spatial(T, noa, nva, nob, nvb):
     Taa = T[:nva, :nva, :noa, :noa].copy()
     Tbb = T[nva:, nva:, noa:, noa:].copy()
     Tab = T[:nva, nva:, :noa, noa:].copy()
-    return (Taa,Tab,Tbb)
+    return (Taa, Tab, Tbb)
 
 
 def int_to_spin_block(aaaa, bbbb, abab, baba, abba, baab,
@@ -160,7 +160,7 @@ def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.vovv - I_aaaa.vovv.transpose((0, 1, 3, 2))
     bbbb = I_bbbb.vovv - I_bbbb.vovv.transpose((0, 1, 3, 2))
     abab = I_abab.vovv
-    baba = I_abab.ovvv.transpose((1, 0,3, 2))
+    baba = I_abab.ovvv.transpose((1, 0, 3, 2))
     abba = -I_abab.vovv.transpose((0, 1, 3, 2))
     baab = -I_abab.ovvv.transpose((1, 0, 2, 3))
     Ivovv = int_to_spin_block(
@@ -193,9 +193,9 @@ def int_to_spin(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.oovv - I_aaaa.oovv.transpose((0, 1, 3, 2))
     bbbb = I_bbbb.oovv - I_bbbb.oovv.transpose((0, 1, 3, 2))
     abab = I_abab.oovv
-    baba = I_abab.oovv.transpose((1,0,3,2))
-    abba = -I_abab.oovv.transpose((0,1,3,2))
-    baab = -I_abab.oovv.transpose((1,0,2,3))
+    baba = I_abab.oovv.transpose((1, 0, 3, 2))
+    abba = -I_abab.oovv.transpose((0, 1, 3, 2))
+    baab = -I_abab.oovv.transpose((1, 0, 2, 3))
     Ioovv = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         noa, noa, nva, nva, nob, nob, nvb, nvb)
@@ -246,7 +246,7 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     abab = I_abab.vvvv
     baba = I_abab.vvvv.transpose((1, 0, 3, 2))
     abba = -I_abab.vvvv.transpose((0, 1, 3, 2))
-    baab = -I_abab.vvvv.transpose((1,0,2,3))
+    baab = -I_abab.vvvv.transpose((1, 0, 2, 3))
     Ivvvv = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         nva, nva, nva, nva, nvb, nvb, nvb, nvb)
@@ -266,9 +266,9 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.vovv
     bbbb = I_bbbb.vovv
     abab = I_abab.vovv
-    baba = I_abab.ovvv.transpose((1,0,3,2))
-    abba = -I_abab.vovv.transpose((0,1,3,2))
-    baab = -I_abab.ovvv.transpose((1,0,2,3))
+    baba = I_abab.ovvv.transpose((1, 0, 3, 2))
+    abba = -I_abab.vovv.transpose((0, 1, 3, 2))
+    baab = -I_abab.ovvv.transpose((1, 0, 2, 3))
     Ivovv = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         nva, noa, nva, nva, nvb, nob, nvb, nvb)
@@ -288,9 +288,9 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.vovo
     bbbb = I_bbbb.vovo
     abab = I_abab.vovo
-    baba = I_abab.ovov.transpose((1,0,3,2))
-    abba = -I_abab.voov.transpose((0,1,3,2))
-    baab = -I_abab.ovvo.transpose((1,0,2,3))
+    baba = I_abab.ovov.transpose((1, 0, 3, 2))
+    abba = -I_abab.voov.transpose((0, 1, 3, 2))
+    baab = -I_abab.ovvo.transpose((1, 0, 2, 3))
     Ivovo = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         nva, noa, nva, noa, nvb, nob, nvb, nob)
@@ -321,9 +321,9 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.ooov
     bbbb = I_bbbb.ooov
     abab = I_abab.ooov
-    baba = I_abab.oovo.transpose((1,0,3,2))
-    abba = -I_abab.oovo.transpose((0,1,3,2))
-    baab = -I_abab.ooov.transpose((1,0,2,3))
+    baba = I_abab.oovo.transpose((1, 0, 3, 2))
+    abba = -I_abab.oovo.transpose((0, 1, 3, 2))
+    baab = -I_abab.ooov.transpose((1, 0, 2, 3))
     Iooov = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         noa, noa, noa, nva, nob, nob, nob, nvb)
@@ -332,9 +332,9 @@ def int_to_spin2(I_aaaa, I_bbbb, I_abab, noa, nva, nob, nvb):
     aaaa = I_aaaa.oooo
     bbbb = I_bbbb.oooo
     abab = I_abab.oooo
-    baba = I_abab.oooo.transpose((1,0,3,2))
-    abba = -I_abab.oooo.transpose((0,1,3,2))
-    baab = -I_abab.oooo.transpose((1,0,2,3))
+    baba = I_abab.oooo.transpose((1, 0, 3, 2))
+    abba = -I_abab.oooo.transpose((0, 1, 3, 2))
+    baab = -I_abab.oooo.transpose((1, 0, 2, 3))
     Ioooo = int_to_spin_block(
         aaaa, bbbb, abab, baba, abba, baab,
         noa, noa, noa, noa, nob, nob, nob, nob)
@@ -371,22 +371,22 @@ def int_to_spatial(I, noa, nob, nva, nvb):
         vvvv=vvvv, vvvo=vvvo, vovv=vovv, vvoo=vvoo,
         vovo=vovo, oovv=oovv, vooo=vooo, ooov=ooov, oooo=oooo)
 
-    vvvv = I.vvvv[:nva,nva:,:nva,nva:]
-    vvvo = I.vvvo[:nva,nva:,:nva,noa:]
-    vvov = -I.vvvo[:nva,nva:,nva:,:noa].transpose((0,1,3,2))
-    vovv = I.vovv[:nva,noa:,:nva,nva:]
-    ovvv = -I.vovv[nva:,:noa,:nva,nva:].transpose((1,0,2,3))
-    vvoo = I.vvoo[:nva,nva:,:noa,noa:]
-    vovo = I.vovo[:nva,noa:,:nva,noa:]
-    voov = -I.vovo[:nva,noa:,nva:,:noa].transpose((0,1,3,2))
-    ovov = I.vovo[nva:,:noa,nva:,:noa].transpose((1,0,3,2))
-    ovvo = -I.vovo[nva:,:noa,:nva,noa:].transpose((1,0,2,3))
-    oovv = I.oovv[:noa,noa:,:nva,nva:]
-    vooo = I.vooo[:nva,noa:,:noa,noa:]
-    ovoo = -I.vooo[nva:,:noa,:noa,noa:].transpose((1,0,2,3))
-    ooov = I.ooov[:noa,noa:,:noa,nva:]
-    oovo = -I.ooov[:noa,noa:,noa:,:nva].transpose((0,1,3,2))
-    oooo = I.oooo[:noa,noa:,:noa,noa:]
+    vvvv = I.vvvv[:nva, nva:, :nva, nva:]
+    vvvo = I.vvvo[:nva, nva:, :nva, noa:]
+    vvov = -I.vvvo[:nva, nva:, nva:, :noa].transpose((0, 1, 3, 2))
+    vovv = I.vovv[:nva, noa:, :nva, nva:]
+    ovvv = -I.vovv[nva:, :noa, :nva, nva:].transpose((1, 0, 2, 3))
+    vvoo = I.vvoo[:nva, nva:, :noa, noa:]
+    vovo = I.vovo[:nva, noa:, :nva, noa:]
+    voov = -I.vovo[:nva, noa:, nva:, :noa].transpose((0, 1, 3, 2))
+    ovov = I.vovo[nva:, :noa, nva:, :noa].transpose((1, 0, 3, 2))
+    ovvo = -I.vovo[nva:, :noa, :nva, noa:].transpose((1, 0, 2, 3))
+    oovv = I.oovv[:noa, noa:, :nva, nva:]
+    vooo = I.vooo[:nva, noa:, :noa, noa:]
+    ovoo = -I.vooo[nva:, :noa, :noa, noa:].transpose((1, 0, 2, 3))
+    ooov = I.ooov[:noa, noa:, :noa, nva:]
+    oovo = -I.ooov[:noa, noa:, noa:, :nva].transpose((0, 1, 3, 2))
+    oooo = I.oooo[:noa, noa:, :noa, noa:]
     Iabab = two_e_blocks_full(
         vvvv=vvvv, vvvo=vvvo, vvov=vvov, vovv=vovv,
         ovvv=ovvv, vvoo=vvoo, vovo=vovo, ovvo=ovvo,

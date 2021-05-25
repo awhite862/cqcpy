@@ -65,6 +65,7 @@ def full_suite():
     suite.addTest(test_test.TestTest("test_int_sym"))
     suite.addTest(test_test.TestTest("test_Tsym"))
     suite.addTest(test_test.TestTest("test_Lsym"))
+    suite.addTest(test_test.TestTest("test_ft_D_sym"))
     suite.addTest(test_test.TestTest("test_ft_int_sym"))
     suite.addTest(test_test.TestTest("test_ft_Tsym"))
 

@@ -9,9 +9,9 @@ class Dstring(object):
 
     def excite(self, i, a):
         if self.occ[i] != 1:
-            return (None,None)
+            return (None, None)
         if self.occ[a] != 0:
-            return (None,None)
+            return (None, None)
 
         if i == a:
             return (1.0, Dstring(self.n, self.occ))
@@ -43,7 +43,7 @@ class Pstring(object):
     def raize(self, p):
         occnew = self.occ.copy()
         occnew[p] = occnew[p] + 1
-        return Pstring(self.n,occnew)
+        return Pstring(self.n, occnew)
 
     def lower(self, p):
         occnew = self.occ.copy()
@@ -58,7 +58,7 @@ class Pstring(object):
 
 
 def level(ref, string):
-    diff = [abs(o1 - o2) for o1,o2 in zip(ref.occ, string.occ)]
+    diff = [abs(o1 - o2) for o1, o2 in zip(ref.occ, string.occ)]
     return numpy.array(diff, dtype=int).sum()
 
 
@@ -280,7 +280,7 @@ def ucisdtq_basis(n, na, nb):
     occb = [1 if i < nb else 0 for i in range(n)]
     refa = Dstring(n, occa)
     refb = Dstring(n, occb)
-    basis = [(refa,refb)]
+    basis = [(refa, refb)]
     for a in sa:
         basis.append((a, refb))
     for b in sb:
@@ -635,7 +635,7 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
             s, bstr = refb.excite(i, a + nob)
             if bstr is not None:
                 idx = basis.index((refa, bstr))
-                C[idx] += s*T1b[a,i]
+                C[idx] += s*T1b[a, i]
 
     if order >= 2:
         # loop over T2aa
@@ -801,7 +801,7 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                                 s3, bstr = bstr.excite(k, c + nob)
                                 if bstr is not None:
                                     idx = basis.index((refa, bstr))
-                                    C[idx] += s1*s2*s3*T1b[a,i]*T2bb[b,c,j,k]
+                                    C[idx] += s1*s2*s3*T1b[a, i]*T2bb[b, c, j, k]
 
         # loop over T1a^3
         for i in range(noa):
@@ -827,14 +827,14 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
                     for a in range(nva):
                         for b in range(nva):
                             for c in range(nvb):
-                                s1a,astr = refa.excite(i, a + noa)
+                                s1a, astr = refa.excite(i, a + noa)
                                 if astr is None:
                                     continue
                                 s2a, astr = astr.excite(j, b + noa)
                                 sb, bstr = refb.excite(k, c + nob)
                                 if astr is not None and bstr is not None:
                                     idx = basis.index((astr, bstr))
-                                    C[idx] += s1a*s2a*sb*T1a[a,i]*T1a[b,j]*T1b[c,k]/2.0
+                                    C[idx] += s1a*s2a*sb*T1a[a, i]*T1a[b, j]*T1b[c, k]/2.0
         # loop over T1aT1b^2
         for i in range(noa):
             for j in range(nob):
@@ -1271,7 +1271,7 @@ def makeCfromT(noa, nva, nob, nvb, T1a, T1b, T2aa, T2ab, T2bb, order=2):
 
 def gci_matrixel(bra, ket, h, I, const):
     ddd = diff(bra, ket)//2
-    aa = [(ob - ok) for ob,ok in zip(bra.occ, ket.occ)]
+    aa = [(ob - ok) for ob, ok in zip(bra.occ, ket.occ)]
     ao = [-1 if a < 0 else 0 for a in aa]
     av = [1 if a > 0 else 0 for a in aa]
     if ddd == 0:
@@ -1314,8 +1314,8 @@ def gci_matrixel(bra, ket, h, I, const):
 def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
     diffa = diff(braa, keta)//2
     diffb = diff(brab, ketb)//2
-    aa = [(ob - ok) for ob,ok in zip(braa.occ, keta.occ)]
-    bb = [(ob - ok) for ob,ok in zip(brab.occ, ketb.occ)]
+    aa = [(ob - ok) for ob, ok in zip(braa.occ, keta.occ)]
+    bb = [(ob - ok) for ob, ok in zip(brab.occ, ketb.occ)]
     ao = [-1 if a < 0 else 0 for a in aa]
     av = [1 if a > 0 else 0 for a in aa]
     bo = [-1 if b < 0 else 0 for b in bb]
@@ -1368,7 +1368,7 @@ def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
         sign = 1.0 if bb[i1+1:i2].sum() % 2 == 0 else -1.0
         Hel = 0.0
         # from Hb
-        Hel += hb[v,o]
+        Hel += hb[v, o]
         Hel += numpy.einsum('ii,i->', Ib[v, :, o, :], pb)
         Hel -= numpy.einsum('ii,i->', Ib[v, :, :, o], pb)
         # from Hab
@@ -1449,7 +1449,7 @@ def sa_on_vec(basis, vec, i, a):
         if anew is None:
             continue
         try:
-            idx = basis.index((anew,bb))
+            idx = basis.index((anew, bb))
             out[idx] += sa*x
         except ValueError:
             pass
@@ -1458,13 +1458,13 @@ def sa_on_vec(basis, vec, i, a):
 
 def sb_on_vec(basis, vec, i, a):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         ab, bb = basis[ix]
         sb, bnew = bb.excite(i, a)
         if bnew is None:
             continue
         try:
-            idx = basis.index((ab,bnew))
+            idx = basis.index((ab, bnew))
             out[idx] += sb*x
         except ValueError:
             pass
@@ -1473,7 +1473,7 @@ def sb_on_vec(basis, vec, i, a):
 
 def d_on_vec(basis, vec, i, j, a, b):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         dd = basis[ix]
         s1, temp = dd.excite(i, a)
         if temp is None:
@@ -1491,7 +1491,7 @@ def d_on_vec(basis, vec, i, j, a, b):
 
 def da_on_vec(basis, vec, i, j, a, b):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         ab, bb = basis[ix]
         s1, atemp = ab.excite(i, a)
         if atemp is None:
@@ -1500,7 +1500,7 @@ def da_on_vec(basis, vec, i, j, a, b):
         if anew is None:
             continue
         try:
-            idx = basis.index((anew,bb))
+            idx = basis.index((anew, bb))
             out[idx] += s1*s2*x
         except ValueError:
             pass
@@ -1509,7 +1509,7 @@ def da_on_vec(basis, vec, i, j, a, b):
 
 def db_on_vec(basis, vec, i, j, a, b):
     out = numpy.zeros(vec.shape)
-    for ix,x in enumerate(vec):
+    for ix, x in enumerate(vec):
         ab, bb = basis[ix]
         s1, btemp = bb.excite(i, a)
         if btemp is None:
@@ -1518,7 +1518,7 @@ def db_on_vec(basis, vec, i, j, a, b):
         if bnew is None:
             continue
         try:
-            idx = basis.index((ab,bnew))
+            idx = basis.index((ab, bnew))
             out[idx] += s1*s2*x
         except ValueError:
             pass
