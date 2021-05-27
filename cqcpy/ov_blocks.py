@@ -27,15 +27,15 @@ def make_two_e_blocks(Itot, n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     assert(n2 == n2o + n2v)
     assert(n3 == n3o + n3v)
     assert(n4 == n4o + n4v)
-    Ivvvv = Itot[n1o:,n2o:,n3o:,n4o:]
-    Ivvvo = Itot[n1o:,n2o:,n3o:,:n4o]
-    Ivovv = Itot[n1o:,:n2o,n3o:,n4o:]
-    Ivvoo = Itot[n1o:,n2o:,:n3o,:n4o]
-    Ivovo = Itot[n1o:,:n2o,n3o:,:n4o]
-    Ioovv = Itot[:n1o,:n2o,n3o:,n4o:]
-    Ivooo = Itot[n1o:,:n2o,:n3o,:n4o]
-    Iooov = Itot[:n1o,:n2o,:n3o,n4o:]
-    Ioooo = Itot[:n1o,:n2o,:n3o,:n4o]
+    Ivvvv = Itot[n1o:, n2o:, n3o:, n4o:]
+    Ivvvo = Itot[n1o:, n2o:, n3o:, :n4o]
+    Ivovv = Itot[n1o:, :n2o, n3o:, n4o:]
+    Ivvoo = Itot[n1o:, n2o:, :n3o, :n4o]
+    Ivovo = Itot[n1o:, :n2o, n3o:, :n4o]
+    Ioovv = Itot[:n1o, :n2o, n3o:, n4o:]
+    Ivooo = Itot[n1o:, :n2o, :n3o, :n4o]
+    Iooov = Itot[:n1o, :n2o, :n3o, n4o:]
+    Ioooo = Itot[:n1o, :n2o, :n3o, :n4o]
     return two_e_blocks_full(
         vvvv=Ivvvv, vvvo=Ivvvo, vovv=Ivovv, vvoo=Ivvoo,
         vovo=Ivovo, oovv=Ioovv, vooo=Ivooo, ooov=Iooov, oooo=Ioooo)
@@ -71,22 +71,22 @@ def make_two_e_blocks_full(Itot, n1o, n1v, n2o, n2v, n3o, n3v, n4o, n4v):
     assert(n2 == n2o + n2v)
     assert(n3 == n3o + n3v)
     assert(n4 == n4o + n4v)
-    Ivvvv = Itot[n1o:,n2o:,n3o:,n4o:]
-    Ivvvo = Itot[n1o:,n2o:,n3o:,:n4o]
-    Ivvov = Itot[n1o:,n2o:,:n3o,n4o:]
-    Ivovv = Itot[n1o:,:n2o,n3o:,n4o:]
-    Iovvv = Itot[:n1o,n2o:,n3o:,n4o:]
-    Ivvoo = Itot[n1o:,n2o:,:n3o,:n4o]
-    Ivovo = Itot[n1o:,:n2o,n3o:,:n4o]
-    Iovvo = Itot[:n1o,n2o:,n3o:,:n4o]
-    Ivoov = Itot[n1o:,:n2o,:n3o,n4o:]
-    Iovov = Itot[:n1o,n2o:,:n3o,n4o:]
-    Ioovv = Itot[:n1o,:n2o,n3o:,n4o:]
-    Ivooo = Itot[n1o:,:n2o,:n3o,:n4o]
-    Iovoo = Itot[:n1o,n2o:,:n3o,:n4o]
-    Ioovo = Itot[:n1o,:n2o,n3o:,:n4o]
-    Iooov = Itot[:n1o,:n2o,:n3o,n4o:]
-    Ioooo = Itot[:n1o,:n2o,:n3o,:n4o]
+    Ivvvv = Itot[n1o:, n2o:, n3o:, n4o:]
+    Ivvvo = Itot[n1o:, n2o:, n3o:, :n4o]
+    Ivvov = Itot[n1o:, n2o:, :n3o, n4o:]
+    Ivovv = Itot[n1o:, :n2o, n3o:, n4o:]
+    Iovvv = Itot[:n1o, n2o:, n3o:, n4o:]
+    Ivvoo = Itot[n1o:, n2o:, :n3o, :n4o]
+    Ivovo = Itot[n1o:, :n2o, n3o:, :n4o]
+    Iovvo = Itot[:n1o, n2o:, n3o:, :n4o]
+    Ivoov = Itot[n1o:, :n2o, :n3o, n4o:]
+    Iovov = Itot[:n1o, n2o:, :n3o, n4o:]
+    Ioovv = Itot[:n1o, :n2o, n3o:, n4o:]
+    Ivooo = Itot[n1o:, :n2o, :n3o, :n4o]
+    Iovoo = Itot[:n1o, n2o:, :n3o, :n4o]
+    Ioovo = Itot[:n1o, :n2o, n3o:, :n4o]
+    Iooov = Itot[:n1o, :n2o, :n3o, n4o:]
+    Ioooo = Itot[:n1o, :n2o, :n3o, :n4o]
     return two_e_blocks_full(
         vvvv=Ivvvv, vvvo=Ivvvo, vvov=Ivvov, vovv=Ivovv,
         ovvv=Iovvv, vvoo=Ivvoo, vovo=Ivovo, ovov=Iovov,

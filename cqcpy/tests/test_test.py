@@ -152,8 +152,8 @@ class TestTest(unittest.TestCase):
         self.assertTrue(sym1 and sym2 and sym3, err)
 
         T1a, T1b = test_utils.make_random_ft_T1_spatial(7, 2, 2)
-        self.assertTrue(T1a.shape == (7,2,2))
-        self.assertTrue(T1b.shape == (7,2,2))
+        self.assertTrue(T1a.shape == (7, 2, 2))
+        self.assertTrue(T1b.shape == (7, 2, 2))
 
         T2aa, T2ab, T2bb = test_utils.make_random_ft_T2_spatial(7, 2, 2)
         test = T2aa + T2aa.transpose((0, 1, 2, 4, 3))

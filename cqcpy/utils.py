@@ -32,6 +32,7 @@ def D2(ev, eo):
         - eo[None, None, :, None] - eo[None, None, None, :])
     return D2
 
+
 def D2u(eva, evb, eoa, eob):
     """Create 4D tensor of energy denominators from
     2 1-d arrays"""

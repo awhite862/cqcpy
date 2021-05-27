@@ -19,7 +19,7 @@ def make_random_F(no, nv):
 def make_random_I(no, nv):
     n = no + nv
     Itot = numpy.random.random((n, n, n, n))
-    Itot += Itot.transpose((1,0,3,2))
+    Itot += Itot.transpose((1, 0, 3, 2))
     Ivvvv = Itot[no:, no:, no:, no:]
     Ivvvo = Itot[no:, no:, no:, :no]
     Ivovv = Itot[no:, :no, no:, no:]
