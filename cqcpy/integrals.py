@@ -8,16 +8,19 @@ def get_chem(mol, o1, o2, o3, o4, anti=False):
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    Id = mol_ao2mo.general(mol, (o1, o2, o3, o4), compact=False).reshape(n1, n2, n3, n4)
+    Id = mol_ao2mo.general(
+        mol, (o1, o2, o3, o4), compact=False).reshape(n1, n2, n3, n4)
     if anti:
-        Ix = mol_ao2mo.general(mol, (o1, o4, o3, o2), compact=False).reshape(n1, n4, n3, n2)
+        Ix = mol_ao2mo.general(
+            mol, (o1, o4, o3, o2), compact=False).reshape(n1, n4, n3, n2)
         return Id - Ix.transpose(0, 3, 2, 1)
     else:
         return Id
 
 
 def get_chem_anti(mol, o1, o2, o3, o4):
-    """Get antisymmetrized ERIs in chemist's notation for given orbital Coeffs."""
+    """Get antisymmetrized ERIs in chemist's notation for given
+    orbital Coeffs."""
     return get_chem(mol, o1, o1, o3, o4, anti=True)
 
 
@@ -27,7 +30,8 @@ def get_phys(mol, o1, o2, o3, o4, anti=False):
 
 
 def get_phys_anti(mol, o1, o2, o3, o4):
-    """Get antisymmetrized ERIs in physicist's notation for given orbital Coeffs."""
+    """Get antisymmetrized ERIs in physicist's notation for given
+    orbital Coeffs."""
     return get_phys(mol, o1, o2, o3, o4, anti=True)
 
 
@@ -133,9 +137,11 @@ def get_chem_sol(mf, o1, o2, o3, o4, anti=False):
     n2 = o2.shape[1]
     n3 = o3.shape[1]
     n4 = o4.shape[1]
-    Id = mf.with_df.ao2mo((o1, o2, o3, o4), mf.kpt, compact=False).reshape(n1, n2, n3, n4)
+    Id = mf.with_df.ao2mo(
+        (o1, o2, o3, o4), mf.kpt, compact=False).reshape(n1, n2, n3, n4)
     if anti:
-        Ix = mf.with_df.ao2mo((o1, o4, o3, o2), mf.kpt, compact=False).reshape(n1, n4, n3, n2)
+        Ix = mf.with_df.ao2mo(
+            (o1, o4, o3, o2), mf.kpt, compact=False).reshape(n1, n4, n3, n2)
         return Id - Ix.transpose(0, 3, 2, 1)
     else:
         return Id
