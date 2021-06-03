@@ -70,7 +70,7 @@ def dgrand_potential0(beta, epsilon, mu):
     emm = epsilon - mu
     x = beta*emm
     if x < -20.0:
-        return -emm*vfermi_function(beta, epsilon, mu)/beta + numpy.exp(x)/(beta/beta)
+        return -emm*vfermi_function(beta, epsilon, mu)/beta + numpy.exp(x)/(beta*beta)
     elif x > 20.0:
         return emm*fermi_function(beta, epsilon, mu)/beta + numpy.exp(-x)/(beta*beta)
     else:

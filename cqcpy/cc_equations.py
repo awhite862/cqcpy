@@ -3281,8 +3281,9 @@ def ccsd_pt_simple(F, I, eo, ev, T1, T2):
     #T3 -= T3.transpose((2, 1, 0, 3, 4, 5))
 
     #T3 += numpy.einsum('abij,cljk->abcijk', T2, I.vooo)
-    #D = 1/(eo[None,None,None,:,None,None] + eo[None,None,None,None,:,None] + eo[None,None,None,None,None,:]
-    #       - ev[:,None,None,None,None,None] - ev[None,:,None,None,None,None] - ev[None,None,:,None,None,None])
+    #D = 1/(eo[None,None,None,:,None,None] + eo[None,None,None,None,:,None]
+    #    + eo[None,None,None,None,None,:] - ev[:,None,None,None,None,None]
+    #   - ev[None,:,None,None,None,None] - ev[None,None,:,None,None,None])
 
     #Et = (1.0/36.0)*numpy.einsum('abcijk,abcijk,abcijk->', T3, D, T3) \
     #    + 0.25*numpy.einsum('ai,bcjk,abcijk->', T1, I.vvoo, T3)

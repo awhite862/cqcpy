@@ -2,6 +2,11 @@ import unittest
 import numpy
 from cqcpy import ft_utils
 
+def _fd_grand_potential(beta, epsilon, mu, delta=1e-4):
+    fff = ft_utils.grand_potential0(beta + delta, epsilon, mu)
+    bbb = ft_utils.grand_potential0(beta - delta, epsilon, mu)
+    ref = (fff - bbb)/(2.0*delta)
+    return ref
 
 class FTUtilsTest(unittest.TestCase):
     def setUp(self):
@@ -101,6 +106,33 @@ class FTUtilsTest(unittest.TestCase):
             [ft_utils.vfermi_function(beta, e, mu) for e in es])
         diff = numpy.linalg.norm(ref - out)
         self.assertTrue(diff < 5e-14)
+
+    def test_dgrand_potentiala(self):
+        beta = 3.0
+        e = 1.0
+        mu = 0.7
+        ref = _fd_grand_potential(beta, e, mu)
+        out = ft_utils.dgrand_potential0(beta, e, mu)
+        diff = abs(out - ref)/abs(ref)
+        self.assertTrue(diff < 1e-8)
+
+    def test_dgrand_potentialb(self):
+        beta = 3.0
+        e = 1.0
+        mu = -6.0
+        ref = _fd_grand_potential(beta, e, mu)
+        out = ft_utils.dgrand_potential0(beta, e, mu)
+        diff = abs(out - ref)/abs(ref)
+        self.assertTrue(diff < 1e-6)
+
+    def test_dgrand_potentialc(self):
+        beta = 3.0
+        e = -6.0
+        mu = 1.0
+        ref = _fd_grand_potential(beta, e, mu, delta=6e-4)
+        out = ft_utils.dgrand_potential0(beta, e, mu)
+        diff = abs(out - ref)/abs(ref)
+        self.assertTrue(diff < 1e-3)
 
 
 if __name__ == '__main__':
