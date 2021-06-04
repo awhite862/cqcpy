@@ -134,6 +134,18 @@ class FTUtilsTest(unittest.TestCase):
         diff = abs(out - ref)/abs(ref)
         self.assertTrue(diff < 1e-3)
 
+    def test_dGP0(self):
+        beta = 3.0
+        e = numpy.asarray([-1.0,  -0.07, 0.6, 2.1])
+        mu = 0.7
+        delta = 1e-4
+        fff = ft_utils.GP0(beta + delta, e, mu)
+        bbb = ft_utils.GP0(beta - delta, e, mu)
+        ref = (fff - bbb)/(2.0*delta)
+        out = ft_utils.dGP0(beta, e, mu)
+        diff = numpy.linalg.norm(out - ref)/numpy.linalg.norm(ref)
+        self.assertTrue(diff < 1e-8)
+
 
 if __name__ == '__main__':
     unittest.main()

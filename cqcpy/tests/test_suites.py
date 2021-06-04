@@ -45,6 +45,7 @@ def full_suite():
     suite.addTest(test_ft_utils.FTUtilsTest("test_dgrand_potentiala"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_dgrand_potentialb"))
     suite.addTest(test_ft_utils.FTUtilsTest("test_dgrand_potentialc"))
+    suite.addTest(test_ft_utils.FTUtilsTest("test_dGP0"))
 
     suite.addTest(
         test_lambda_equations.LambdaEquationsTest("test_ccsd_opt"))
