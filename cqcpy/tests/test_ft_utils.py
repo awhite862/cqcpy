@@ -2,11 +2,13 @@ import unittest
 import numpy
 from cqcpy import ft_utils
 
+
 def _fd_grand_potential(beta, epsilon, mu, delta=1e-4):
     fff = ft_utils.grand_potential0(beta + delta, epsilon, mu)
     bbb = ft_utils.grand_potential0(beta - delta, epsilon, mu)
     ref = (fff - bbb)/(2.0*delta)
     return ref
+
 
 class FTUtilsTest(unittest.TestCase):
     def setUp(self):

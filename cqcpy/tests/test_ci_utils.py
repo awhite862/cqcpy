@@ -119,7 +119,6 @@ class CIUtilsTest(unittest.TestCase):
         mf.conv_tol = 1e-12
         Escf = mf.kernel()
         myci = ci.CISD(mf).run()
-        #print('RCISD correlation energy', myci.e_corr)
         ref = myci.e_corr
 
         # run naive CISD calculation
@@ -144,7 +143,6 @@ class CIUtilsTest(unittest.TestCase):
                     b[0], b[1], k[0], k[1], ha, hb, I, I, I, const)
 
         eout, v = numpy.linalg.eigh(H)
-        #print('RCISD correlation energy', eout[0])
         diff = abs(ref - eout[0])
         self.assertTrue(diff < 1e-12)
 
