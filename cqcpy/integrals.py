@@ -147,8 +147,49 @@ def get_chem_sol(mf, o1, o2, o3, o4, anti=False):
         return Id
 
 
+def get_chem_solk(kmf, kpt, o1, o2, o3, o4, anti=False):
+    """Get ERIs in chemist's notation for given orbital coeffs and kpoint
+    indices."""
+    from pyscf.pbc import tools
+    from pyscf.pbc.lib import kpts_helper
+    kpts = kmf.kpts
+    khelper = kpts_helper.KptsHelper(kmf.cell, kmf.kpts)
+    kconserv = khelper.kconserv
+    #eri_kpt_symm = khelper.transform_symm(eri_kpt, kp, kq, kr).transpose(0, 2, 1, 3)
+    #kconserv = tools.get_kconserv(kmf.cell, kmf.kpts)
+    k1, k2, k3, k4 = kpt
+    nkpts = len(kpts)
+    k4test = kconserv[k1, k2, k3]
+    n1 = o1.shape[1]
+    n2 = o2.shape[1]
+    n3 = o3.shape[1]
+    n4 = o4.shape[1]
+    if k4 != k4test:
+        return numpy.zeros((n1, n2, n3, n4), dtype=complex)
+    Id = kmf.with_df.ao2mo(
+        (o1, o2, o3, o4),
+        kpts=(kpts[k1], kpts[k2], kpts[k3], kpts[k4]),
+        compact=False).reshape(n1, n2, n3, n4)
+    if anti:
+        Ix = kmf.with_df.ao2mo(
+            (o1, o4, o3, o2),
+            kpts=(kpts[k1], kpts[k4], kpts[k3], kpts[k2]),
+            compact=False).reshape(n1, n4, n3, n2)
+        return Id - Ix.transpose(0, 3, 2, 1)
+    else:
+        return Id
+
+
 def get_phys_sol(mf, o1, o2, o3, o4, anti=False):
     return get_chem_sol(mf, o1, o3, o2, o4, anti=anti).transpose((0, 2, 1, 3))
+
+
+def get_phys_solk(kmf, kpt, o1, o2, o3, o4, anti=False):
+    """Get ERIs in physicists notation for given orbital coeffs and kpoint
+    indices."""
+    return get_chem_solk(
+        kmf, (kpt[0], kpt[2], kpt[1], kpt[3]),
+        o1, o3, o2, o4, anti=anti).transpose((0, 2, 1, 3))
 
 
 def get_chemu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):

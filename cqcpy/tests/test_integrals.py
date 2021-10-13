@@ -58,6 +58,28 @@ class IntegralsTest(unittest.TestCase):
         pbc_mf2.kernel()
         return pbc_mf2
 
+    def _get_pbc3(self):
+        import pyscf.pbc.gto as pbc_gto
+        import pyscf.pbc.scf as pbc_scf
+        cell = pbc_gto.Cell()
+        cell.atom = '''
+        C 0.000000000000   0.000000000000   0.000000000000
+        C 1.685068664391   1.685068664391   1.685068664391
+        '''
+        cell.basis = 'gth-szv'
+        cell.pseudo = 'gth-pade'
+        cell.a = '''
+        0.000000000, 3.370137329, 3.370137329
+        3.370137329, 0.000000000, 3.370137329
+        3.370137329, 3.370137329, 0.000000000'''
+        cell.unit = 'B'
+        cell.verbose = 0
+        cell.build()
+        kpts = cell.make_kpts((1, 1, 2))
+        kmf = pbc_scf.KRHF(cell, kpts, exxdiv=None)
+        kmf.kernel()
+        return kmf
+
     def test_phys(self):
         from cqcpy import integrals
         mf = self._get_mf()
@@ -203,6 +225,43 @@ class IntegralsTest(unittest.TestCase):
         oovv = eris.oovv
         Ioovv = integrals.get_chem_sol(mf, o, o, v, v)
         diff = numpy.linalg.norm(oovv - Ioovv)
+        self.assertTrue(diff < 1e-12)
+
+    def test_eri_sol_kpts(self):
+        from cqcpy import integrals
+        import pyscf.pbc.cc as pbc_cc
+        kmf = self._get_pbc3()
+        cc = pbc_cc.KCCSD(kmf)
+        eris = cc.ao2mo()
+        mo = kmf.mo_coeff
+        nocc = cc.nocc
+        nks = len(mo)
+        k1 = 0
+        k2 = 1
+        k3 = 0
+        k4 = 1
+        o1 = mo[k1][:, kmf.mo_occ[k1] > 0]
+        o2 = mo[k2][:, kmf.mo_occ[k2] > 0]
+        o3 = mo[k3][:, kmf.mo_occ[k3] > 0]
+        o4 = mo[k4][:, kmf.mo_occ[k4] > 0]
+        v3 = mo[k3][:, kmf.mo_occ[k3] == 0]
+        v4 = mo[k4][:, kmf.mo_occ[k4] == 0]
+
+        # test oooo in chemist's notation
+        oooo = eris.oooo
+        Ioooo = 1/nks*integrals.get_chem_solk(kmf, (k1, k3, k2, k4), o1, o3, o2, o4)
+        diff = numpy.linalg.norm(oooo[k1, k2, k3] - Ioooo.transpose((0, 2, 1, 3)))
+        self.assertTrue(diff < 1e-12)
+
+        # test oooo in physicists notation
+        Ioooo = 1/nks*integrals.get_phys_solk(kmf, (k1, k2, k3, k4), o1, o2, o3, o4)
+        diff = numpy.linalg.norm(oooo[k1, k2, k3] - Ioooo)
+        self.assertTrue(diff < 1e-12)
+
+        # test oovv in chemists notation
+        oovv = eris.oovv
+        Iovov = 1/nks*integrals.get_chem_solk(kmf, (k1, k3, k2, k4), o1, v3, o2, v4)
+        diff = numpy.linalg.norm(oovv[k1, k2, k3] - Iovov.transpose((0, 2, 1, 3)))
         self.assertTrue(diff < 1e-12)
 
 

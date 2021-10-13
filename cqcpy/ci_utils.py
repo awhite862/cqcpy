@@ -1301,9 +1301,8 @@ def gci_matrixel(bra, ket, h, I, const):
         b = bra.occ.copy()
         i1, i2 = min(o1, v1), max(o1, v1)
         j1, j2 = min(o2, v2), max(o2, v2)
-        sign1 = 1.0 if b[i1+1:i2].sum() % 2 == 0 else -1.0
-        sign2 = 1.0 if b[j1+1:j2].sum() % 2 == 0 else -1.0
-        #sign = -sign1*sign2 if (v2 < o1 or o2 < v1) else sign1*sign2
+        sign1 = 1.0 if b[i1 + 1:i2].sum() % 2 == 0 else -1.0
+        sign2 = 1.0 if b[j1 + 1:j2].sum() % 2 == 0 else -1.0
         # from Ha
         Hel = I[v1, v2, o1, o2] - I[v1, v2, o2, o1]
         return sign1*sign2*Hel
@@ -1312,8 +1311,8 @@ def gci_matrixel(bra, ket, h, I, const):
 
 
 def ci_matrixel(braa, brab, keta, ketb, ha, hb, Ia, Ib, Iabab, const):
-    diffa = diff(braa, keta)//2
-    diffb = diff(brab, ketb)//2
+    diffa = diff(braa, keta) // 2
+    diffb = diff(brab, ketb) // 2
     aa = [(ob - ok) for ob, ok in zip(braa.occ, keta.occ)]
     bb = [(ob - ok) for ob, ok in zip(brab.occ, ketb.occ)]
     ao = [-1 if a < 0 else 0 for a in aa]
