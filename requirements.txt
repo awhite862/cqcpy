@@ -1,2 +1,6 @@
-numpy
-pyscf
+cached-property==1.5.2
+h5py==3.1.0
+numpy==1.19.5
+pkg-resources==0.0.0
+pyscf==1.7.6.post1
+scipy==1.5.4
