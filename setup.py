@@ -1,7 +1,7 @@
 """Setup script for cqcpy
 """
 import os
-from setuptools import setup, find_packages, Extension
+from setuptools import setup
 
 
 def get_version(fname):
