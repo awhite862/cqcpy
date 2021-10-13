@@ -37,6 +37,7 @@ jobs:
     - name: Test with unittest
       run: |
         coverage run test.py
+        coverage xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
