@@ -264,6 +264,45 @@ class IntegralsTest(unittest.TestCase):
         diff = numpy.linalg.norm(oovv[k1, k2, k3] - Iovov.transpose((0, 2, 1, 3)))
         self.assertTrue(diff < 1e-12)
 
+    def test_integrals_kpts(self):
+        from cqcpy import integrals
+        kmf = self._get_pbc3()
+        nocc = numpy.count_nonzero(kmf.mo_occ[0])
+        Eref = kmf.energy_tot()
+        nkpts = len(kmf.kpts)
+
+        # test in chemists notation
+        h1, h2 = integrals.get_solk_integrals(kmf, eriorder='chem')
+        h2 = h2/nkpts
+        Eout = kmf.energy_nuc()
+        for k in range(nkpts):
+            Eout += 2.0*numpy.einsum('ii->', h1[k, :nocc, :nocc]) / nkpts
+
+        for kp in range(nkpts):
+            for kq in range(nkpts):
+                Eout += 2.0*numpy.einsum(
+                    'iijj->', h2[kp, kp, kq, :nocc, :nocc, :nocc, :nocc]) / nkpts
+                Eout -= numpy.einsum(
+                    'ijji->', h2[kp, kq, kq, :nocc, :nocc, :nocc, :nocc]) / nkpts
+        diff = abs(Eout - Eref)
+        self.assertTrue(diff < 1e-12)
+
+        # test in physicists notation
+        h1, h2 = integrals.get_solk_integrals(kmf, eriorder='phys')
+        h2 = h2/nkpts
+        Eout = kmf.energy_nuc()
+        for k in range(nkpts):
+            Eout += 2.0*numpy.einsum('ii->', h1[k, :nocc, :nocc]) / nkpts
+
+        for kp in range(nkpts):
+            for kq in range(nkpts):
+                Eout += 2.0*numpy.einsum(
+                    'ijij->', h2[kp, kq, kp, :nocc, :nocc, :nocc, :nocc]) / nkpts
+                Eout -= numpy.einsum(
+                    'ijji->', h2[kp, kq, kq, :nocc, :nocc, :nocc, :nocc]) / nkpts
+        diff = abs(Eout - Eref)
+        self.assertTrue(diff < 1e-12)
+
 
 if __name__ == '__main__':
     unittest.main()

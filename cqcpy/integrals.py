@@ -1,4 +1,5 @@
 import numpy
+import pyscf
 import pyscf.ao2mo as mol_ao2mo
 
 
@@ -190,6 +191,43 @@ def get_phys_solk(kmf, kpt, o1, o2, o3, o4, anti=False):
     return get_chem_solk(
         kmf, (kpt[0], kpt[2], kpt[1], kpt[3]),
         o1, o3, o2, o4, anti=anti).transpose((0, 2, 1, 3))
+
+
+def get_solk_integrals(kmf, eriorder='chem'):
+    from functools import reduce
+    from pyscf.pbc.lib import kpts_helper
+    if not isinstance(kmf, pyscf.scf.hf.RHF):
+        raise Exception("Only implemented for RHF mean field")
+    hcore_ao = kmf.get_hcore()
+    h1 = numpy.asarray([reduce(numpy.dot, (mo.T.conj(), hcore_ao[k], mo))
+                     for k, mo in enumerate(kmf.mo_coeff)])
+
+    chem = eriorder[0].lower() == 'c'
+
+    kpts = kmf.kpts
+    nkpts = len(kpts)
+    nmo = len(kmf.mo_occ[0])
+    for mo in kmf.mo_coeff:
+        assert mo.shape[1] == nmo
+    h2 = numpy.zeros((nkpts, nkpts, nkpts, nmo, nmo, nmo, nmo), dtype=complex)
+    khelper = kpts_helper.KptsHelper(kmf.cell, kmf.kpts)
+    kconserv = khelper.kconserv
+    for kp in range(nkpts):
+        for kq in range(nkpts):
+            for kr in range(nkpts):
+                ks = kconserv[kp, kq, kr] if chem else kconserv[kp, kr, kq]
+                mop = kmf.mo_coeff[kp]
+                moq = kmf.mo_coeff[kq]
+                mor = kmf.mo_coeff[kr]
+                mos = kmf.mo_coeff[ks]
+                if chem:
+                    h2[kp, kq, kr] = get_chem_solk(
+                        kmf, (kp, kq, kr, ks), mop, moq, mor, mos)
+                else:
+                    h2[kp, kq, kr] = get_phys_solk(
+                        kmf, (kp, kq, kr, ks), mop, moq, mor, mos)
+
+    return h1, h2
 
 
 def get_chemu_sol(mf, o1, o2, o3, o4, p1, p2, p3, p4, anti=False):
