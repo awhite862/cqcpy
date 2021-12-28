@@ -1,10 +1,6 @@
-import os
-import copy
-
 import numpy as np
 from pyscf.pbc import scf, gto, mp
 from pyscf.pbc.lib import kpts_helper
-import cqcpy
 from cqcpy.integrals import get_phys_solk
 
 cell = gto.Cell()

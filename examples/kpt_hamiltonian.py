@@ -1,9 +1,5 @@
-import os
-import copy
-
 import numpy as np
 from pyscf.pbc import scf, gto, mp
-import cqcpy
 from cqcpy.integrals import get_solk_integrals
 
 cell = gto.Cell()
