@@ -1,5 +1,5 @@
 import numpy as np
-from pyscf.pbc import scf, gto, mp
+from pyscf.pbc import scf, gto
 from cqcpy.integrals import get_solk_integrals
 
 cell = gto.Cell()

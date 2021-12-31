@@ -159,7 +159,6 @@ def get_chem_solk(kmf, kpt, o1, o2, o3, o4, anti=False):
     #eri_kpt_symm = khelper.transform_symm(eri_kpt, kp, kq, kr).transpose(0, 2, 1, 3)
     #kconserv = tools.get_kconserv(kmf.cell, kmf.kpts)
     k1, k2, k3, k4 = kpt
-    nkpts = len(kpts)
     k4test = kconserv[k1, k2, k3]
     n1 = o1.shape[1]
     n2 = o2.shape[1]
