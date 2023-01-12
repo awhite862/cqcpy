@@ -4,8 +4,6 @@ and testing of quantum chemistry code.
 
 [![Tests](https://github.com/awhite862/cqcpy/workflows/Tests/badge.svg)](https://github.com/awhite862/cqcpy/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/awhite862/cqcpy/branch/master/graph/badge.svg)](https://codecov.io/gh/awhite862/cqcpy)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/awhite862/cqcpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awhite862/cqcpy/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/awhite862/cqcpy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awhite862/cqcpy/context:python)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/awhite862/cqcpy/master/LICENSE)
 
 ## Prerequisites
